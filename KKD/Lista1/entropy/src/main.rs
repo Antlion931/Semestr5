@@ -1,58 +1,94 @@
-use std::env;
-use std::fs;
-use std::process;
+mod app;
+
+use anyhow::Result;
+use app::App;
 use crossterm::{
-    event::{self, KeyCode, KeyEventKind},
+    event::{self, Event::Key, KeyCode::Char},
+    execute,
     terminal::{disable_raw_mode, enable_raw_mode, EnterAlternateScreen, LeaveAlternateScreen},
-    ExecutableCommand,
 };
 use ratatui::{
-    prelude::{CrosstermBackend, Stylize, Terminal},
+    prelude::{CrosstermBackend, Terminal},
     widgets::Paragraph,
 };
-use std::io::{stderr, Result};
 
-fn main() -> Result<()> {
-    let args: Vec<_> = env::args().collect();
-    
-    if args.len() != 2 {
-        println!("Wrong amount of operands, usage: ./entropy <file_path>");
-        process::exit(1)
-    }
+pub type Frame<'a> = ratatui::Frame<'a, CrosstermBackend<std::io::Stderr>>;
 
-    let file_path = args.get(1).expect("We know there are args is len 2");
-
-    let contents = fs::read_to_string(file_path)
-        .expect("Should have been able to read the file");
-
-    let bytes = contents.as_bytes();
-
-    stderr().execute(EnterAlternateScreen)?;
+fn startup() -> Result<()> {
     enable_raw_mode()?;
-    let mut terminal = Terminal::new(CrosstermBackend::new(stderr()))?;
-    terminal.clear()?;
+    execute!(std::io::stderr(), EnterAlternateScreen)?;
+    Ok(())
+}
 
-    loop {
-        terminal.draw(|frame| {
-            let area = frame.size();
-            frame.render_widget(
-                Paragraph::new(format!("{bytes:?} (press 'q' to quit)"))
-                    .white()
-                    .on_blue(),
-                area,
-            );
-        })?;
+fn shutdown() -> Result<()> {
+    execute!(std::io::stderr(), LeaveAlternateScreen)?;
+    disable_raw_mode()?;
+    Ok(())
+}
 
-        if event::poll(std::time::Duration::from_millis(100))? {
-            if let event::Event::Key(key) = event::read()? {
-                if key.kind == KeyEventKind::Press && key.code == KeyCode::Char('q') {
-                    break;
+// App ui render function
+fn ui(app: &App, f: &mut Frame<'_>) {
+    f.render_widget(
+        Paragraph::new(format!("Counter: {}", app.counter)),
+        f.size(),
+    );
+}
+
+// App update function
+fn update(app: &mut App) -> Result<()> {
+    if event::poll(std::time::Duration::from_millis(250))? {
+        if let Key(key) = event::read()? {
+            if key.kind == event::KeyEventKind::Press {
+                match key.code {
+                    Char('j') => app.increment_counter(),
+                    Char('k') => app.decrement_counter(),
+                    Char('q') => app.should_quit = true,
+                    _ => {}
                 }
             }
         }
     }
+    Ok(())
+}
 
-    stderr().execute(LeaveAlternateScreen)?;
-    disable_raw_mode()?;
+fn run() -> Result<()> {
+    // ratatui terminal
+    let mut t = Terminal::new(CrosstermBackend::new(std::io::stderr()))?;
+
+    // application state
+    let mut app = App {
+        counter: 0,
+        should_quit: false,
+    };
+
+    loop {
+        // application update
+        update(&mut app)?;
+
+        // application render
+        t.draw(|f| {
+            ui(&app, f);
+        })?;
+
+        // application exit
+        if app.should_quit {
+            break;
+        }
+    }
+
+    Ok(())
+}
+
+fn main() -> Result<()> {
+    // setup terminal
+    startup()?;
+
+    let result = run();
+
+    // teardown terminal before unwrapping Result of app run
+    shutdown()?;
+
+    result?;
+
     Ok(())
 }
