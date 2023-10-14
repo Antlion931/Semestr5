@@ -1,94 +1,57 @@
-mod app;
+/// Application.
+pub mod app;
+
+/// Terminal events handler.
+pub mod event;
+
+/// Widget renderer.
+pub mod ui;
+
+/// Terminal user interface.
+pub mod tui;
+
+/// Application updater.
+pub mod update;
 
 use anyhow::Result;
 use app::App;
-use crossterm::{
-    event::{self, Event::Key, KeyCode::Char},
-    execute,
-    terminal::{disable_raw_mode, enable_raw_mode, EnterAlternateScreen, LeaveAlternateScreen},
-};
-use ratatui::{
-    prelude::{CrosstermBackend, Terminal},
-    widgets::Paragraph,
-};
-
-pub type Frame<'a> = ratatui::Frame<'a, CrosstermBackend<std::io::Stderr>>;
-
-fn startup() -> Result<()> {
-    enable_raw_mode()?;
-    execute!(std::io::stderr(), EnterAlternateScreen)?;
-    Ok(())
-}
-
-fn shutdown() -> Result<()> {
-    execute!(std::io::stderr(), LeaveAlternateScreen)?;
-    disable_raw_mode()?;
-    Ok(())
-}
-
-// App ui render function
-fn ui(app: &App, f: &mut Frame<'_>) {
-    f.render_widget(
-        Paragraph::new(format!("Counter: {}", app.counter)),
-        f.size(),
-    );
-}
-
-// App update function
-fn update(app: &mut App) -> Result<()> {
-    if event::poll(std::time::Duration::from_millis(250))? {
-        if let Key(key) = event::read()? {
-            if key.kind == event::KeyEventKind::Press {
-                match key.code {
-                    Char('j') => app.increment_counter(),
-                    Char('k') => app.decrement_counter(),
-                    Char('q') => app.should_quit = true,
-                    _ => {}
-                }
-            }
-        }
-    }
-    Ok(())
-}
-
-fn run() -> Result<()> {
-    // ratatui terminal
-    let mut t = Terminal::new(CrosstermBackend::new(std::io::stderr()))?;
-
-    // application state
-    let mut app = App {
-        counter: 0,
-        should_quit: false,
-    };
-
-    loop {
-        // application update
-        update(&mut app)?;
-
-        // application render
-        t.draw(|f| {
-            ui(&app, f);
-        })?;
-
-        // application exit
-        if app.should_quit {
-            break;
-        }
-    }
-
-    Ok(())
-}
+use event::{Event, EventHandler};
+use ratatui::{backend::CrosstermBackend, Terminal};
+use tui::Tui;
+use update::update;
 
 fn main() -> Result<()> {
-    // setup terminal
-    startup()?;
+    // Create an application.
+    let mut app = App::new();
 
-    let result = run();
+    // Initialize the terminal user interface.
+    let backend = CrosstermBackend::new(std::io::stderr());
+    let terminal = Terminal::new(backend)?;
+    let events = EventHandler::new(250);
+    let mut tui = Tui::new(terminal, events);
 
-    // teardown terminal before unwrapping Result of app run
-    shutdown()?;
-
+    let result = run(&mut tui, &mut app);
+    // Exit the user interface.
+    tui.exit()?;
     result?;
+    Ok(())
+}
+
+fn run(tui: &mut Tui, app: &mut App) -> Result<()> {
+    tui.enter()?;
+
+    // Start the main loop.
+    while !app.should_quit {
+        // Render the user interface.
+        tui.draw(app)?;
+        // Handle events.
+        match tui.events.next()? {
+            Event::Tick => app.tick(),
+            Event::Key(key_event) => update(app, key_event),
+            Event::Mouse(_) => {}
+            Event::Resize(_, _) => {}
+        };
+    }
 
     Ok(())
 }

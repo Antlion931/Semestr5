@@ -1,8 +1,10 @@
-// App state
+/// Application.
 #[derive(Debug, Default)]
 pub struct App {
-    pub counter: i64,
+    /// should the application exit?
     pub should_quit: bool,
+    /// counter
+    pub counter: u8,
 }
 
 impl App {
@@ -15,6 +17,7 @@ impl App {
     pub fn tick(&self) {}
 
     /// Set running to false to quit the application.
+
     pub fn quit(&mut self) {
         self.should_quit = true;
     }
@@ -46,6 +49,6 @@ mod tests {
     fn test_app_decrement_counter() {
         let mut app = App::default();
         app.decrement_counter();
-        assert_eq!(app.counter, -1);
+        assert_eq!(app.counter, 0);
     }
 }
