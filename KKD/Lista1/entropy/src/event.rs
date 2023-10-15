@@ -41,8 +41,7 @@ impl EventHandler {
             thread::spawn(move || {
                 let mut last_tick = Instant::now();
                 loop {
-                    let timeout = tick_rate
-                        .saturating_sub(last_tick.elapsed());
+                    let timeout = tick_rate.saturating_sub(last_tick.elapsed());
 
                     if event::poll(timeout).expect("no events available") {
                         match event::read().expect("unable to read event") {

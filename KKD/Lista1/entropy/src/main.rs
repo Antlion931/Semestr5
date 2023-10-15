@@ -1,4 +1,4 @@
-/// Application.
+// Application.
 pub mod app;
 
 /// Terminal events handler.
@@ -17,12 +17,36 @@ use anyhow::Result;
 use app::App;
 use event::{Event, EventHandler};
 use ratatui::{backend::CrosstermBackend, Terminal};
+use std::env;
+use std::fs;
+use std::process;
 use tui::Tui;
 use update::update;
 
 fn main() -> Result<()> {
+    let args: Vec<_> = env::args().collect();
+
+    if args.len() != 2 {
+        println!("Wrong amount of operands, usage: entropy <file_path>");
+        process::exit(1)
+    }
+
+    let file_path = args.get(1).expect("We know there are args is len 2");
+
+    let contents = fs::read(file_path).expect("Should have been able to read the file");
+
     // Create an application.
     let mut app = App::new();
+
+    for b in contents {
+        app.read_byte(b).unwrap();
+    }
+
+    println!("entropy = {}", app.entropy().unwrap());
+    println!(
+        "conditional entropy = {}",
+        app.conditional_entropy().unwrap()
+    );
 
     // Initialize the terminal user interface.
     let backend = CrosstermBackend::new(std::io::stderr());

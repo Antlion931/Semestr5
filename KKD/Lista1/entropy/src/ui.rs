@@ -6,5 +6,4 @@ use ratatui::{
 
 use crate::{app::App, tui::Frame};
 
-pub fn render(app: &App, f: &mut Frame) {
-}
+pub fn render(app: &App, f: &mut Frame) {}

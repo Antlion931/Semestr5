@@ -3,7 +3,13 @@ name = "entropy"
 version = "0.1.0"
 edition = "2021"
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+[build]
+rustflags = ["-C", "target-cpu=native"]
+
+[profile.release]
+lto = "fat"
+codegen-units = 1
+debug = false
 
 [dependencies]
 anyhow = "1.0.75"

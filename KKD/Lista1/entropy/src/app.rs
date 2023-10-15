@@ -1,7 +1,10 @@
 const BYTE_POSSIBILITIES: usize = 256;
 
 fn count(counts: &[u64]) -> Result<u128, AppError> {
-    Ok(counts.iter().try_fold(0u128, |acc, x| acc.checked_add(*x as u128)).ok_or(AppError::Overflow)?)
+    Ok(counts
+        .iter()
+        .try_fold(0u128, |acc, x| acc.checked_add(*x as u128))
+        .ok_or(AppError::Overflow)?)
 }
 
 fn entropy_in(counts: &[u64]) -> Result<f64, AppError> {
@@ -11,7 +14,7 @@ fn entropy_in(counts: &[u64]) -> Result<f64, AppError> {
     if count == 0 {
         return Err(AppError::ZeroBytes);
     }
-    
+
     for c in counts {
         if *c == 0 {
             continue;
@@ -31,10 +34,25 @@ fn entropy_in(counts: &[u64]) -> Result<f64, AppError> {
 }
 
 #[derive(Debug)]
+pub enum CurrentScreen {
+    Entropy,
+    ConditionalEntropy,
+    Exiting,
+    Saving,
+}
+
+#[derive(Debug)]
+pub enum SavingMode {
+    Entropy,
+    ConditionalEntropy,
+    Results,
+}
+
+#[derive(Debug)]
 pub enum AppError {
     Overflow,
     ZeroBytes,
-    NaN
+    NaN,
 }
 
 /// Application.
@@ -42,17 +60,29 @@ pub enum AppError {
 pub struct App {
     /// should the application exit?
     pub should_quit: bool,
+    pub entropy_saved: bool,
+    pub conditional_entropy_saved: bool,
+
+    pub current_screen: CurrentScreen,
 
     single_byte_counts: [u64; BYTE_POSSIBILITIES],
 
     last_byte: u8,
-    double_byte_counts: [u64; BYTE_POSSIBILITIES * BYTE_POSSIBILITIES]
+    double_byte_counts: [u64; BYTE_POSSIBILITIES * BYTE_POSSIBILITIES],
 }
 
 impl App {
     /// Constructs a new instance of [`App`].
     pub fn new() -> Self {
-        Self { should_quit: false, single_byte_counts: [0; BYTE_POSSIBILITIES], last_byte: 0, double_byte_counts: [0; BYTE_POSSIBILITIES * BYTE_POSSIBILITIES] }
+        Self {
+            should_quit: false,
+            entropy_saved: false,
+            conditional_entropy_saved: false,
+            current_screen: CurrentScreen::Entropy,
+            single_byte_counts: [0; BYTE_POSSIBILITIES],
+            last_byte: 0,
+            double_byte_counts: [0; BYTE_POSSIBILITIES * BYTE_POSSIBILITIES],
+        }
     }
 
     /// Handles the tick event of the terminal.
@@ -73,15 +103,19 @@ impl App {
     }
 
     pub fn read_byte(&mut self, byte: u8) -> Result<(), AppError> {
-        self.single_byte_counts[byte as usize] = self.single_byte_counts[byte as usize].checked_add(1).ok_or(AppError::Overflow)?;
+        self.single_byte_counts[byte as usize] = self.single_byte_counts[byte as usize]
+            .checked_add(1)
+            .ok_or(AppError::Overflow)?;
         let double_byte = u16::from_be_bytes([self.last_byte, byte]);
 
-        self.double_byte_counts[double_byte as usize] = self.double_byte_counts[double_byte as usize].checked_add(1).ok_or(AppError::Overflow)?;
+        self.double_byte_counts[double_byte as usize] = self.double_byte_counts
+            [double_byte as usize]
+            .checked_add(1)
+            .ok_or(AppError::Overflow)?;
         self.last_byte = byte;
-    
+
         Ok(())
     }
-
 
     pub fn entropy(&self) -> Result<f64, AppError> {
         entropy_in(&self.single_byte_counts)
@@ -143,7 +177,6 @@ mod tests {
         for x in &app.double_byte_counts {
             assert_eq!(*x, 0);
         }
-
 
         app.read_byte(FIRST_BYTE).unwrap();
 
