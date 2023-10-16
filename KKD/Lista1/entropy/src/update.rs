@@ -1,10 +1,10 @@
-use crossterm::event::{KeyCode, KeyEvent, KeyModifiers};
+use crossterm::event::{KeyCode, KeyEvent};
 
-use crate::app::{App, CurrentScreen, SavingMode, PreviousScreen};
+use crate::app::{App, Screen, SavingMode};
 
 pub fn update(app: &mut App, key_event: KeyEvent) {
-    match app.current_screen {
-        CurrentScreen::Entropy | CurrentScreen::ConditionalEntropy => 
+    match app.get_current_screen() {
+        Screen::Entropy | Screen::ConditionalEntropy => 
             match key_event.code {
                 KeyCode::Char('q') | KeyCode::Char('Q') => app.soft_quit(),
                 KeyCode::Char('k') | KeyCode::Char('K') => app.scrol_up(),
@@ -12,20 +12,32 @@ pub fn update(app: &mut App, key_event: KeyEvent) {
                 KeyCode::Char('h') | KeyCode::Char('H') | KeyCode::Char('l') | KeyCode::Char('L') => {
                     app.toggle_screen()
                 }
-                KeyCode::Char('w') | KeyCode::Char('W') => match app.current_screen {
-                    CurrentScreen::Entropy => app.current_screen = CurrentScreen::Saving(SavingMode::Entropy),
-                    CurrentScreen::ConditionalEntropy => app.current_screen = CurrentScreen::Saving(SavingMode::ConditionalEntropy),
-                    _ => unreachable!(),
+                KeyCode::Char('w') | KeyCode::Char('W') => {
+                    app.file_name.clear();
+                    match app.get_current_screen() {
+                        Screen::Entropy => app.change_screen(Screen::Saving(SavingMode::Entropy)),
+                        Screen::ConditionalEntropy => app.change_screen(Screen::Saving(SavingMode::ConditionalEntropy)),
+                        _ => unreachable!(),
+                    }
+                }                
+                KeyCode::Char('r') | KeyCode::Char('R') =>{
+                    app.file_name.clear();
+                    app.change_screen(Screen::Saving(SavingMode::Results));
                 }
-                KeyCode::Char('r') | KeyCode::Char('R') => app.current_screen = CurrentScreen::Saving(SavingMode::Results),
                 _ => {}
             }
-        CurrentScreen::Saving(ref s) => {},
-        CurrentScreen::Exiting(ref p) => match key_event.code {
-            KeyCode::Char('n') | KeyCode::Char('N') => match p {
-                PreviousScreen::Entropy => app.current_screen = CurrentScreen::Entropy,
-                PreviousScreen::ConditionalEntropy => app.current_screen = CurrentScreen::ConditionalEntropy,
-            }
+        Screen::Saving(_) => match key_event.code {
+            KeyCode::Enter => {
+                app.save().unwrap();
+                app.change_screen(*app.get_previous_screen());
+            },
+            KeyCode::Backspace => {app.file_name.pop();},
+            KeyCode::Esc => app.change_screen(*app.get_previous_screen()),
+            KeyCode::Char(value) => app.file_name.push(value),
+            _ => {}
+    }
+        Screen::Exiting => match key_event.code {
+            KeyCode::Char('n') | KeyCode::Char('N') => app.change_screen(*app.get_previous_screen()),
             KeyCode::Char('y') | KeyCode::Char('Y') => app.hard_quit(),
             _ => {}
         },

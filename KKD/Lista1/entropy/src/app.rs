@@ -1,4 +1,6 @@
 use ratatui::widgets::ListState;
+use std::fs::File;
+use std::io::{BufWriter, Write};
 
 const BYTE_POSSIBILITIES: usize = 256;
 
@@ -35,21 +37,15 @@ fn entropy_in(counts: &[u64]) -> Result<f64, AppError> {
     }
 }
 
-#[derive(Debug)]
-pub enum CurrentScreen {
+#[derive(Debug, Clone, Copy)]
+pub enum Screen {
     Entropy,
     ConditionalEntropy,
-    Exiting(PreviousScreen),
+    Exiting,
     Saving(SavingMode),
 }
 
-#[derive(Debug)]
-pub enum PreviousScreen {
-    Entropy,
-    ConditionalEntropy,
-}
-
-#[derive(Debug)]
+#[derive(Debug, Clone, Copy)]
 pub enum SavingMode {
     Entropy,
     ConditionalEntropy,
@@ -61,6 +57,13 @@ pub enum AppError {
     Overflow,
     ZeroBytes,
     NaN,
+    SavingProblem,
+}
+
+impl From<std::io::Error> for AppError {
+    fn from(_value: std::io::Error) -> Self {
+        Self::SavingProblem
+    }
 }
 
 /// Application.
@@ -76,7 +79,8 @@ pub struct App {
     pub entropy_list_state: ListState,
     pub conditional_entropy_list_state: ListState,
 
-    pub current_screen: CurrentScreen,
+    current_screen: Screen,
+    previous_screen: Screen,
 
     single_byte_counts: [u64; BYTE_POSSIBILITIES],
 
@@ -101,7 +105,8 @@ impl App {
             entropy_list_state: list_state.clone(),
             conditional_entropy_list_state: list_state,
             conditional_entropy_saved: false,
-            current_screen: CurrentScreen::Entropy,
+            current_screen: Screen::Entropy,
+            previous_screen: Screen::Entropy,
             single_byte_counts: [0; BYTE_POSSIBILITIES],
             last_byte: 0,
             double_byte_counts: [0; BYTE_POSSIBILITIES * BYTE_POSSIBILITIES],
@@ -111,10 +116,56 @@ impl App {
         }
     }
 
+    pub fn change_screen(&mut self, new: Screen) {
+        self.previous_screen = self.current_screen;
+        self.current_screen = new;
+    }
+
+    pub fn save(&mut self) -> Result<(), AppError> {
+        let mut out = BufWriter::new(File::create(self.file_name.clone())?);
+
+        match self.current_screen {
+            Screen::Saving(SavingMode::Entropy) => {
+                for (key, value) in self.get_single_byte_counts().iter().enumerate() {
+                    if *value == 0 {
+                        continue;
+                    }
+
+                    writeln!(out, "{:#04X};{}", key, value)?;
+                }
+
+                self.entropy_saved = true;
+            }
+            Screen::Saving(SavingMode::ConditionalEntropy) => {
+                for (key, value) in self.get_double_byte_counts().iter().enumerate() {
+                    if *value == 0 {
+                        continue;
+                    }
+
+                    writeln!(out, "{:#06X};{}", key, value)?;
+                }
+
+                self.conditional_entropy_saved = true;
+            }
+            Screen::Saving(SavingMode::Results) => {
+                writeln!(out, "Entropy;{}", self.entropy()?)?;
+                writeln!(out, "Conditional Entropy;{}", self.conditional_entropy()?)?;
+                writeln!(out, "difference;{}", self.difference()?)?;
+
+                self.results_saved = true;
+            }
+            _ => unreachable!()
+        }
+
+        out.flush()?;
+
+        Ok(())
+    }
+
     pub fn toggle_screen(&mut self) {
         match self.current_screen {
-            CurrentScreen::Entropy => self.current_screen = CurrentScreen::ConditionalEntropy,
-            CurrentScreen::ConditionalEntropy => self.current_screen = CurrentScreen::Entropy,
+            Screen::Entropy => self.current_screen = Screen::ConditionalEntropy,
+            Screen::ConditionalEntropy => self.current_screen = Screen::Entropy,
             _ => {}
         }
     }
@@ -125,9 +176,9 @@ impl App {
     /// Set running to false to quit the application.
 
     pub fn soft_quit(&mut self) {
-        self.current_screen = match self.current_screen {
-            CurrentScreen::Entropy => CurrentScreen::Exiting(PreviousScreen::Entropy),
-            CurrentScreen::ConditionalEntropy => CurrentScreen::Exiting(PreviousScreen::ConditionalEntropy),
+        match self.current_screen {
+            Screen::Entropy => self.change_screen(Screen::Exiting),
+            Screen::ConditionalEntropy => self.change_screen(Screen::Exiting),
             _ => unreachable!(),
         };
 
@@ -147,6 +198,18 @@ impl App {
 
     pub fn get_double_byte_counts(&self) -> &[u64] {
         &self.double_byte_counts
+    }
+
+    pub fn get_current_screen(&self) -> &Screen {
+        &self.current_screen
+    }
+
+    pub fn get_previous_screen(&self) -> &Screen {
+        &self.previous_screen
+    }
+
+    pub fn difference(&mut self) -> Result<f64, AppError> {
+        Ok((self.entropy()? - self.conditional_entropy()?).abs())
     }
 
     pub fn read_byte(&mut self, byte: u8) -> Result<(), AppError> {
@@ -202,14 +265,14 @@ impl App {
 
     pub fn scrol_down(&mut self) {
         match self.current_screen {
-            CurrentScreen::Entropy => {
+            Screen::Entropy => {
                 let mut buffer = self.entropy_list_state.selected().expect("Is always Some") + 1;
                 if buffer >= self.amount_of_non_zero_single_bytes {
                     buffer = 0;
                 }
                 self.entropy_list_state.select(Some(buffer));
             }
-            CurrentScreen::ConditionalEntropy => {
+            Screen::ConditionalEntropy => {
                 let mut buffer = self
                     .conditional_entropy_list_state
                     .selected()
@@ -226,7 +289,7 @@ impl App {
 
     pub fn scrol_up(&mut self) {
         match self.current_screen {
-            CurrentScreen::Entropy => {
+            Screen::Entropy => {
                 let buffer = self
                     .entropy_list_state
                     .selected()
@@ -235,7 +298,7 @@ impl App {
                     .unwrap_or(self.amount_of_non_zero_single_bytes - 1);
                 self.entropy_list_state.select(Some(buffer));
             }
-            CurrentScreen::ConditionalEntropy => {
+            Screen::ConditionalEntropy => {
                 let buffer = self
                     .conditional_entropy_list_state
                     .selected()

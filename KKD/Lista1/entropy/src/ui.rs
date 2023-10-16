@@ -1,23 +1,21 @@
-use crossterm::event::ModifierKeyCode;
 use ratatui::{
-    backend::Backend,
     layout::{Constraint, Direction, Layout, Rect},
     style::{Color, Style},
     text::{Line, Span, Text},
-    widgets::{Block, Borders, Clear, List, ListItem, Paragraph, Wrap},
+    widgets::{Block, Borders, List, ListItem, Paragraph, Wrap},
 };
 use ratatui::{prelude::*, widgets::*};
 
-use crate::app::{App, CurrentScreen};
+use crate::app::{App, Screen, SavingMode};
 use crate::tui::Frame;
 
 const MY_COLOR: Color = Color::Rgb(0xB0, 0x00, 0xB0);
 
 pub fn render(app: &mut App, f: &mut Frame) {
-    match app.current_screen {
-        CurrentScreen::Entropy | CurrentScreen::ConditionalEntropy => render_entropy_or_conditional_entropy(app, f),
-        CurrentScreen::Saving(_) => render_saving_info(app, f),
-        CurrentScreen::Exiting(_) => render_exiting_info(app, f),
+    match app.get_current_screen() {
+        Screen::Entropy | Screen::ConditionalEntropy => render_entropy_or_conditional_entropy(app, f),
+        Screen::Saving(ref s) => render_saving_info(app, f, *s),
+        Screen::Exiting => render_exiting_info(app, f),
     }
 }
 
@@ -59,7 +57,35 @@ fn render_exiting_info(app: &mut App, f: &mut Frame) {
     f.render_widget(exit_paragraph, area);
 }
 
-fn render_saving_info(app: &mut App, f: &mut Frame) {
+fn render_saving_info(app: &mut App, f: &mut Frame, mode: SavingMode) {
+    let popup_block = Block::default()
+        .title("SAVING")
+        .title_style(Style::default().add_modifier(Modifier::BOLD))
+        .borders(Borders::ALL)
+        .border_type(BorderType::Thick)
+        .border_style(Style::default().fg(MY_COLOR))
+        .style(Style::default());
+
+
+    let exit_text = Text::styled(
+        format!("Your are curently saving {}\n\
+            file will be saved in csv format with ; as separator\n\
+            file name: {}\n\
+            Esc - quit | Enter - save | Backspace - delete last character", match mode {
+                SavingMode::Entropy => "entropy counts",
+                SavingMode::ConditionalEntropy => "conditional entropy counts",
+                SavingMode::Results => "results",
+            } ,app.file_name),
+        Style::default().fg(Color::White),
+    );
+    // the `trim: false` will stop the text from being cut off when over the edge of the block
+    let exit_paragraph = Paragraph::new(exit_text)
+        .block(popup_block)
+        .alignment(Alignment::Center)
+        .wrap(Wrap { trim: false });
+
+    let area = centered_rect(60, 25, f.size());
+    f.render_widget(exit_paragraph, area);
 }
 
 fn render_entropy_or_conditional_entropy(app: &mut App, f: &mut Frame) {
@@ -106,12 +132,12 @@ fn render_entropy_or_conditional_entropy(app: &mut App, f: &mut Frame) {
     ))
     .alignment(Alignment::Center);
 
-    match app.current_screen {
-        CurrentScreen::Entropy => {
+    match app.get_current_screen() {
+        Screen::Entropy => {
             entropy_tab = entropy_tab.block(chosen_block);
             conditional_entropy_tab = conditional_entropy_tab.block(notchosen_block);
         }
-        CurrentScreen::ConditionalEntropy => {
+        Screen::ConditionalEntropy => {
             entropy_tab = entropy_tab.block(notchosen_block);
             conditional_entropy_tab = conditional_entropy_tab.block(chosen_block);
         }
@@ -127,7 +153,7 @@ fn render_entropy_or_conditional_entropy(app: &mut App, f: &mut Frame) {
     let difference_text = Paragraph::new(Text::styled(
         format!(
             "Difference = {}",
-            (app.entropy().unwrap() - app.conditional_entropy().unwrap()).abs()
+            app.difference().unwrap()
         ),
         Style::default()
             .fg(Color::White)
@@ -154,13 +180,13 @@ fn render_entropy_or_conditional_entropy(app: &mut App, f: &mut Frame) {
 
     f.render_widget(help_text, chunks[3]);
 
-    match app.current_screen {
-        CurrentScreen::Entropy => {
+    match app.get_current_screen() {
+        Screen::Entropy => {
             let list = make_non_zero_elements_list(app.get_single_byte_counts(), |key, value| format!("{:#04X} : {}", key, value));
             f.render_stateful_widget(list, chunks[2], &mut app.entropy_list_state);
         }
 
-        CurrentScreen::ConditionalEntropy => {
+        Screen::ConditionalEntropy => {
             let list = make_non_zero_elements_list(app.get_double_byte_counts(), |key, value| format!("{:#06X} : {}", key, value));
             f.render_stateful_widget(list, chunks[2], &mut app.conditional_entropy_list_state);
         }
