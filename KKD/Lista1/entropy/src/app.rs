@@ -1,3 +1,5 @@
+use ratatui::widgets::ListState;
+
 const BYTE_POSSIBILITIES: usize = 256;
 
 fn count(counts: &[u64]) -> Result<u128, AppError> {
@@ -38,7 +40,7 @@ pub enum CurrentScreen {
     Entropy,
     ConditionalEntropy,
     Exiting,
-    Saving,
+    Saving(SavingMode),
 }
 
 #[derive(Debug)]
@@ -63,25 +65,47 @@ pub struct App {
     pub entropy_saved: bool,
     pub conditional_entropy_saved: bool,
 
+    pub entropy_list_state: ListState,
+    pub conditional_entropy_list_state: ListState,
+
     pub current_screen: CurrentScreen,
 
     single_byte_counts: [u64; BYTE_POSSIBILITIES],
 
     last_byte: u8,
     double_byte_counts: [u64; BYTE_POSSIBILITIES * BYTE_POSSIBILITIES],
+
+    amount_of_non_zero_single_bytes: usize,
+    amount_of_non_zero_double_bytes: usize,
+    count: u128,
 }
 
 impl App {
     /// Constructs a new instance of [`App`].
     pub fn new() -> Self {
+        let mut list_state = ListState::default();
+        list_state.select(Some(0));
         Self {
             should_quit: false,
             entropy_saved: false,
+            entropy_list_state: list_state.clone(),
+            conditional_entropy_list_state: list_state,
             conditional_entropy_saved: false,
             current_screen: CurrentScreen::Entropy,
             single_byte_counts: [0; BYTE_POSSIBILITIES],
             last_byte: 0,
             double_byte_counts: [0; BYTE_POSSIBILITIES * BYTE_POSSIBILITIES],
+            amount_of_non_zero_single_bytes: 0,
+            amount_of_non_zero_double_bytes: 0,
+            count: 0,
+        }
+    }
+
+    pub fn toggle_screen(&mut self) {
+        match self.current_screen {
+            CurrentScreen::Entropy => self.current_screen = CurrentScreen::ConditionalEntropy,
+            CurrentScreen::ConditionalEntropy => self.current_screen = CurrentScreen::Entropy,
+            _ => {}
         }
     }
 
@@ -103,15 +127,26 @@ impl App {
     }
 
     pub fn read_byte(&mut self, byte: u8) -> Result<(), AppError> {
+        self.count = self.count.checked_add(1).ok_or(AppError::Overflow)?;
         self.single_byte_counts[byte as usize] = self.single_byte_counts[byte as usize]
             .checked_add(1)
             .ok_or(AppError::Overflow)?;
+
+        if self.single_byte_counts[byte as usize] == 1 {
+            self.amount_of_non_zero_single_bytes += 1;
+        }
+
         let double_byte = u16::from_be_bytes([self.last_byte, byte]);
 
         self.double_byte_counts[double_byte as usize] = self.double_byte_counts
             [double_byte as usize]
             .checked_add(1)
             .ok_or(AppError::Overflow)?;
+
+        if self.double_byte_counts[double_byte as usize] == 1 {
+            self.amount_of_non_zero_double_bytes += 1;
+        }
+
         self.last_byte = byte;
 
         Ok(())
@@ -123,9 +158,9 @@ impl App {
 
     pub fn conditional_entropy(&self) -> Result<f64, AppError> {
         let mut sum = 0.0;
-        let global_count = count(&self.single_byte_counts)?;
+        let global_count = self.count;
 
-        for chunk in self.double_byte_counts.chunks(BYTE_POSSIBILITIES) {
+        for chunk in self.double_byte_counts.chunks_exact(BYTE_POSSIBILITIES) {
             let count = count(chunk)?;
 
             if count == 0 {
@@ -139,6 +174,54 @@ impl App {
             Ok(sum)
         } else {
             Err(AppError::NaN)
+        }
+    }
+
+    pub fn scrol_down(&mut self) {
+        match self.current_screen {
+            CurrentScreen::Entropy => {
+                let mut buffer = self.entropy_list_state.selected().expect("Is always Some") + 1;
+                if buffer >= self.amount_of_non_zero_single_bytes {
+                    buffer = 0;
+                }
+                self.entropy_list_state.select(Some(buffer));
+            }
+            CurrentScreen::ConditionalEntropy => {
+                let mut buffer = self
+                    .conditional_entropy_list_state
+                    .selected()
+                    .expect("Is always Some")
+                    + 1;
+                if buffer >= self.amount_of_non_zero_double_bytes {
+                    buffer = 0;
+                }
+                self.conditional_entropy_list_state.select(Some(buffer));
+            }
+            _ => {}
+        }
+    }
+
+    pub fn scrol_up(&mut self) {
+        match self.current_screen {
+            CurrentScreen::Entropy => {
+                let buffer = self
+                    .entropy_list_state
+                    .selected()
+                    .expect("Is always Some")
+                    .checked_sub(1)
+                    .unwrap_or(self.amount_of_non_zero_single_bytes - 1);
+                self.entropy_list_state.select(Some(buffer));
+            }
+            CurrentScreen::ConditionalEntropy => {
+                let buffer = self
+                    .conditional_entropy_list_state
+                    .selected()
+                    .expect("Is always Some")
+                    .checked_sub(1)
+                    .unwrap_or(self.amount_of_non_zero_double_bytes - 1);
+                self.conditional_entropy_list_state.select(Some(buffer));
+            }
+            _ => {}
         }
     }
 }

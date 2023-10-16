@@ -42,12 +42,6 @@ fn main() -> Result<()> {
         app.read_byte(b).unwrap();
     }
 
-    println!("entropy = {}", app.entropy().unwrap());
-    println!(
-        "conditional entropy = {}",
-        app.conditional_entropy().unwrap()
-    );
-
     // Initialize the terminal user interface.
     let backend = CrosstermBackend::new(std::io::stderr());
     let terminal = Terminal::new(backend)?;
