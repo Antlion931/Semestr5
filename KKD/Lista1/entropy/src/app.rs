@@ -39,8 +39,14 @@ fn entropy_in(counts: &[u64]) -> Result<f64, AppError> {
 pub enum CurrentScreen {
     Entropy,
     ConditionalEntropy,
-    Exiting,
+    Exiting(PreviousScreen),
     Saving(SavingMode),
+}
+
+#[derive(Debug)]
+pub enum PreviousScreen {
+    Entropy,
+    ConditionalEntropy,
 }
 
 #[derive(Debug)]
@@ -61,9 +67,11 @@ pub enum AppError {
 #[derive(Debug)]
 pub struct App {
     /// should the application exit?
+    pub file_name: String,
     pub should_quit: bool,
     pub entropy_saved: bool,
     pub conditional_entropy_saved: bool,
+    pub results_saved: bool,
 
     pub entropy_list_state: ListState,
     pub conditional_entropy_list_state: ListState,
@@ -86,8 +94,10 @@ impl App {
         let mut list_state = ListState::default();
         list_state.select(Some(0));
         Self {
+            file_name: String::new(),
             should_quit: false,
             entropy_saved: false,
+            results_saved: false,
             entropy_list_state: list_state.clone(),
             conditional_entropy_list_state: list_state,
             conditional_entropy_saved: false,
@@ -114,9 +124,22 @@ impl App {
 
     /// Set running to false to quit the application.
 
-    pub fn quit(&mut self) {
+    pub fn soft_quit(&mut self) {
+        self.current_screen = match self.current_screen {
+            CurrentScreen::Entropy => CurrentScreen::Exiting(PreviousScreen::Entropy),
+            CurrentScreen::ConditionalEntropy => CurrentScreen::Exiting(PreviousScreen::ConditionalEntropy),
+            _ => unreachable!(),
+        };
+
+        if self.entropy_saved && self.conditional_entropy_saved && self.results_saved {
+            self.should_quit = true;
+        }
+    }
+
+    pub fn hard_quit(&mut self) {
         self.should_quit = true;
     }
+
 
     pub fn get_single_byte_counts(&self) -> &[u64] {
         &self.single_byte_counts
