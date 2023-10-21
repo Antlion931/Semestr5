@@ -5,6 +5,10 @@
 \begin{document}
 \maketitle
 \section*{Exercise 1}
+
+\subsection*{Description of problem:}
+Main task in this exercise is to make some known floating point constants iteratively to get better understanding of theirs meaning.
+
 \subsection*{Results:}
 \begin{center}
 \begin{tabular}{| c | c | c | c |}
@@ -30,7 +34,7 @@
 \end{center}
 Precision of arithmetic is a upper bound of realative error,\\
 eps = 2\textsuperscript{-t}. \\
-Macheps is distance to next bigger number representet in that arytmetic.\\
+Macheps is distance to next bigger number representet in that arithmetic.\\
 macheps = 2\textsuperscript{-(t - 1)}
 \begin{center}
     macheps = 2\textsuperscript{-(t - 1)} = 2\textsuperscript{-t + 1} = 2\textsuperscript{-t} * 2 = eps * 2
@@ -40,14 +44,21 @@ macheps = 2\textsuperscript{-(t - 1)}
     \textbf{What is the relationship between the number eta \\
     and the number MIN\textsubscript{sub}?}
 \end{center}
-MIN\textsubscript{sub} is smallest subnormal number that can be represented. Subnormal means that it mantis starts with 0 instead of 1. Eta is next number after zero. Both are the same. In my results it is hard to see becouse julia rounds those number, if we would take bits of both number we would see that they are the same.
+MIN\textsubscript{sub} is smallest subnormal number that can be represented. Subnormal means that it mantissa starts with 0 instead of 1. Eta is next number after zero. Both are the same. In my results it is hard to see becouse julia rounds those number, if we would take bits of both number we would see that they are the same.
 \begin{center}
     \textbf{What does the function floatmin() return \\
      and what is the relationship of with MIN\textsubscript{nor}?}
 \end{center}
-\text{floatmin()} returns minimal normalaized nummber, so it is equal to MIN\textsubscript{nor}.
+\text{floatmin()} returns minimal normalized nummber, so it is equal to MIN\textsubscript{nor}.
+
+\subsection*{Interpretation and conclusions:}
+Naming conventions are here a little tricky, machine epsilon is not epsilon and there are 2 completely different minimal values, so better check it before blindly running floatmin() in any language.
 
 \section*{Exercise 2}
+
+\subsection*{Description of problem:}
+Test Khan formula that may compute machine epsilon.
+
 \subsection*{Results:}
 \begin{center}
     \begin{tabular}{| c | c | c | c |}
@@ -60,10 +71,15 @@ MIN\textsubscript{sub} is smallest subnormal number that can be represented. Sub
     \end{tabular}
     \end{center}
 
-\subsection*{Conclusions:}
-We can get epsilon from this formula, but if numbers of bit used for mantis is odd we will get negativ value.
+\subsection*{Interpretation and conclusions:}
+We can get epsilon from this formula, but if numbers of bit used for mantissa is odd we will get negativ value. There are tricky ways you can play with float arithmetic to get what you want.
+
 
 \section*{Exercise 3}
+
+\subsection*{Description of problem:}
+Test how numbers are distributed in float arithmetic.
+
 \subsection*{Results:}
 
 \begin{center}
@@ -85,7 +101,7 @@ We can get epsilon from this formula, but if numbers of bit used for mantis is o
         \hline
     \end{tabular}
     \end{center}
-Adding 1 to the end of mantis should create all numbers between 1 and 2
+Adding 1 to the end of mantissa should create all numbers between 1 and 2
 \subsection*{QA:}
 
 \begin{center}
@@ -100,5 +116,84 @@ x = 0.5 + k*step, where k = 1, 2, ..., 2\textsuperscript{51} - 1
 They are distributed evenly with step = 2\textsuperscript{-51}, they can be represented as\\
 x = 2 + k*step, where k = 1, 2, ..., 2\textsuperscript{51} - 1
 
+\subsection*{Interpretation and conclusions:}
+Normalized numbers are distributed evenly between two neighbor powers of 2, the farther from range [1, 2] you are, the smaller amount of numbers distributed.
+
+\section*{Exercise 4}
+\subsection*{Description of problem:}
+Find smallest number bigger then that breaks 1 * (1/x) = 1 formula in Float64 arithmetic.
+
+\subsection*{Results:}
+1.000000057228997
+
+\subsection*{Interpretation and conclusions:}
+Never use equal sign when dealing with float arithmetic becouse it can be counter-intuitive.
+
+\section*{Exercise 5}
+\subsection*{Description of problem:}
+Find best way to compute scalar product when vectors are almost perpendicular.
+
+\subsection*{Results:}
+\begin{center}
+    \begin{tabular}{| c | c | c | c |}
+        \hline
+         & result & error & relative error\\ 
+        \hline
+        forward Float32 & -0.4999443 & 0.49994429944939167 & 4.967e10\\
+        backward Float32 & -0.4543457 & 0.4543457031149343 & 4.514e10\\
+        ascending on Float32 & -0.5 & 0.4999999999899343 & 4.967e10\\
+        descending Float32 & -0.5 & 0.4999999999899343 & 4.968e10\\
+        \hline
+        forward Float64 & 1.0251881368296672e-10 & 1.1258452438296671e-10 & 11.18 \\
+        backward Float64 & -1.5643308870494366e-10 & 1.4636737800494365e-10 & 14.54 \\
+        ascending on Float64 & 0.0 & 1.0065710699999998e-11 & 1.0 \\
+        descending Float64 & 0.0 & 1.0065710699999998e-11 & 1.0\\
+        \hline
+    \end{tabular}
+    \end{center}
+
+\subsection*{Interpretation and conclusions:}
+There is no good solutions, one can only prey to god that they are not perpendicular.
+
+\section*{Exercise 6}
+\subsection*{Description of problem:}
+Check what effect avoiding subtracting 2 almost the same numbers can have on results.
+
+\subsection*{Results:}
+This formula should never reach zero for any x bigger then zero. Good check would be finding biggest i, that for x = 8\textsuperscript{-i} function is still bigger then zero.
+
+\begin{center}
+    \begin{tabular}{| c | c | c |}
+        \hline
+         & f(x) & g(x)\\ 
+        \hline
+        i = 1 & 0.0077822185373186414 & 0.0077822185373187065\\
+        \hline
+        i = 8 & 1.7763568394002505e-15 & 1.7763568394002489e-15\\
+        \hline
+        i = 9 & 0.0 & 2.7755575615628914e-17\\
+        \hline
+        i = 178 & 0.0 & 1.6e-322\\
+        \hline
+        i = 179 & 0.0 & 0.0\\
+        \hline
+    \end{tabular}
+    \end{center}
+    \subsection*{QA:}
+
+    \begin{center}
+        \textbf{Although f() and g() give different results, which we should trust more?}
+    \end{center}
+    As we can see g() stays non zero for much longer, so we should trust it more.
+
+    \subsection*{Interpretation and conclusions:}
+We should try to avoid subtracting 2 numbers that are close to each other by reformulating.
+
+\section*{Exercise 7}
+\subsection*{Description of problem:}
+Check what effect avoiding subtracting 2 almost the same numbers can have on results.
+
+\subsection*{Results:}
+This formula should never reach zero for any x bigger then zero. Good check would be finding biggest i, that for x = 8\textsuperscript{-i} function is still bigger then zero.
 
 \end{document}
