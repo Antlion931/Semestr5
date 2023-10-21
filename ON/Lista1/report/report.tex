@@ -1,0 +1,104 @@
+\documentclass{article}
+\usepackage{amsmath}
+\title{List 1 report}
+\author{Albert Kołodziejski}
+\begin{document}
+\maketitle
+\section*{Exercise 1}
+\subsection*{Results:}
+\begin{center}
+\begin{tabular}{| c | c | c | c |}
+    \hline
+    & Float16 & Float32 & Float64\\ 
+    \hline
+    \text{eps()} & 0.000977 & 1.1920929e-7 & 2.220446049250313e-16\\
+    \text{my\_eps()} & 0.000977 & 1.1920929e-7 & 2.220446049250313e-16\\
+    float.h & - & 1.19209e-07 & 2.22045e-16\\
+    \hline
+    \text{nextfloat()} & 6.0e-8 & 1.0e-45 & 5.0e-324\\
+    \text{my\_eta()} & 6.0e-8 & 1.0e-45 & 5.0e-324\\
+    \hline
+    \text{floatmax()} & 6.55e4 & 3.4028235e38 & 1.7976931348623157e308\\
+    \text{my\_max()} & 6.55e4 & 3.4028235e38 & 1.7976931348623157e308\\
+    float.h & - & 3.40282e+38 & 1.79769e+308\\
+    \hline
+\end{tabular}
+\end{center}
+\subsection*{QA:}
+\begin{center}
+    \textbf{How macheps relate to precision of arithmetic?}
+\end{center}
+Precision of arithmetic is a upper bound of realative error,\\
+eps = 2\textsuperscript{-t}. \\
+Macheps is distance to next bigger number representet in that arytmetic.\\
+macheps = 2\textsuperscript{-(t - 1)}
+\begin{center}
+    macheps = 2\textsuperscript{-(t - 1)} = 2\textsuperscript{-t + 1} = 2\textsuperscript{-t} * 2 = eps * 2
+\end{center}
+
+\begin{center}
+    \textbf{What is the relationship between the number eta \\
+    and the number MIN\textsubscript{sub}?}
+\end{center}
+MIN\textsubscript{sub} is smallest subnormal number that can be represented. Subnormal means that it mantis starts with 0 instead of 1. Eta is next number after zero. Both are the same. In my results it is hard to see becouse julia rounds those number, if we would take bits of both number we would see that they are the same.
+\begin{center}
+    \textbf{What does the function floatmin() return \\
+     and what is the relationship of with MIN\textsubscript{nor}?}
+\end{center}
+\text{floatmin()} returns minimal normalaized nummber, so it is equal to MIN\textsubscript{nor}.
+
+\section*{Exercise 2}
+\subsection*{Results:}
+\begin{center}
+    \begin{tabular}{| c | c | c | c |}
+        \hline
+        & Float16 & Float32 & Float64\\ 
+        \hline
+        \text{experiment()} & -0.000977 & 1.1920929e-7 & -2.220446049250313e-16\\
+        \text{eps()} & 0.000977 & 1.1920929e-7 & 2.220446049250313e-16\\
+        \hline
+    \end{tabular}
+    \end{center}
+
+\subsection*{Conclusions:}
+We can get epsilon from this formula, but if numbers of bit used for mantis is odd we will get negativ value.
+
+\section*{Exercise 3}
+\subsection*{Results:}
+
+\begin{center}
+    \begin{tabular}{| c | c |}
+        \hline
+        1 + 0step & 0011111111110000000000000000000000000000000000000000000000000000\\ 
+        \hline
+        1 + 1step & 0011111111110000000000000000000000000000000000000000000000000001\\
+        \hline
+        1 + 2step & 0011111111110000000000000000000000000000000000000000000000000010\\
+        \hline
+        1 + 3step & 0011111111110000000000000000000000000000000000000000000000000011\\
+        \hline
+        1 + (2\textsuperscript{52}-2)step & 0011111111111111111111111111111111111111111111111111111111111110\\
+        \hline
+        1 + (2\textsuperscript{52}-1)step & 0011111111111111111111111111111111111111111111111111111111111111\\
+        \hline
+        1 + 2\textsuperscript{52}step & 0100000000000000000000000000000000000000000000000000000000000000\\
+        \hline
+    \end{tabular}
+    \end{center}
+Adding 1 to the end of mantis should create all numbers between 1 and 2
+\subsection*{QA:}
+
+\begin{center}
+    \textbf{How numbers are distributed in [0.5, 1] and how can be represented?}
+\end{center}
+They are distributed evenly with step = 2\textsuperscript{-53}, they can be represented as\\
+x = 0.5 + k*step, where k = 1, 2, ..., 2\textsuperscript{51} - 1
+
+\begin{center}
+    \textbf{How numbers are distributed in [2, 4] and how can be represented?}
+\end{center}
+They are distributed evenly with step = 2\textsuperscript{-51}, they can be represented as\\
+x = 2 + k*step, where k = 1, 2, ..., 2\textsuperscript{51} - 1
+
+
+\end{document}
