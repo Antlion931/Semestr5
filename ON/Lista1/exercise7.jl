@@ -1,4 +1,4 @@
-function integral_aproximation(f, x, h)
+function integral_approximation(f, x, h)
     (f(x + h) - f(x)) / h
 end
 
@@ -11,10 +11,10 @@ correct_integral = Float64(0.116942281688538051098702199018645764191510627861125
 function experiment(plus_to_h)
     for n = 0:54
         h = Float64(2)^-n
-        aprox = integral_aproximation(f, Float64(1), h + plus_to_h)
+        approx = integral_approximation(f, Float64(1), h + plus_to_h)
         println("n = ", n)
-        println("integral aproximation = ", aprox)
-        println("abs difference = ", abs(correct_integral - aprox))
+        println("integral approximation = ", approx)
+        println("abs difference = ", abs(correct_integral - approx))
     end
 end
 

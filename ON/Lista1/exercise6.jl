@@ -8,7 +8,7 @@ function g(x)
     x^2 / (sqrt(x^2 + 1) + 1)
 end
 
-for i = 1:179
+for i = 0:179
     x = Float64(8)^-i
     println("x = 8^-", i)
     println("f(x) = ", f(x))

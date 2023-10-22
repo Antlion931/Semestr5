@@ -1,5 +1,7 @@
 \documentclass{article}
 \usepackage{amsmath}
+\usepackage{graphicx}
+\graphicspath{{images/}}
 \title{List 1 report}
 \author{Albert Kołodziejski}
 \begin{document}
@@ -163,6 +165,10 @@ Check what effect avoiding subtracting 2 almost the same numbers can have on res
 This formula should never reach zero for any x bigger then zero. Good check would be finding biggest i, that for x = 8\textsuperscript{-i} function is still bigger then zero.
 
 \begin{center}
+    \includegraphics[scale=0.6]{f_and_g_functions} 
+\end{center}
+
+\begin{center}
     \begin{tabular}{| c | c | c |}
         \hline
          & f(x) & g(x)\\ 
@@ -191,9 +197,47 @@ We should try to avoid subtracting 2 numbers that are close to each other by ref
 
 \section*{Exercise 7}
 \subsection*{Description of problem:}
-Check what effect avoiding subtracting 2 almost the same numbers can have on results.
+Test behaviour of function that is supose to approximate derivative at the point in Float64 arithmetic.
 
 \subsection*{Results:}
-This formula should never reach zero for any x bigger then zero. Good check would be finding biggest i, that for x = 8\textsuperscript{-i} function is still bigger then zero.
+For h:
+\begin{center}
+    \includegraphics[scale=0.5]{h_approximation} 
+    \includegraphics[scale=0.5]{h_difference} 
+\end{center}
+
+For 1 + h:
+\begin{center}
+    \includegraphics[scale=0.5]{h_plus_1_approximation} 
+    \includegraphics[scale=0.5]{h_plus_1_difference} 
+\end{center}
+
+\subsection*{QA:}
+
+\begin{center}
+    \textbf{How to explain that, from a certain point onwards, decreasing \\
+    the value of h does not improve the approximation of the of \\
+    the derivative?}
+\end{center}
+To check whats going on here we can approximate error of this calculation.
+\[
+    \begin{array}{c}
+        \frac{sin(1+h) + cos(3+3h)(1 + \delta\textsubscript{a} +\delta\textsubscript{p}) - sin(1) - cos(3)}{h} \leq\\
+        \\
+        \leq\frac{sin(2) + cos(6)(1 + \delta\textsubscript{a} +\delta\textsubscript{p}) - sin(1) - cos(3)}{h}\leq\\
+        \\
+        \leq\frac{1}{h}(0.013 + \delta\textsubscript{a} +\delta\textsubscript{p})
+    \end{array}
+\]
+From my computations we can see that there is huge constants that influance final result drasticly. What's more we can check for for what n, h is smaller then this error.
+
+\[
+    \log\textsubscript{2}{0.013} \approx -6.27
+\]
+Which correspond to the graph becouse after i = 6 there is a little change in approximation.
+\begin{center}
+    \textbf{How does 1 + h behave?}
+\end{center}
+It is not a good approximation in it self but it isn't getting worse with bigger n. Difference is always bigger then one, and similary after some point approximation stops getting better.
 
 \end{document}
