@@ -9,7 +9,7 @@
 \section*{Exercise 1}
 
 \subsection*{Description of problem:}
-Main task in this exercise is to make some known floating point constants iteratively to get better understanding of theirs meaning.
+The main task in this exercise is to make some known floating point constants iteratively to get better understanding of theirs meaning.
 
 \subsection*{Results:}
 \begin{center}
@@ -34,9 +34,9 @@ Main task in this exercise is to make some known floating point constants iterat
 \begin{center}
     \textbf{How macheps relate to precision of arithmetic?}
 \end{center}
-Precision of arithmetic is a upper bound of realative error,\\
+Precision of arithmetic is an upper bound of relative error,\\
 eps = 2\textsuperscript{-t}. \\
-Macheps is distance to next bigger number representet in that arithmetic.\\
+Macheps is distance to next bigger number represented in that arithmetic.\\
 macheps = 2\textsuperscript{-(t - 1)}
 \begin{center}
     macheps = 2\textsuperscript{-(t - 1)} = 2\textsuperscript{-t + 1} = 2\textsuperscript{-t} * 2 = eps * 2
@@ -46,12 +46,12 @@ macheps = 2\textsuperscript{-(t - 1)}
     \textbf{What is the relationship between the number eta \\
     and the number MIN\textsubscript{sub}?}
 \end{center}
-MIN\textsubscript{sub} is smallest subnormal number that can be represented. Subnormal means that it mantissa starts with 0 instead of 1. Eta is next number after zero. Both are the same. In my results it is hard to see becouse julia rounds those number, if we would take bits of both number we would see that they are the same.
+MIN\textsubscript{sub} is the smallest subnormal number that can be represented. Subnormal means that it mantissa starts with 0 instead of 1. Eta is the next number after zero. Both are the same. In my results it is hard to see because Julia rounds those numbers, if we would take bits of both number we would see that they are the same.
 \begin{center}
     \textbf{What does the function floatmin() return \\
      and what is the relationship of with MIN\textsubscript{nor}?}
 \end{center}
-\text{floatmin()} returns minimal normalized nummber, so it is equal to MIN\textsubscript{nor}.
+\text{floatmin()} returns a minimal normalized number, so it is equal to MIN\textsubscript{nor}.
 
 \subsection*{Interpretation and conclusions:}
 Naming conventions are here a little tricky, machine epsilon is not epsilon and there are 2 completely different minimal values, so better check it before blindly running floatmin() in any language.
@@ -74,7 +74,7 @@ Test Khan formula that may compute machine epsilon.
     \end{center}
 
 \subsection*{Interpretation and conclusions:}
-We can get epsilon from this formula, but if numbers of bit used for mantissa is odd we will get negativ value. There are tricky ways you can play with float arithmetic to get what you want.
+We can get epsilon from this formula, but if the numbers of bit used for mantissa is odd, we will get negative value. There are tricky ways you can play with float arithmetic to get what you want.
 
 
 \section*{Exercise 3}
@@ -123,17 +123,17 @@ Normalized numbers are distributed evenly between two neighbor powers of 2, the 
 
 \section*{Exercise 4}
 \subsection*{Description of problem:}
-Find smallest number bigger then that breaks 1 * (1/x) = 1 formula in Float64 arithmetic.
+Find the smallest number bigger than that, breaks 1 * (1/x) = 1 formula in Float64 arithmetic.
 
 \subsection*{Results:}
 1.000000057228997
 
 \subsection*{Interpretation and conclusions:}
-Never use equal sign when dealing with float arithmetic becouse it can be counter-intuitive.
+Never use equal sign when dealing with float arithmetic, because it can be counter-intuitive.
 
 \section*{Exercise 5}
 \subsection*{Description of problem:}
-Find best way to compute scalar product when vectors are almost perpendicular.
+Find the best way to compute scalar product when vectors are almost perpendicular.
 
 \subsection*{Results:}
 \begin{center}
@@ -155,14 +155,14 @@ Find best way to compute scalar product when vectors are almost perpendicular.
     \end{center}
 
 \subsection*{Interpretation and conclusions:}
-There is no good solutions, one can only prey to god that they are not perpendicular.
+There are no good solutions, one can only pray to god that they are not perpendicular.
 
 \section*{Exercise 6}
 \subsection*{Description of problem:}
 Check what effect avoiding subtracting 2 almost the same numbers can have on results.
 
 \subsection*{Results:}
-This formula should never reach zero for any x bigger then zero. Good check would be finding biggest i, that for x = 8\textsuperscript{-i} function is still bigger then zero.
+This formula should never reach zero for any x bigger than zero. A good check would be finding biggest i, that for x = 8\textsuperscript{-i} function is still bigger than zero.
 
 \begin{center}
     \includegraphics[scale=0.6]{f_and_g_functions} 
@@ -190,14 +190,14 @@ This formula should never reach zero for any x bigger then zero. Good check woul
     \begin{center}
         \textbf{Although f() and g() give different results, which we should trust more?}
     \end{center}
-    As we can see g() stays non zero for much longer, so we should trust it more.
+    As we can see, g() stays non-zero for much longer, so we should trust it more.
 
     \subsection*{Interpretation and conclusions:}
 We should try to avoid subtracting 2 numbers that are close to each other by reformulating.
 
 \section*{Exercise 7}
 \subsection*{Description of problem:}
-Test behaviour of function that is supose to approximate derivative at the point in Float64 arithmetic.
+Test behavior of a function that is supposed to approximate derivative at the point in Float64 arithmetic.
 
 \subsection*{Results:}
 For h:
@@ -219,25 +219,31 @@ For 1 + h:
     the value of h does not improve the approximation of the of \\
     the derivative?}
 \end{center}
-To check whats going on here we can approximate error of this calculation.
-\[
-    \begin{array}{c}
-        \frac{sin(1+h) + cos(3+3h)(1 + \delta\textsubscript{a} +\delta\textsubscript{p}) - sin(1) - cos(3)}{h} \leq\\
-        \\
-        \leq\frac{sin(2) + cos(6)(1 + \delta\textsubscript{a} +\delta\textsubscript{p}) - sin(1) - cos(3)}{h}\leq\\
-        \\
-        \leq\frac{1}{h}(0.013 + \delta\textsubscript{a} +\delta\textsubscript{p})
-    \end{array}
-\]
-From my computations we can see that there is huge constants that influance final result drasticly. What's more we can check for for what n, h is smaller then this error.
+Take a look at those results:
 
-\[
-    \log\textsubscript{2}{0.013} \approx -6.27
-\]
-Which correspond to the graph becouse after i = 6 there is a little change in approximation.
+\begin{center}
+    \begin{tabular}{| c | c | c | c |}
+        \hline
+         & n = 27 & n = 28 & n = 29\\ 
+        \hline
+        f(x) & -0.1485215117925489 & -0.1485215117925489 & -0.1485215117925489\\
+        \hline
+        f(x + h) & -0.14852151\textbf{092126076} & -0.14852151\textbf{135690494} & -0.14852151\textbf{157472704} \\
+        \hline
+        difference & 3.46e-8 & 4.80e-9 & 5.48e-8\\
+        \hline
+        error & 3.74e-8 & 7.49e-8 & 1.50e-7\\
+        \hline
+    \end{tabular}
+    \end{center}
+The most correct approximation is for n = 28, any bigger and lesser produce worse results. A possible reason why it is a case is that we are here subtracting two almost identical numbers, so the error is getting bigger and bigger.
+
 \begin{center}
     \textbf{How does 1 + h behave?}
 \end{center}
-It is not a good approximation in it self but it isn't getting worse with bigger n. Difference is always bigger then one, and similary after some point approximation stops getting better.
 
+It is good at the begin, and it is getting worse with bigger n. But don't have weird behavior with large n.
+
+\subsection*{Interpretation and conclusions:}
+We need to be aware of error and consequences that it can bring to the table. 
 \end{document}

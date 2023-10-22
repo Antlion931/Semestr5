@@ -1,3 +1,5 @@
+# Albert Kołodziejski
+
 function experiment()
     x = Float64(1)
     step = Float64(2) ^ -52

@@ -1,3 +1,5 @@
+# Albert Kołodziejski
+
 x = Float64(1)
 step = Float64(2) ^ -52
 

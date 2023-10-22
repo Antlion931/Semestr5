@@ -1,3 +1,5 @@
+# Albert Kołodziejski
+
 function experiment(T)
     T(3) * ( T(4) / T(3)  - T(1)) - T(1)
 end

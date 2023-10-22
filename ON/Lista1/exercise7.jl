@@ -1,9 +1,11 @@
+# Albert Kołodziejski
+
 function integral_approximation(f, x, h)
-    (f(x + h) - f(x)) / h
+    abs(f(x + h) - f(x)) / h
 end
 
 function f(x)
-    sin(x) + cos(x)
+    sin(x) + cos(3 * x)
 end
 
 correct_integral = Float64(0.1169422816885380510987021990186457641915106278611254752144493)
@@ -12,7 +14,10 @@ function experiment(plus_to_h)
     for n = 0:54
         h = Float64(2)^-n
         approx = integral_approximation(f, Float64(1), h + plus_to_h)
+
         println("n = ", n)
+        println("f(x) = ", f(Float64(1)))
+        println("f(x + h) = ", f(Float64(1 + h)))
         println("integral approximation = ", approx)
         println("abs difference = ", abs(correct_integral - approx))
     end

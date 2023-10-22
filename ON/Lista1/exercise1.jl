@@ -1,3 +1,5 @@
+# Albert Kołodziejski
+
 function my_eps(T)
     one = T(1)
     x = T(1)

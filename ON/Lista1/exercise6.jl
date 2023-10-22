@@ -1,3 +1,5 @@
+# Albert Kołodziejski
+
 function f(x)
     x = Float64(x)
     sqrt(x^2 + 1) - 1
