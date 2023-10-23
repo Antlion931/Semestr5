@@ -1,89 +1,62 @@
-use std::collections::HashMap;
-
-use itertools::Itertools;
 use unicode_segmentation::UnicodeSegmentation;
 
-// O(p^4), where  p = length(p), c = length(c).
 pub fn pattern_finder(pattern: &str, content: &str) -> Vec<usize> {
-    let c: Vec<_> = content.graphemes(true).collect(); // c
-    let n = c.len();
+    let mut result = Vec::new();
+    let t: Vec<_> = content.graphemes(true).collect(); 
+    let p: Vec<_> = pattern.graphemes(true).collect();
+    let n = t.len();
+    let m = p.len();
+
+    let pi = pi(&p);
+    println!("{:?}", pi);
     let mut q = 0;
-    let (delta, m) = delta_and_length(pattern); // O(p^4)
 
-    let mut result = Vec::with_capacity(n);
+    for i in 0..n {
+        while q > 0 && p[q] != t[i] {
+            q = pi[q - 1];
+        }
 
-    for (i, cc) in c.iter().enumerate() { // only c times
-        q = delta.get(&(q, *cc)).copied().unwrap_or(0);
+        if p[q] == t[i] {
+            q += 1;
+        }
+
         if q == m {
             result.push(i + 1 - m);
+            q = pi[q - 1];
         }
     }
+
     result
 }
 
-// O(p^4)
-fn delta_and_length<'a>(pattern: &'a str) -> (HashMap<(usize, &'a str), usize>, usize) {
-    let mut result = HashMap::new();
-    let pattern_graphemes: Vec<_> = pattern.graphemes(true).collect(); // p
-    let m = pattern_graphemes.len();
-    let unique: Vec<_> = pattern_graphemes.iter().unique().collect();
+fn pi(pattern: &Vec<&str>) -> Vec<usize> {
+    let mut result = vec![0];
+    let m = pattern.len();
+    let mut k = 0;
 
-    for q in 0..=m {
-        for a in &unique {
-            result.insert((q, **a), longest_prefix_of_a_that_is_suffix_of_b(pattern, (pattern_graphemes[..q].iter().copied().collect::<String>() + a).as_str()));
+    for q in 1..m {
+        while k > 0 && pattern[k] != pattern[q] {
+            k = result[k - 1];
         }
+
+        if pattern[k] == pattern[q] {
+            k += 1;
+        }
+
+        result.push(k);
     }
 
-    (result, m)
-}
-
-// O(b^2), where a = length(a), b = length(b)
-pub fn longest_prefix_of_a_that_is_suffix_of_b(a_str: &str, b_str: &str) -> usize {
-    let a_bytes = a_str.as_bytes(); // every as operation is free
-    let mut b_graphemes = b_str.graphemes(true); // b, lazy
-
-    loop {
-        // maximum b times
-        if a_bytes.starts_with(b_graphemes.as_str().as_bytes()) {
-            // maximum b times
-            return b_graphemes.count(); // eats rest of b_graphemes
-        }
-
-        if b_graphemes.next().is_none() {
-            // const
-            return 0;
-        }
-    }
+    result
 }
 
 #[cfg(test)]
 mod test {
     use super::*;
-    #[test]
-    fn longest_prefix_of_a_that_is_suffix_of_b_works_when_equal() {
-        assert_eq!(
-            longest_prefix_of_a_that_is_suffix_of_b("ababab", "ababab"),
-            6
-        );
-    }
 
     #[test]
-    fn longest_prefix_of_a_that_is_suffix_of_b_works_for_simple_strings() {
-        assert_eq!(
-            longest_prefix_of_a_that_is_suffix_of_b("ababaca", "ababab"),
-            4
-        );
-    }
-
-    #[test]
-    fn longest_prefix_of_a_that_is_suffix_of_b_works_for_emoji() {
-        assert_eq!(
-            longest_prefix_of_a_that_is_suffix_of_b(
-                "👋🏽🤚🏽🖐🏽✋🏽🖖🏽👌🏽🤌🏽🤏🏽✌🏽🤞🏽🫰🏽🤟🏽🤘🏽🤙🏽🫵🏽🫱🏽🫲🏽",
-                "👋🏼🤚🏼🖐🏼✋🏼🖖🏼👌🏼👋🏽🤚🏽🖐🏽✋🏽🖖🏽👌🏽🤌🏽"
-            ),
-            7
-        );
+    fn test_pi() {
+        let text: Vec<_> = "ababababca".graphemes(true).collect();
+        assert_eq!(pi(&text), vec![0, 0, 1, 2, 3, 4, 5, 6, 0, 1]);
     }
 
     #[test]
@@ -153,3 +126,4 @@ mod test {
         assert_eq!(pattern_finder("βγδδγ", content), vec![261, 275]);
     }
 }
+
