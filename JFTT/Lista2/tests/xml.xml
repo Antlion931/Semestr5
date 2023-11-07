@@ -8,4 +8,7 @@
   ]]>
   <!-- valid comment -->
   <!-- invalid -- comment -->
+  <element>
+  This is not a text "<!-- valid comment -->" 
+  <element>
 </root>
