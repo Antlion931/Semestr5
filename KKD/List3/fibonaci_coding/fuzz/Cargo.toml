@@ -1,0 +1,27 @@
+[package]
+name = "fibonaci_coding-fuzz"
+version = "0.0.0"
+publish = false
+edition = "2021"
+
+[package.metadata]
+cargo-fuzz = true
+
+[dependencies]
+libfuzzer-sys = "0.4"
+
+[dependencies.fibonaci_coding]
+path = ".."
+
+# Prevent this from interfering with workspaces
+[workspace]
+members = ["."]
+
+[profile.release]
+debug = 1
+
+[[bin]]
+name = "coding"
+path = "fuzz_targets/coding.rs"
+test = false
+doc = false
