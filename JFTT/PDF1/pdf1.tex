@@ -1,0 +1,38 @@
+\documentclass{article}
+\usepackage{amsmath}
+\usepackage[T1]{polski}
+\usepackage{graphicx}
+\title{Zadanie 2.4}
+\author{Albert Kołodziejski}
+\date{}
+\begin{document}
+\maketitle
+\section*{Problem:}
+Czy język \textit{\(\{ 0^{n!} : n \in N\}\)} jest regularny?
+\section*{Lemat o pompowaniu:}
+
+Niech \textit{L} będzie językiem regularnym. Wtedy istnieje stała \textit{n} taka że jeśli \textit{z} jest dowolnym słowem z \textit{L} oraz \textit{\(|z| \ge n\)}, to \textit{z} możemy przedstawić w postaci \\
+\textit{\(z = uvw\)}, gdzie \textit{\(|uv| \le n\)} i \textit{\(|v| \ge 1\)} oraz \textit{\(uv^iw\)} należy do \textit{L} dla każdego \textit{\(i \ge 0\)}.
+
+\section*{Rozwiązanie:}
+Zakładamy, że język ten jest regularny, oznacza to, że lemat o pompowaniu powinien zachodzić. Weźmy więc słowo \textit{\(z = 0^{n!}\)}, gdzie \textit{n} jest z lematu o pompowaniu.
+\\
+\\
+Zgodnie z lematem o pompowaniu istnieją \textit{\(k \ge 0\)}, \textit{\(j \ge 1\)}, \textit{\(k + j \le n\)}, dla których słowo postaci:
+
+\[
+    0^k(0^j)^i0^{n! - k - j}
+\]
+należy do języka dla każdego \textit{\(i \ge 0\)}. Natomiast już dla \textit{\(i = 0\)} mamy:
+\[
+    |0^k(0^j)^{0}0^{n! - k - j}| = k + n! - k - j = n! - j < n!
+\]
+bo \textit{\(j \ge 1\)}
+\[
+    k + n! - k - j = n! - j \ge n! - n = (n-1)!(n-1) > (n-1)!
+\]
+Więc długość naszego słowa musi być mniejsza niż \textit{\(n!\)} oraz większa niż \textit{\((n - 1)!\)} a to oznacza, że nasze słowo nie należy do języka.
+\\
+\\
+Otrzymaliśmy sprzeczność, więc dany język nie jest regularny.
+\end{document}
