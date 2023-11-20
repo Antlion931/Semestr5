@@ -6,8 +6,12 @@ const FIRST_24_FIB_NUMBERS_WITHOUT_FIRST: [u32; 23] = [
     17711, 28657, 46368,
 ];
 
-pub fn encode(message: impl AsRef<[u16]>) -> Vec<u8> {
+pub fn encode(message: impl AsRef<[u16]>, flag: &[Bit]) -> Vec<u8> {
     let mut result = BitQueue::new();
+
+    for b in flag {
+        result.push(*b);
+    }
 
     // reusable vector just to not west memory on continuous allocations
     let mut workhouse_vec = Vec::new(); // stores encoded number in reverse
@@ -37,8 +41,15 @@ pub fn encode(message: impl AsRef<[u16]>) -> Vec<u8> {
     result.get_queue()
 }
 
-pub fn decode(message: Vec<u8>) -> Vec<u16> {
+pub fn decode(message: &Vec<u8>, flag: &[Bit]) -> Option<Vec<u16>> {
     let mut message = BitQueue::new_with_bytes(message);
+
+    for b in flag {
+        if message.pop().filter(|x| x == b).is_none() {
+            return None;
+        }
+    }
+
     let mut result = Vec::new();
 
     'outer: while message.can_pop() {
@@ -69,7 +80,7 @@ pub fn decode(message: Vec<u8>) -> Vec<u16> {
         result.push((number - 1) as u16); // number coded plus one to avoid zero
     }
 
-    result
+    Some(result)
 }
 
 #[cfg(test)]
@@ -78,23 +89,29 @@ mod tests {
 
     #[test]
     fn encode_simple_test() {
-        assert_eq!(encode(vec![9]), vec![76]);
+        assert_eq!(encode(vec![9], &[]), vec![76]);
     }
 
     #[test]
     fn decode_simple_test() {
-        assert_eq!(decode(vec![76]), vec![9]);
+        assert_eq!(decode(&vec![76], &[]), Some(vec![9]));
     }
 
     #[test]
     fn max_value() {
-        let x = encode(vec![u16::MAX]);
-        assert_eq!(decode(x), vec![u16::MAX]);
+        let x = encode(vec![u16::MAX], &[]);
+        assert_eq!(decode(&x, &[]), Some(vec![u16::MAX]));
+    }
+
+    #[test]
+    fn flag_simple_test() {
+        let x = encode(vec![142, 54], &[Bit::One, Bit::Zero]);
+        assert_eq!(decode(&x, &[Bit::One, Bit::Zero]), Some(vec![142, 54]));
     }
 
     #[test]
     fn fuzz_failed_test() {
-        let x = encode(vec![16705, 2570]);
-        assert_eq!(decode(x), vec![16705, 2570]);
+        let x = encode(vec![16705, 2570], &[]);
+        assert_eq!(decode(&x, &[]), Some(vec![16705, 2570]));
     }
 }

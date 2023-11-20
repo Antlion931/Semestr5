@@ -33,6 +33,7 @@ dependencies = [
 name = "elias_coding-fuzz"
 version = "0.0.0"
 dependencies = [
+ "bit_queue",
  "elias_coding",
  "libfuzzer-sys",
 ]

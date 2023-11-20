@@ -9,7 +9,7 @@ cargo-fuzz = true
 
 [dependencies]
 libfuzzer-sys = "0.4"
-
+bit_queue = { path = "../../bit_queue" }
 [dependencies.elias_coding]
 path = ".."
 

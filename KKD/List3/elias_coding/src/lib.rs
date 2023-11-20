@@ -1,7 +1,11 @@
 use bit_queue::{Bit, BitQueue};
 
-pub fn delta_encode(message: impl AsRef<[u16]>) -> Vec<u8> {
+pub fn delta_encode(message: impl AsRef<[u16]>, flag: &[Bit]) -> Vec<u8> {
     let mut result = BitQueue::new();
+
+    for b in flag {
+        result.push(*b);
+    }
 
     for m in message.as_ref() {
         let m = *m as u32 + 1; // encoded number plus one to avoid zero
@@ -14,7 +18,7 @@ pub fn delta_encode(message: impl AsRef<[u16]>) -> Vec<u8> {
         }
 
         // take binary represantation of n and skip until first one
-        let mut binary_represent = BitQueue::new_with_bytes(n.to_be_bytes().to_vec());
+        let mut binary_represent = BitQueue::new_with_owned_bytes(n.to_be_bytes().to_vec());
         while let Some(Bit::Zero) = binary_represent.pop() {} // skips first one
 
         // add skiped one to result and rest of bits
@@ -25,7 +29,7 @@ pub fn delta_encode(message: impl AsRef<[u16]>) -> Vec<u8> {
         }
 
         // take binary representation of m and skipp until first one
-        let mut binary_represent = BitQueue::new_with_bytes(m.to_be_bytes().to_vec());
+        let mut binary_represent = BitQueue::new_with_owned_bytes(m.to_be_bytes().to_vec());
         while let Some(Bit::Zero) = binary_represent.pop() {} // skips first one
 
         // don't add skiped to result, but add rest of bits
@@ -37,8 +41,15 @@ pub fn delta_encode(message: impl AsRef<[u16]>) -> Vec<u8> {
     result.get_queue()
 }
 
-pub fn delta_decode(message: Vec<u8>) -> Vec<u16> {
+pub fn delta_decode(message: &Vec<u8>, flag: &[Bit]) -> Option<Vec<u16>> {
     let mut message = BitQueue::new_with_bytes(message);
+
+    for b in flag {
+        if message.pop().filter(|x| x == b).is_none() {
+            return None;
+        }
+    }
+
     let mut result = Vec::new();
 
     'outer: while message.can_pop() {
@@ -82,11 +93,15 @@ pub fn delta_decode(message: Vec<u8>) -> Vec<u16> {
         result.push(number as u16);
     }
 
-    result
+    Some(result)
 }
 
-pub fn gamma_encode(message: impl AsRef<[u16]>) -> Vec<u8> {
+pub fn gamma_encode(message: impl AsRef<[u16]>, flag: &[Bit]) -> Vec<u8> {
     let mut result = BitQueue::new();
+
+    for b in flag {
+        result.push(*b);
+    }
 
     for m in message.as_ref() {
         let m = *m as u32 + 1; // encoded number plus one to avoid zero
@@ -98,7 +113,7 @@ pub fn gamma_encode(message: impl AsRef<[u16]>) -> Vec<u8> {
         }
 
         // take binary represantation of m, and skip until first one
-        let mut binary_represent = BitQueue::new_with_bytes(m.to_be_bytes().to_vec());
+        let mut binary_represent = BitQueue::new_with_owned_bytes(m.to_be_bytes().to_vec());
         while let Some(Bit::Zero) = binary_represent.pop() {} // skips first one
 
         // add skipped one and rest of bits to result
@@ -112,8 +127,14 @@ pub fn gamma_encode(message: impl AsRef<[u16]>) -> Vec<u8> {
     result.get_queue()
 }
 
-pub fn gamma_decode(message: Vec<u8>) -> Vec<u16> {
+pub fn gamma_decode(message: &Vec<u8>, flag: &[Bit]) -> Option<Vec<u16>> {
     let mut message = BitQueue::new_with_bytes(message);
+
+    for b in flag {
+        if message.pop().filter(|x| x == b).is_none() {
+            return None;
+        }
+    }
 
     let mut result = Vec::new();
 
@@ -146,11 +167,15 @@ pub fn gamma_decode(message: Vec<u8>) -> Vec<u16> {
         result.push(number as u16);
     }
 
-    result
+    Some(result)
 }
 
-pub fn omega_encode(message: impl AsRef<[u16]>) -> Vec<u8> {
+pub fn omega_encode(message: impl AsRef<[u16]>, flag: &[Bit]) -> Vec<u8> {
     let mut result = BitQueue::new();
+
+    for b in flag {
+        result.push(*b);
+    }
 
     // reusable vector just to not west memory on continuous allocations
     let mut workhouse_vec_a = Vec::new(); // stores encoded number in reverse
@@ -161,7 +186,7 @@ pub fn omega_encode(message: impl AsRef<[u16]>) -> Vec<u8> {
         let mut k = *m as u32 + 1;
         while k > 1 {
             // take binary represantation of k, and skip until first one
-            let mut binary_represent = BitQueue::new_with_bytes(k.to_be_bytes().to_vec());
+            let mut binary_represent = BitQueue::new_with_owned_bytes(k.to_be_bytes().to_vec());
             while let Some(Bit::Zero) = binary_represent.pop() {} // skips first one
 
             // reverse number using b and add it to a
@@ -188,8 +213,15 @@ pub fn omega_encode(message: impl AsRef<[u16]>) -> Vec<u8> {
     result.get_queue()
 }
 
-pub fn omega_decode(message: Vec<u8>) -> Vec<u16> {
+pub fn omega_decode(message: &Vec<u8>, flag: &[Bit]) -> Option<Vec<u16>> {
     let mut message = BitQueue::new_with_bytes(message);
+
+    for b in flag {
+        if message.pop().filter(|x| x == b).is_none() {
+            return None;
+        }
+    }
+
     let mut result = Vec::new();
 
     'outer: while message.can_pop() {
@@ -220,7 +252,7 @@ pub fn omega_decode(message: Vec<u8>) -> Vec<u16> {
         result.push((n - 1) as u16) // number was encoded plus 1 to avoid zero
     }
 
-    result
+    Some(result)
 }
 
 #[cfg(test)]
@@ -229,49 +261,67 @@ mod tests {
 
     #[test]
     fn gamma_encode_simple_test() {
-        assert_eq!(gamma_encode(vec![137]), vec![1, 20]);
+        assert_eq!(gamma_encode(vec![137], &[]), vec![1, 20]);
+    }
+
+    #[test]
+    fn gamma_flag_simple_test() {
+        let x = gamma_encode(vec![142, 54], &[Bit::One, Bit::Zero]);
+        assert_eq!(gamma_decode(&x, &[Bit::One, Bit::Zero]), Some(vec![142, 54]));
     }
 
     #[test]
     fn gamma_decode_simple_test() {
-        assert_eq!(gamma_decode(vec![1, 20]), vec![137]);
+        assert_eq!(gamma_decode(&vec![1, 20], &[]), Some(vec![137]));
     }
 
     #[test]
     fn gamma_max_value() {
-        let x = gamma_encode(vec![u16::MAX]);
-        assert_eq!(gamma_decode(x), vec![u16::MAX]);
+        let x = gamma_encode(vec![u16::MAX], &[]);
+        assert_eq!(gamma_decode(&x, &[]), Some(vec![u16::MAX]));
     }
 
     #[test]
     fn delta_encode_simple_test() {
-        assert_eq!(delta_encode(vec![137]), vec![16, 40]);
+        assert_eq!(delta_encode(vec![137], &[]), vec![16, 40]);
+    }
+
+    #[test]
+    fn delta_flag_simple_test() {
+        let x = delta_encode(vec![142, 54], &[Bit::One, Bit::Zero]);
+        assert_eq!(delta_decode(&x, &[Bit::One, Bit::Zero]), Some(vec![142, 54]));
     }
 
     #[test]
     fn delta_decode_simple_test() {
-        assert_eq!(delta_decode(vec![16, 40]), vec![137]);
+        assert_eq!(delta_decode(&vec![16, 40], &[]), Some(vec![137]));
     }
 
     #[test]
     fn delta_max_value() {
-        let x = gamma_encode(vec![u16::MAX]);
-        assert_eq!(gamma_decode(x), vec![u16::MAX]);
+        let x = gamma_encode(vec![u16::MAX], &[]);
+        assert_eq!(gamma_decode(&x, &[]), Some(vec![u16::MAX]));
     }
 
     #[test]
     fn omega_encode_simple_test() {
-        assert_eq!(omega_encode(vec![137]), vec![188, 83]);
+        assert_eq!(omega_encode(vec![137], &[]), vec![188, 83]);
+    }
+
+    #[test]
+    fn omega_flag_simple_test() {
+        let x = omega_encode(vec![142, 54], &[Bit::One, Bit::Zero]);
+        assert_eq!(omega_decode(&x, &[Bit::One, Bit::Zero]), Some(vec![142, 54]));
     }
 
     #[test]
     fn omega_decode_simple_test() {
-        assert_eq!(omega_decode(vec![188, 83]), vec![137]);
+        assert_eq!(omega_decode(&vec![188, 83], &[]), Some(vec![137]));
     }
 
     #[test]
     fn omega_max_value() {
-        let x = omega_encode(vec![u16::MAX]);
-        assert_eq!(omega_decode(x), vec![u16::MAX]);
+        let x = omega_encode(vec![u16::MAX], &[]);
+        assert_eq!(omega_decode(&x, &[]), Some(vec![u16::MAX]));
     }
 }

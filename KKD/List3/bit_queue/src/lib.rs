@@ -1,19 +1,21 @@
-#[derive(Debug, PartialEq, Eq)]
+use std::borrow::Cow;
+
+#[derive(Debug, PartialEq, Eq, Clone, Copy)]
 pub enum Bit {
     Zero,
     One,
 }
 
-pub struct BitQueue {
-    queue: Vec<u8>,
+pub struct BitQueue<'a> {
+    queue: Cow<'a, Vec<u8>>,
     first: u64,
     last: u64,
 }
 
-impl BitQueue {
+impl<'a> BitQueue<'a> {
     pub fn new() -> Self {
         Self {
-            queue: Vec::new(),
+            queue: Cow::Owned(vec![]),
             first: 0,
             last: 0,
         }
@@ -22,7 +24,7 @@ impl BitQueue {
     pub fn push(&mut self, bit: Bit) {
         let mut coded_byte = 0;
         if self.last % 8 != 0 {
-            coded_byte = self.queue.pop().expect(
+            coded_byte = self.queue.to_mut().pop().expect(
                 "There is always one becouse first time we push one, and whenever we pop, we push",
             );
         }
@@ -30,20 +32,29 @@ impl BitQueue {
         match bit {
             Bit::Zero => {
                 self.last += 1;
-                self.queue.push(coded_byte);
+                self.queue.to_mut().push(coded_byte);
             }
             Bit::One => {
                 coded_byte |= 1 << (7 - (self.last % 8));
                 self.last += 1;
-                self.queue.push(coded_byte);
+                self.queue.to_mut().push(coded_byte);
             }
         }
     }
 
-    pub fn new_with_bytes(bytes: Vec<u8>) -> Self {
+    pub fn new_with_bytes(bytes: &'a Vec<u8>) -> Self {
         let last = bytes.len() as u64 * 8;
         Self {
-            queue: bytes,
+            queue: Cow::Borrowed(bytes),
+            first: 0,
+            last,
+        }
+    }
+
+    pub fn new_with_owned_bytes(bytes: Vec<u8>) -> Self {
+        let last = bytes.len() as u64 * 8;
+        Self {
+            queue: Cow::Owned(bytes),
             first: 0,
             last,
         }
@@ -64,7 +75,7 @@ impl BitQueue {
     }
 
     pub fn get_queue(self) -> Vec<u8> {
-        self.queue
+        self.queue.into_owned()
     }
 
     pub fn can_pop(&self) -> bool {

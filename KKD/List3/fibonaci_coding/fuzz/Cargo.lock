@@ -33,6 +33,7 @@ dependencies = [
 name = "fibonaci_coding-fuzz"
 version = "0.0.0"
 dependencies = [
+ "bit_queue",
  "fibonaci_coding",
  "libfuzzer-sys",
 ]
