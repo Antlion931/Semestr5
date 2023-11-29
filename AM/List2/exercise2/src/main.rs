@@ -32,12 +32,9 @@ fn main() {
                             nodes.len()
                         };
 
-                        let (mst, weight) = minimal_spaning_tree_weight(nodes.as_slice());
-
-                        println!("mst weight = {weight}");
-
                         for _ in 0..times {
-                            let n: Vec<_> = cycle_from_mst(&mst, rng.gen_range(0..nodes.len())).iter().map(|x| nodes[*x]).collect();
+                            let mut n = nodes.clone();
+                            n.shuffle(&mut rng);
 
                             let (r, s) = invert_tsp_local_search(n);
                             steps_sum += s;
