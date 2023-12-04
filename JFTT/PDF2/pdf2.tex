@@ -1,0 +1,64 @@
+\documentclass{article}
+\usepackage{amsmath}
+\usepackage[T1]{polski}
+\usepackage{graphicx}
+\title{Zadanie 3.2}
+\author{Albert Kołodziejski}
+\date{}
+\begin{document}
+\maketitle
+\section*{Problem:}
+Niech G będzie gramatyką
+\[
+    S \rightarrow aS|aSbS|\epsilon
+\]
+Udowodnić że
+\[
+    L(G) = \{ x: \textit{każdy przedrostek x ma co najmniej tyle symboli a, co symboli b}\}
+\]
+\section*{Rozwiązanie:}
+Niech
+
+\[
+    A = \{ x: \textit{każdy przedrostek x ma co najmniej tyle symboli a, co symboli b}\}
+\]
+\subsection*{Pokażmy że $L(G) \subseteq A$}
+
+Produkcja $aS$ dodaje nam z przodu jeden symbol $a$, Wystąpienie tej produkji nie zagraża wypadnięciem z języka $A$ bo dodanie kolejnego symbolu $a$ w dowolnym miejscu dowolnego przedrosta nie sprawi że ilośc symoli $a$ spadnie. \\
+\\
+Produkcja $aSbS$ dodaje nam jeden symbol $a$ i jeden symbol $b$ w tej kolejności, co oznacza że dla każdego symbolu $b$ występującego w dowolnym przedrostku musi wystąpić symbol $a$ przed nim w tym przedrostku.\\
+\\
+Ostatnią produkcją jest epsilon który oznacza że nie dodajemy żadnej litery, co również nie jest zagrożeniem dla wypadnięcia z języka $A$.\\
+\\
+Zaczynamy ze słowem które ma zero symboli $a$ i zero sybmoli $b$, należymy więc do języka $A$, używając dowolnej z możliwych produkji nie jesteśmy w stanie wypaść z języka $A$ więc $L(G) \subseteq A$.
+
+\newpage
+
+\subsection*{Pokażmy że $A \subseteq L(G)$}
+Dla słów długości 0 jest to prawda, bo słowo puste można stworzyć za pomocą produkcji epsilon, należy więc do $L(G)$.\\
+\\
+Załóżmy że dla słów długości $n$ jest to prawda. Weźmy więc słowo $x$ takie że $|x| = n + 1$ oraz $x \in A$.\\
+\\
+Jeżeli słowo to składa się wyłącznie z samych symboli $a$, to możemy produkcji $aS$, n + 1 razy, a na koniec produkcji epsilon, co da nam słowo $x$. Słowo to więc należy do $L(G)$.\\
+\\ 
+Jeżeli słowo to ma co namniej jeden symbol $b$, to weźmy pierwszy występujący w tym słowie symbol $b$ i oznaczmy go przez $b_s$.\\
+\\
+Wiemy że nasze słowo $x$ musi zaczynać się symbolem $a$, bo w przeciwnym wypadku przedrostek o długości 1 posiadałby jeden symbol $b$ i zero symboli $a$, co oznaczałoby że słowo $x$ nie należy do $A$.\\
+\\
+Przed $b_s$ musi wystąpić symbol $a$, więc nasze słowo $x$ możemy przedstawić w postaci
+\[
+    x = yab_sz
+\]
+gdzie $y$ jest słowem składającym się wyłącznie z symboli $a$, $b_s$ jest pierwszym występującym symbolem $b$ w słowie $x$ a $z$ jest resztą symboli.\\
+\\
+Usunięcie $ab_s$ ze słowa $x$ nie sprawi że nasze słowo przestanie należeć do $A$, bo z każdego przedrostka $x$ zawierającego $ab_s$ usuwamy jednocześnie jeden symbol $a$ i jeden symbol $b$, co nie sprawi że wypadamy z języka $A$. Pozostałe przedrostki zawierają jedynie symbole $a$, więc usunięcie z nich jednego symbolu $a$ nie sprawi że wypadniemy z języka $A$.\\
+\\
+To oznacza że słowo $yz$ należy do $A$, co więcej $|yz| = n - 1$, więc na mocy założenia indukcyjnego słowo $yz$ należy do $L(G)$, a co za tym idzie jest generowane przez gramatyką $G$. Popatrzmy na sposób w jaki generujemy ostatni symbol $a$ w słowie $y$ podczas generowania słowa $yz$.\\
+\\
+Jeżeli użyliśmy do tego produkcji $aS$, to używając produkcji $aSbS$ gdzie pierwsze $S$ zastąpimy przez epsilon, otrzymamy $aab_sS$, generując słowo dalej tak jak byśmy generowali kolejne symbole $z$, otrzymamy słowo $x$.\\
+\\
+Jeżeli użyliśmy do tego produkcji $aSbS$, to używając produkcji $aSbS$ gdzie pierwsze $S$ zastąpimy przez epsilon, otrzymamy $aab_sSbS$, generując słowo dalej jak byśmy generowali kolejne symbole $z$, otrzymamy słowo $x$.\\
+\\
+Istnieje więc sposób na wygenerowanie $x$, więc $x \in L(G)$, $A \subseteq L(G)$. \\
+\textbf{\boldmath{$A \subseteq L(G)$ oraz $L(G) \subseteq A$, więc $A = L(G)$.}}
+\end{document}
