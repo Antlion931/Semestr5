@@ -1,0 +1,84 @@
+use std::str::FromStr;
+use crate::parser_result::{ParserResult, Opcode};
+
+use lalrpop_util::ParseError;
+
+use calculator::*;
+
+grammar;
+
+pub Expr: ParserResult = {
+    FirstTier,
+    r"#.{0,}" => ParserResult::ignore(),
+};
+
+Tier<Op,NextTier>: ParserResult = {
+    <xx:Tier<Op,NextTier>> <op:Op> <yy:NextTier> => {
+        let x = xx.value;
+        let y = yy.value;
+        let new_value = match op {
+            Opcode::Add => x + y,
+            Opcode::Sub => x - y,
+            Opcode::Mul => x * y,
+            Opcode::Div => x / y,
+            Opcode::Pow => x.pow(y),
+            Opcode::Neg => unimplemented!(),
+        };
+
+        let new_rpn = xx.rpn + " " + yy.rpn.as_str() + " " + op.to_string().as_str();
+
+        return ParserResult {
+            rpn: new_rpn,
+            value: new_value,
+            rpn_error: xx.rpn_error || yy.rpn_error,
+            ignore: xx.ignore || yy.ignore,
+        };
+    },
+    NextTier
+};
+
+FirstTier = Tier<FirstOp, Negation>;
+SecondTier = Tier<SecondOp, ThirdTier>;
+ThirdTier = Tier<ThirdOp, Term>;
+
+FirstOp: Opcode = {
+    "+" => Opcode::Add,
+    "-" => Opcode::Sub,
+};
+
+Negation: ParserResult = {
+    "-" <n:Negation> => {
+            let new_value = -n.value;
+            let new_rpn = n.rpn + " ~";
+
+            return ParserResult {
+                rpn: new_rpn,
+                value: new_value,
+                rpn_error: n.rpn_error,
+                ignore: n.ignore,
+            }
+        },
+    <SecondTier>,
+};
+
+SecondOp: Opcode = {
+    "*" => Opcode::Mul,
+    "/" => Opcode::Div,
+};
+
+ThirdOp: Opcode = {
+    "^" => Opcode::Pow,
+};
+
+Term: ParserResult = {
+    Num => ParserResult::from(<>),
+    "(" <FirstTier> ")"
+};
+
+Num: GF = {
+    r"[0-9]+" =>? i64::from_str(<>)
+        .map_err(|_| ParseError::User {
+            error: "number is too big"
+        }).map(|x| GF::new(x)),
+};
+
