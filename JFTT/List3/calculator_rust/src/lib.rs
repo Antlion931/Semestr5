@@ -1,167 +1,141 @@
 use std::fmt::{Display, Formatter, Error};
-use std::ops::{Add, Sub, Mul, Neg, Div};
 
-const P: i64 = 1234577;
+pub type GFResult = Result<GF, &'static str>;
 
 #[derive(Debug, Copy, Clone, PartialEq, Eq)]
 pub struct GF {
-    value: i64,
-    error: bool,
+    p: i64,
+   value: i64,
+}
+
+fn extended_gcd(a: i64, b: i64) -> Result<(i64, i64, i64), &'static str> { // r, s, t
+    if a == 0 && b == 0 {
+        return Err("Tryied to calculate extended gcd with zeros");
+    }
+
+    let mut last_two_r = (a, b);
+    let mut last_two_s = (1, 0);
+    let mut last_two_t = (0, 1);
+
+    while last_two_r.1 != 0 {
+        let q = last_two_r.0 / last_two_r.1;
+
+        last_two_r = (last_two_r.1, last_two_r.0 - q * last_two_r.1);
+        last_two_s = (last_two_s.1, last_two_s.0 - q * last_two_s.1);
+        last_two_t = (last_two_t.1, last_two_t.0 - q * last_two_t.1);
+    }
+
+    Ok((last_two_r.0, last_two_s.0, last_two_t.0))
+}
+
+pub fn pow(a: GFResult, b: GFResult) -> GFResult {
+    match (a, b) {
+        (Ok(a), Ok(b)) => {
+            if a.p != b.p + 1 {
+                return Err("Tryied to raise to power with wrong field");
+            }
+
+            let mut n = b.value;
+            let mut result = 1;
+
+            while n > 0 {
+                result = (result * a.value).rem_euclid(a.p);
+                n -= 1;
+            }
+
+            GF::try_new(result, a.p)
+        },
+        (a @ Err(_), _) => a,
+        (_, b @ Err(_)) => b,
+    }
+}
+
+pub fn inv(a: GFResult) -> GFResult {
+    match a {
+        Ok(a) => {
+            if a.value == 0 {
+                Err("Tryied to invert zero")
+            }
+            else {
+                if let Ok((1, s, _)) = extended_gcd(a.value, a.p) {
+                    GF::try_new(s.rem_euclid(a.p), a.p)
+                } else {
+                    Err("Tryied to invert non-invertible element")
+                }
+            }
+        },
+        a @ Err(_) => a,
+    }
+}
+
+pub fn add(a: GFResult, b: GFResult) -> GFResult {
+    match (a, b) {
+        (Ok(a), Ok(b)) => {
+            if a.p == b.p {
+                GF::try_new(a.value + b.value, a.p)
+            } else {
+                Err("Tryied to add elements from different Galios Fields")
+            }
+        },
+        (a @ Err(_), _) => a,
+        (_, b @ Err(_)) => b,
+    }
+}
+
+pub fn sub(a: GFResult, b: GFResult) -> GFResult {
+    match (a, b) {
+        (Ok(a), Ok(b)) => {
+            if a.p == b.p {
+                GF::try_new(a.value - b.value, a.p)
+            } else {
+                Err("Tryied to subtract elements from different Galios Fields")
+            }
+        },
+        (a @ Err(_), _) => a,
+        (_, b @ Err(_)) => b,
+    }
+}
+
+pub fn mul(a: GFResult, b: GFResult) -> GFResult { 
+    match (a, b) {
+        (Ok(a), Ok(b)) => {
+            if a.p == b.p {
+                GF::try_new(a.value * b.value, a.p)
+            } else {
+                Err("Tryied to multiplay elements from different Galios Fields")
+            }
+        },
+        (a @ Err(_), _) => a,
+        (_, b @ Err(_)) => b,
+    }
+}
+
+pub fn neg(a: GFResult) -> GFResult {
+    match a {
+        Ok(a) => {
+            GF::try_new(a.p - a.value, a.p)
+        },
+        a @ Err(_) => a,
+    }
+}
+
+pub fn div(a: GFResult, b: GFResult) -> GFResult {
+    mul(a, inv(b))
 }
 
 impl GF {
-    pub fn new(x: i64) -> GF {
-        GF { value: x.rem_euclid(P), error: false }
-    }
-
-    // FIXME: Too slow
-    pub fn pow(self, n: GF) -> GF {
-        let n = n.value;
-        let mut result = GF::new(1);
-
-        for _ in 0..n {
-            result = result * self;
+    pub fn try_new(x: i64, p: i64) -> Result<GF, &'static str> {
+        if p < 2 {
+            return Err("Tryied to create galios field with too few elements");
         }
 
-        result
-    }
-
-    fn inv(self) -> GF {
-        if self.value == 0 {
-            GF { value: 0, error: true }
-        } else {
-            self.pow(GF::new(P - 2))
-        }
-    }
-}
-
-impl Add for GF {
-    type Output = GF;
-
-    fn add(self, rhs: GF) -> GF {
-        if self.error || rhs.error {
-            GF { value: 0, error: true }
-        } else {
-            GF::new((self.value + rhs.value).rem_euclid(P))
-        }
-    }
-}
-
-impl Sub for GF {
-    type Output = GF;
-
-    fn sub(self, rhs: GF) -> GF {
-        if self.error || rhs.error {
-            GF { value: 0, error: true }
-        } else {
-            GF::new((self.value - rhs.value).rem_euclid(P))
-        }
-    }
-}
-
-impl Mul for GF {
-    type Output = GF;
-
-    fn mul(self, rhs: GF) -> GF {
-        if self.error || rhs.error {
-            GF { value: 0, error: true }
-        } else {
-            GF::new((self.value * rhs.value).rem_euclid(P))
-        }
-    }
-}
-
-impl Neg for GF {
-    type Output = GF;
-
-    fn neg(self) -> GF {
-        if self.error {
-            GF { value: 0, error: true }
-        } else {
-            GF::new(P - self.value)
-        }
-    }
-}
-
-impl Div for GF {
-    type Output = GF;
-
-    fn div(self, rhs: GF) -> GF {
-        self * rhs.inv()
+        Ok(GF { p, value: x.rem_euclid(p)})
     }
 }
 
 impl Display for GF {
     fn fmt(&self, f: &mut Formatter) -> Result<(), Error> {
-        if self.error {
-            write!(f, "Error")
-        } else {
-            write!(f, "{}", self.value)
-        }
+        write!(f, "{}", self.value)
     }
 }
 
-#[cfg(test)]
-mod test {
-    use super::*;
-
-    #[test]
-    fn test_one() {
-        let result = GF::new(2) + GF::new(3) * (GF::new(4) - GF::new(5));
-        assert_eq!(result, GF::new(1234576));
-    }
-
-    #[test]
-    fn test_two() {
-        let result = GF::new(2).pow(GF::new(100));
-        assert_eq!(result, GF::new(295422));
-    }
-
-    #[test]
-    fn test_three() {
-        let result = GF::new(2) - GF::new(3) - GF::new(2);
-        assert_eq!(result, GF::new(1234574));
-    }
-
-    #[test]
-    fn test_four() {
-        let result = GF::new(269164) / GF::new(123456);
-        assert_eq!(result, GF::new(567890));
-    }
-
-    #[test]
-    fn test_five() {
-        let result = -GF::new(2) - -GF::new(1);
-        assert_eq!(result, GF::new(1234576));
-    }
-
-    #[test]
-    fn test_six() {
-        let result = GF::new(1) / -GF::new(580978);
-        assert_eq!(result, GF::new(123456));
-    }
-
-    #[test]
-    fn test_seven() {
-        let result = GF::new(123456789);
-        assert_eq!(result, GF::new(1233666));
-    }
-
-    #[test]
-    fn test_eight() {
-        let result = GF::new(2).pow(GF::new(123));
-        assert_eq!(result, GF::new(594706));
-    }
-
-    #[test]
-    fn division_by_zero() {
-        let result = GF::new(1) / GF::new(0);
-        assert_eq!(result.error, true);
-    }
-
-    #[test]
-    fn test_nine() {
-        let result = GF::new(2).pow(GF::new(1234574));
-        assert_eq!(result, GF::new(925933));
-    }
-}

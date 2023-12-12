@@ -1,5 +1,5 @@
 use std::str::FromStr;
-use crate::parser_result::{ParserResult, Opcode};
+use crate::parser_result::*;
 
 use lalrpop_util::ParseError;
 
@@ -7,78 +7,88 @@ use calculator::*;
 
 grammar;
 
-pub Expr: ParserResult = {
-    FirstTier,
+pub Expr: Option<ParserResult> = {
+    <AS> => Some(<>),
     r"#.{0,}" => ParserResult::ignore(),
 };
 
-Tier<Op,NextTier>: ParserResult = {
-    <xx:Tier<Op,NextTier>> <op:Op> <yy:NextTier> => {
-        let x = xx.value;
-        let y = yy.value;
-        let new_value = match op {
-            Opcode::Add => x + y,
-            Opcode::Sub => x - y,
-            Opcode::Mul => x * y,
-            Opcode::Div => x / y,
-            Opcode::Pow => x.pow(y),
-            Opcode::Neg => unimplemented!(),
-        };
+LeftOp<Op, NextOp>: ParserResult = {
+    <xx:LeftOp<Op,NextOp>> <op:Op> <yy:NextOp> => {
+        let x = xx.gf;
+        let y = yy.gf;
+        let gf = (op.f)(x, y);
 
-        let new_rpn = xx.rpn + " " + yy.rpn.as_str() + " " + op.to_string().as_str();
+        let rpn = xx.rpn + " " + yy.rpn.as_str() + " " + op.str;
 
-        return ParserResult {
-            rpn: new_rpn,
-            value: new_value,
-            rpn_error: xx.rpn_error || yy.rpn_error,
-            ignore: xx.ignore || yy.ignore,
-        };
+        return ParserResult::new(rpn, gf);
     },
-    NextTier
+    NextOp,
 };
 
-FirstTier = Tier<FirstOp, Negation>;
-SecondTier = Tier<SecondOp, ThirdTier>;
-ThirdTier = Tier<ThirdOp, Term>;
+UnaryOp<Op, NextOp>: ParserResult = {
+    <op:Op> <n:UnaryOp<Op, NextOp>> => {
+            let gf = (op.f)(n.gf);
+            let rpn = n.rpn + " " + op.str;
 
-FirstOp: Opcode = {
-    "+" => Opcode::Add,
-    "-" => Opcode::Sub,
-};
-
-Negation: ParserResult = {
-    "-" <n:Negation> => {
-            let new_value = -n.value;
-            let new_rpn = n.rpn + " ~";
-
-            return ParserResult {
-                rpn: new_rpn,
-                value: new_value,
-                rpn_error: n.rpn_error,
-                ignore: n.ignore,
-            }
+            return ParserResult::new(rpn, gf);
         },
-    <SecondTier>,
+    NextOp,
 };
 
-SecondOp: Opcode = {
-    "*" => Opcode::Mul,
-    "/" => Opcode::Div,
+AdditionAndSubtraction: BinaryOperation = {
+    "+" => BinaryOperation::new(add, "+"),
+    "-" => BinaryOperation::new(sub, "-"),
 };
 
-ThirdOp: Opcode = {
-    "^" => Opcode::Pow,
+MultiplicationAndDivision: BinaryOperation = {
+    "*" => BinaryOperation::new(mul, "*"),
+    "/" => BinaryOperation::new(div, "/"),
 };
+
+Exponent: BinaryOperation = {
+    "^" => BinaryOperation::new(pow, "^"),
+};
+
+Negation: UnaryOperation  = {
+    "-" => UnaryOperation::new(neg, "~"),
+};
+
+AS = LeftOp<AdditionAndSubtraction, MD>;
+MD = LeftOp<MultiplicationAndDivision, N>;
+N = UnaryOp<Negation, E>;
+
+E: ParserResult = {
+    <xx:Term> <op:Exponent> <yy:ExponentN> => {
+        let x = xx.gf;
+        let y = yy.gf;
+        let gf = (op.f)(x, y);
+
+        let rpn = xx.rpn + " " + yy.rpn.as_str() + " " + op.str;
+
+        return ParserResult::new(rpn, gf);
+    },
+    Term,
+};
+
+ExponentAS = LeftOp<AdditionAndSubtraction, ExponentMD>;
+ExponentMD = LeftOp<MultiplicationAndDivision, ExponentN>;
+ExponentN = UnaryOp<Negation, ExponentTerm>;
+
+ExponentTerm: ParserResult = {
+    <Num> => ParserResult::new(<>.to_string(), GF::try_new(<>, 1234576)),
+    "(" <ExponentAS> ")"
+};
+
 
 Term: ParserResult = {
-    Num => ParserResult::from(<>),
-    "(" <FirstTier> ")"
+    <Num> => ParserResult::new(<>.to_string(), GF::try_new(<>, 1234577)),
+    "(" <AS> ")"
 };
 
-Num: GF = {
+Num: i64 = {
     r"[0-9]+" =>? i64::from_str(<>)
         .map_err(|_| ParseError::User {
             error: "number is too big"
-        }).map(|x| GF::new(x)),
+        }),
 };
 
