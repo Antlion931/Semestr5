@@ -2,7 +2,9 @@ In this List we need to modify the gauss elimination method to solve custom matr
 
 # TODO:
 - [x] Analyse normal gauss elimination method
-- [ ] Analyse custom matrix's structure
+- [x] Analyse custom matrix's structure
+- [ ] Make a function to read data from file
+- [ ] Try to simplify the matrix 12x12 on paper
 
 # Notes:
 - Gauss elimination method not only simplifies the matrix to triangular matrix, but also computes *A = LU*.
@@ -15,3 +17,18 @@ In this List we need to modify the gauss elimination method to solve custom matr
     - if second variant, change rows as in *A*.
     - compute *y* in *Ly = b*.
     - compute *x* in *Ux = y*.
+- This is how our custom matrix looks like:
+```
+A A A A C
+A A A A   C
+A A A A     C
+A A A A       C
+      B A A A A C
+      B A A A A   C
+      B A A A A     C
+      B A A A A       C
+              B A A A A
+              B A A A A
+              B A A A A
+              B A A A A
+```
