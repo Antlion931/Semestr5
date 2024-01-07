@@ -4,7 +4,8 @@ In this List we need to modify the gauss elimination method to solve custom matr
 - [x] Analyse normal gauss elimination method
 - [x] Analyse custom matrix's structure
 - [ ] Make a function to read data from file
-- [ ] Try to simplify the matrix 12x12 on paper
+    - [ ] Before reading data, you need a data structure to store it
+- [x] Try to simplify the matrix 12x12 on paper
 
 # Notes:
 - Gauss elimination method not only simplifies the matrix to triangular matrix, but also computes *A = LU*.
@@ -32,3 +33,5 @@ A A A A       C
               B A A A A
               B A A A A
 ```
+
+- Possible improvment is to subtract from every row on threads
