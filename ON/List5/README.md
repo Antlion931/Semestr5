@@ -3,9 +3,12 @@ In this List we need to modify the gauss elimination method to solve custom matr
 # TODO:
 - [x] Analyse normal gauss elimination method
 - [x] Analyse custom matrix's structure
-- [ ] Make a function to read data from file
+- [x] Make a function to read data from file
     - [x] Before reading data, you need a data structure to store it
 - [x] Try to simplify the matrix 12x12 on paper
+- [ ] Write *Ax = b* solver
+- [ ] Write *A = LU* solver
+- [ ] Write *LUx = b* solver
 
 # Notes:
 - Gauss elimination method not only simplifies the matrix to triangular matrix, but also computes *A = LU*.
