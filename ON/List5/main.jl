@@ -62,7 +62,7 @@ function main()
     A = read_MOC(parsed_args["A"], parsed_args["selection"])
     b = nothing
 
-    if parsed_args["b"] == nothing
+    if isnothing(parsed_args["b"])
         b = compute_b_with_x_of_ones(A)
     else
         b = read_RHM(parsed_args["b"])

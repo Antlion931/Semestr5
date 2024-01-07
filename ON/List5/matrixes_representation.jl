@@ -89,9 +89,10 @@ module matrixes_representation
     end
 
     function compute_b_with_x_of_ones(obj::MatrixOfCoeficients)
+        n = length(obj.body)
         b = new_RHM(n)
         for i in 1:n
-            b.set(i, sum(obj.body[i]))
+            set(b, 1, i, sum(obj.body[i]))
         end
         return b
     end
