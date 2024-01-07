@@ -4,7 +4,7 @@ In this List we need to modify the gauss elimination method to solve custom matr
 - [x] Analyse normal gauss elimination method
 - [x] Analyse custom matrix's structure
 - [ ] Make a function to read data from file
-    - [ ] Before reading data, you need a data structure to store it
+    - [x] Before reading data, you need a data structure to store it
 - [x] Try to simplify the matrix 12x12 on paper
 
 # Notes:
@@ -35,3 +35,11 @@ A A A A       C
 ```
 
 - Possible improvment is to subtract from every row on threads
+- Our app needs to do 2 things:
+    - computes *Ax = b*
+    - computes *A = LU*, and then *LUx = b*
+    To achieve this we need data, there are 2 ways to get it:
+    - read *A* and *b* from file, result should be *x'*
+    - read *A* and compute *b* from where *x = `[1, 1, ..., 1]`*, result should be *x'*, and error to real *x*. 
+    Additionaly there should be a way to store results in file.
+
