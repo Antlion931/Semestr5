@@ -7,9 +7,12 @@ In this List we need to modify the gauss elimination method to solve custom matr
     - [x] Before reading data, you need a data structure to store it
 - [x] Try to simplify the matrix 12x12 on paper
 - [ ] Write *Ax = b* solver
-    - [ ] To make it faster write new functions to MOC, to get index of last meaningful element in rows
+    - [x] To make it faster write new functions to MOC, to get index of last meaningful element in rows
     - [x] To make it faster, change swap to don't swap, but changes pointers to rows
     - [x] Split MOC into MOC and MOC with selection
+    - [x] Write it without selection
+    - [ ] Write it with selection
+    - [ ] Write Zero near zero check
 - [ ] Write *A = LU* solver
 - [ ] Write *LUx = b* solver
 

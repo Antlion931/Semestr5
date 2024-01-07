@@ -76,7 +76,7 @@ function main()
     parsed_args = parse_commandline()
 
     A = nothing
-    
+
     if parsed_args["selection"]
         A = read_MOCWPS(parsed_args["A"])
     else
