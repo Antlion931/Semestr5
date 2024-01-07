@@ -1,6 +1,8 @@
 include("matrixes_representation.jl")
+include("blocksys.jl")
 
 using ArgParse
+using .blocksys: Axb
 using .matrixes_representation: MatrixOfCoeficients, new_MOC, RightHandMatrix, new_RHM, compute_b_with_x_of_ones, MatrixInterface, set, swap, get
 
 function parse_commandline()
@@ -29,12 +31,12 @@ function parse_commandline()
     return parse_args(s)
 end
 
-function read_MOC(filename::String, partial_selection::Bool)
+function read_MOC(filename::String)
     file = open(filename, "r")
     n, l = split(readline(file), ' ')
     n = parse(Int64, n)
     l = parse(Int64, l)
-    moc = matrixes_representation.new_MOC(l, n, partial_selection)
+    moc = new_MOC(l, n)
     for line in eachline(file)
         y, x, value = split(line, ' ')
         set(moc, parse(Int64, x), parse(Int64, y), parse(Float64, value))
@@ -43,10 +45,24 @@ function read_MOC(filename::String, partial_selection::Bool)
     return moc
 end
 
+function read_MOCWPS(filename::String)
+    file = open(filename, "r")
+    n, l = split(readline(file), ' ')
+    n = parse(Int64, n)
+    l = parse(Int64, l)
+    mocwps = new_MOCWPS(l, n)
+    for line in eachline(file)
+        y, x, value = split(line, ' ')
+        set(mocwps, parse(Int64, x), parse(Int64, y), parse(Float64, value))
+    end
+    close(file)
+    return moc
+end
+
 function read_RHM(filename::String)
     file = open(filename, "r")
     n = parse(Int64, readline(file))
-    rhm = matrixes_representation.new_RHM(n)
+    rhm = new_RHM(n)
     
     for y in 1:n
         set(rhm, 1, y, parse(Float64, readline(file)))
@@ -59,7 +75,14 @@ end
 function main()
     parsed_args = parse_commandline()
 
-    A = read_MOC(parsed_args["A"], parsed_args["selection"])
+    A = nothing
+    
+    if parsed_args["selection"]
+        A = read_MOCWPS(parsed_args["A"])
+    else
+        A = read_MOC(parsed_args["A"])
+    end
+
     b = nothing
 
     if isnothing(parsed_args["b"])
@@ -68,11 +91,9 @@ function main()
         b = read_RHM(parsed_args["b"])
     end
 
-    println(A)
-
-    println("")
-
-    println(b)
+    if parsed_args["action"] == "Axb"
+        Axb(A, b)
+    end
 end
 
 main()

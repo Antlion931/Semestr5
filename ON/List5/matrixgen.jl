@@ -1,10 +1,9 @@
 # Pawel Zielinski
 module matrixgen
- 
 
 using LinearAlgebra
 
-export  blockmat
+export blockmat
 
 function matcond(n::Int, c::Float64)
 	# Function generates a random square matrix A of size n with
