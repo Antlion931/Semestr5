@@ -144,13 +144,23 @@ fn main() {
     }
 
     let mut output = input.clone();
-        
+
     output.as_mut_rgb8()
         .expect("Failed to convert image to RGB8")
         .pixels_mut()
-        .zip(blocks.into_iter())
-        .for_each(|(pixel, block)| {
-            *pixel = colors[block];
+        .for_each(|pixel| {
+            let mut min_distance = color_distance(pixel, &colors[0]);
+            let mut min_color = &colors[0];
+
+            for color in colors.iter() {
+                let distance = color_distance(pixel, color);
+                if distance < min_distance {
+                    min_distance = distance;
+                    min_color = color;
+                }
+            }
+            
+            *pixel = *min_color;
         });
     output.save(args[2].as_str()).expect("Failed to save image");
 
