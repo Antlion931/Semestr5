@@ -8,7 +8,7 @@ module blocksys
         l = A.l
         for x in 1:(n-1)
             last_x = last_meaningful_index_in_row(A, x)
-            for k in 1:(l-(x%4))
+            for k in 1:(l-(x% l))
                 y = x + k
                 if abs(get(A, x, x)) < eps(Float64)
                     eprintln("value too small, possible wrong results!")
@@ -60,7 +60,7 @@ module blocksys
             end
 
             last_x = last_meaningful_index_in_row(A, x)
-            for k in 1:(l-(x%4))
+            for k in 1:(l-(x% l))
                 y = x + k
                 if abs(get(A, x, x)) < eps(Float64)
                     eprintln("value too small, possible wrong results!")
