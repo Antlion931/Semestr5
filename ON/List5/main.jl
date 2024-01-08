@@ -2,8 +2,8 @@ include("matrixes_representation.jl")
 include("blocksys.jl")
 
 using ArgParse
-using .blocksys: Axb
-using .matrixes_representation: MatrixOfCoeficients, new_MOC, RightHandMatrix, new_RHM, compute_b_with_x_of_ones, MatrixInterface, set, swap, get
+using .blocksys: Axb, AxbWithPartialSelection
+using .matrixes_representation: MatrixOfCoeficients, new_MOC, RightHandMatrix, new_RHM, compute_b_with_x_of_ones, MatrixInterface, set, swap, get, last_meaningful_index_in_row, MatrixOfCoeficientsWithPartialSelection, new_MOCWPS, swap
 
 function parse_commandline()
     s = ArgParseSettings()
@@ -56,7 +56,7 @@ function read_MOCWPS(filename::String)
         set(mocwps, parse(Int64, x), parse(Int64, y), parse(Float64, value))
     end
     close(file)
-    return moc
+    return mocwps
 end
 
 function read_RHM(filename::String)
@@ -91,8 +91,37 @@ function main()
         b = read_RHM(parsed_args["b"])
     end
 
+    time = 0.0
+    x = nothing
+
     if parsed_args["action"] == "Axb"
-        Axb(A, b)
+        if parsed_args["selection"]
+            time = @elapsed x = AxbWithPartialSelection(A, b)
+        else
+            time = @elapsed x = Axb(A, b)
+        end
+    end
+
+    println("Time: ", time)
+
+    if isnothing(parsed_args["b"])
+        sum = 0.0
+        n = length(x)
+        for i in 1:n
+            xx = x[i] - 1.0
+            sum += xx*xx
+        end
+        println("relative error: ", sum/n)
+    end
+
+    if isnothing(parsed_args["save"])
+        println(x)
+    else
+        file = open(parsed_args["save"], "w")
+        for i in 1:length(x)
+            println(file, x[i])
+        end
+        close(file)
     end
 end
 

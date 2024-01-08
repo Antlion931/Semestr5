@@ -2,7 +2,7 @@
 
 module matrixes_representation
 
-    export MatrixOfCoeficients, new_MOC, RightHandMatrix, new_RHM, compute_b_with_x_of_ones, MatrixInterface, set, swap, get, last_meaningful_index_in_row
+    export MatrixOfCoeficients, new_MOC, RightHandMatrix, new_RHM, compute_b_with_x_of_ones, MatrixInterface, set, swap, get, last_meaningful_index_in_row, MatrixOfCoeficientsWithPartialSelection, new_MOCWPS, swap
 
     # Define an abstract type for the common interface
     abstract type MatrixInterface end
@@ -100,7 +100,6 @@ module matrixes_representation
         last_meaningful_indexes = Vector{Int64}()
         sizehint!(last_meaningful_indexes, n)
 
-        
         if l == n
             for i in 1:n
                 push!(last_meaningful_indexes, n)
@@ -129,7 +128,6 @@ module matrixes_representation
     end
 
     function local_x(obj::MatrixOfCoeficientsWithPartialSelection, x::Int64, y::Int64)
-        y = obj.swaped_indexes[y]
         if y > obj.l
             x += 1
         end
@@ -138,7 +136,6 @@ module matrixes_representation
     end
 
     function global_x(obj::MatrixOfCoeficientsWithPartialSelection, x::Int64, y::Int64)
-        y = obj.swaped_indexes[y]
         if y > obj.l
             x -= 1
         end
@@ -147,14 +144,18 @@ module matrixes_representation
     end
 
     function get(obj::MatrixOfCoeficientsWithPartialSelection, x::Int64, y::Int64)
-        y = obj.swaped_indexes[y]
-        x = local_x(obj, x, y)
-        return obj.body[y][x]
+        yy = obj.swaped_indexes[y]
+        xx = local_x(obj, x, yy)
+        
+        return obj.body[yy][xx]
     end
 
     function set(obj::MatrixOfCoeficientsWithPartialSelection, x::Int64, y::Int64, value::Float64)
         y = obj.swaped_indexes[y]
         x = local_x(obj, x, y)
+        if x > obj.last_meaningful_indexes[y]
+            obj.last_meaningful_indexes[y] = x
+        end
         obj.body[y][x] = value
     end
 
@@ -163,7 +164,8 @@ module matrixes_representation
     end
 
     function last_meaningful_index_in_row(obj::MatrixOfCoeficientsWithPartialSelection, y::Int64)
-        global_x(obj, length(obj.body[y]), y)
+        y = obj.swaped_indexes[y]
+        global_x(obj, obj.last_meaningful_indexes[y], y)
     end
 
     function compute_b_with_x_of_ones(obj::MatrixOfCoeficientsWithPartialSelection)
