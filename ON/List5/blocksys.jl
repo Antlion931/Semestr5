@@ -13,11 +13,11 @@ module blocksys
                 if abs(get(A, x, x)) < eps(Float64)
                     eprintln("value too small, possible wrong results!")
                 end
-                multiplayer = -get(A, x, y)/get(A, x, x);
+                multiplayer = get(A, x, y)/get(A, x, x);
                 for xx in (x+1):last_x
-                    set(A, xx, y, get(A, xx, y) + multiplayer*get(A, xx, x))
+                    set(A, xx, y, get(A, xx, y) - multiplayer*get(A, xx, x))
                 end
-                set(b, 1, y, get(b, 1, y) + multiplayer*get(b, 1, x))
+                set(b, 1, y, get(b, 1, y) - multiplayer*get(b, 1, x))
             end
         end
 
@@ -65,11 +65,11 @@ module blocksys
                 if abs(get(A, x, x)) < eps(Float64)
                     eprintln("value too small, possible wrong results!")
                 end
-                multiplayer = -get(A, x, y)/get(A, x, x);
+                multiplayer = get(A, x, y)/get(A, x, x);
                 for xx in (x+1):last_x
-                    set(A, xx, y, get(A, xx, y) + multiplayer*get(A, xx, x))
+                    set(A, xx, y, get(A, xx, y) - multiplayer*get(A, xx, x))
                 end
-                set(b, 1, y, get(b, 1, y) + multiplayer*get(b, 1, x))
+                set(b, 1, y, get(b, 1, y) - multiplayer*get(b, 1, x))
             end
         end
 
@@ -107,10 +107,10 @@ module blocksys
                 if abs(get(A, x, x)) < eps(Float64)
                     eprintln("value too small, possible wrong results!")
                 end
-                multiplayer = -get(A, x, y)/get(A, x, x);
+                multiplayer = get(A, x, y)/get(A, x, x);
                 set(A, x, y, multiplayer)
                 for xx in (x+1):last_x
-                    set(A, xx, y, get(A, xx, y) + multiplayer*get(A, xx, x))
+                    set(A, xx, y, get(A, xx, y) - multiplayer*get(A, xx, x))
                 end
             end
         end
@@ -127,11 +127,11 @@ module blocksys
         n = length(b.body)
         results = zeros(Float64, n)
         for y in 1:n
-            sum = 1.0
+            sum = get(b, 1, y)
             for x in first_meaningful_index_in_row(L, y):(y-1)
                 sum -= get(L, x, y)*results[x]
             end
-            results[y] = sum/get(L, y, y)
+            results[y] = sum
         end
         
         return results
@@ -163,10 +163,10 @@ module blocksys
                 if abs(get(A, x, x)) < eps(Float64)
                     eprintln("value too small, possible wrong results!")
                 end
-                multiplayer = -get(A, x, y)/get(A, x, x);
+                multiplayer = get(A, x, y)/get(A, x, x);
                 set(A, x, y, multiplayer)
                 for xx in (x+1):last_x
-                    set(A, xx, y, get(A, xx, y) + multiplayer*get(A, xx, x))
+                    set(A, xx, y, get(A, xx, y) - multiplayer*get(A, xx, x))
                 end
             end
         end
@@ -183,18 +183,18 @@ module blocksys
         n = length(b.body)
         results = zeros(Float64, n)
         for y in 1:n
-            sum = 1.0
+            sum = get(b, 1, y)
             for x in first_meaningful_index_in_row(L, y):(y-1)
                 sum -= get(L, x, y)*results[x]
             end
-            results[y] = sum/get(L, y, y)
+            results[y] = sum
         end
 
         for i in 1:n
             if L.swaped_indexes[i] != i
                 results[i], results[L.swaped_indexes[i]] = results[L.swaped_indexes[i]], results[i]
                 L.swaped_indexes[L.swaped_indexes[i]] = L.swaped_indexes[i]
-           end
+            end
         end
         
         return results

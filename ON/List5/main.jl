@@ -120,7 +120,7 @@ function main()
             xx = x[i] - 1.0
             sum += xx*xx
         end
-        println("relative error: ", sum/n)
+        println("relative error: ", sqrt(sum/n))
     end
 
     if isnothing(parsed_args["save"])
