@@ -2,7 +2,7 @@
 
 module matrixes_representation
 
-    export MatrixOfCoeficients, new_MOC, RightHandMatrix, new_RHM, compute_b_with_x_of_ones, MatrixInterface, set, swap, get, last_meaningful_index_in_row, MatrixOfCoeficientsWithPartialSelection, new_MOCWPS, swap
+    export MatrixOfCoeficients, new_MOC, RightHandMatrix, new_RHM, compute_b_with_x_of_ones, MatrixInterface, set, swap, get, last_meaningful_index_in_row, first_meaningful_index_in_row, MatrixOfCoeficientsWithPartialSelection, new_MOCWPS, swap, RHM_from_vector
 
     # Define an abstract type for the common interface
     abstract type MatrixInterface end
@@ -75,6 +75,10 @@ module matrixes_representation
 
     function last_meaningful_index_in_row(obj::MatrixOfCoeficients, y::Int64)
         global_x(obj, length(obj.body[y]), y)
+    end
+
+    function first_meaningful_index_in_row(obj::MatrixOfCoeficients, y::Int64)
+        global_x(obj, 1, y)
     end
 
     function compute_b_with_x_of_ones(obj::MatrixOfCoeficients)
@@ -168,6 +172,11 @@ module matrixes_representation
         global_x(obj, obj.last_meaningful_indexes[y], y)
     end
 
+    function first_meaningful_index_in_row(obj::MatrixOfCoeficientsWithPartialSelection, y::Int64)
+        y = obj.swaped_indexes[y]
+        global_x(obj, 1, y)
+    end
+
     function compute_b_with_x_of_ones(obj::MatrixOfCoeficientsWithPartialSelection)
         n = length(obj.body)
         b = new_RHM(n)
@@ -179,6 +188,10 @@ module matrixes_representation
 
     struct RightHandMatrix <: MatrixInterface
         body::Vector{Float64}
+    end
+
+    function RHM_from_vector(v::Vector{Float64})
+        return RightHandMatrix(v)
     end
 
     function new_RHM(n::Int64)

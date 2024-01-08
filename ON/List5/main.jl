@@ -2,7 +2,7 @@ include("matrixes_representation.jl")
 include("blocksys.jl")
 
 using ArgParse
-using .blocksys: Axb, AxbWithPartialSelection
+using .blocksys: Axb, AxbWithPartialSelection, ALU, LUxb, ALUWithPartialSelection, LUxbWithPartialSelection
 using .matrixes_representation: MatrixOfCoeficients, new_MOC, RightHandMatrix, new_RHM, compute_b_with_x_of_ones, MatrixInterface, set, swap, get, last_meaningful_index_in_row, MatrixOfCoeficientsWithPartialSelection, new_MOCWPS, swap
 
 function parse_commandline()
@@ -100,6 +100,15 @@ function main()
         else
             time = @elapsed x = Axb(A, b)
         end
+    elseif parsed_args["action"] == "LUxb"
+        if parsed_args["selection"]
+            time = @elapsed x = LUxbWithPartialSelection(ALUWithPartialSelection(A), b)
+        else
+            time = @elapsed x = LUxb(ALU(A), b)
+        end
+    else
+        println("Unknown action")
+        exit(1)
     end
 
     println("Time: ", time)

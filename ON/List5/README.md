@@ -13,7 +13,8 @@ In this List we need to modify the gauss elimination method to solve custom matr
     - [x] Write it without selection
     - [x] Write it with selection
     - [x] Write Zero near zero check
-- [ ] Write *A = LU* solver
+- [ ] Write *A = LU* solver\
+    - [ ] There is some error, it doesn't produce ones
 - [ ] Write *LUx = b* solver
 
 # Notes:

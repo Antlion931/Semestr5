@@ -1,7 +1,7 @@
 module blocksys
-    import ..matrixes_representation: MatrixOfCoeficients, MatrixOfCoeficientsWithPartialSelection, new_MOC, RightHandMatrix, new_RHM, compute_b_with_x_of_ones, MatrixInterface, set, swap, get, last_meaningful_index_in_row
+    import ..matrixes_representation: MatrixOfCoeficients, MatrixOfCoeficientsWithPartialSelection, new_MOC, RightHandMatrix, new_RHM, compute_b_with_x_of_ones, MatrixInterface, set, swap, get, last_meaningful_index_in_row, first_meaningful_index_in_row, RHM_from_vector
 
-    export Axb, AxbWithPartialSelection
+    export Axb, AxbWithPartialSelection, ALU, LUxb, ALUWithPartialSelection, LUxbWithPartialSelection
 
     function Axb(A::MatrixOfCoeficients, b::RightHandMatrix)
         n = length(b.body)
@@ -94,6 +94,109 @@ module blocksys
            end
         end
 
+        return results
+    end
+
+    function ALU(A::MatrixOfCoeficients)
+        n = length(A.body)
+        l = A.l
+        for x in 1:(n-1)
+            last_x = last_meaningful_index_in_row(A, x)
+            for k in 1:(l-(x% l))
+                y = x + k
+                if abs(get(A, x, x)) < eps(Float64)
+                    eprintln("value too small, possible wrong results!")
+                end
+                multiplayer = -get(A, x, y)/get(A, x, x);
+                set(A, x, y, multiplayer)
+                for xx in (x+1):last_x
+                    set(A, xx, y, get(A, xx, y) + multiplayer*get(A, xx, x))
+                end
+            end
+        end
+
+        return A
+    end
+
+    function LUxb(LU::MatrixOfCoeficients, b::RightHandMatrix)
+        y = RHM_from_vector(x_from_L_matrix_and_b(LU, b))
+        return x_from_triangle_matrix_and_b(LU, y)
+    end
+
+    function x_from_L_matrix_and_b(L::MatrixOfCoeficients, b::RightHandMatrix)
+        n = length(b.body)
+        results = zeros(Float64, n)
+        for y in 1:n
+            sum = 1.0
+            for x in first_meaningful_index_in_row(L, y):(y-1)
+                sum -= get(L, x, y)*results[x]
+            end
+            results[y] = sum/get(L, y, y)
+        end
+        
+        return results
+    end
+
+    function ALUWithPartialSelection(A::MatrixOfCoeficientsWithPartialSelection)
+        n = length(A.body)
+        l = A.l
+        for x in 1:(n-1)
+            last_row_in_block = ((x-1) ÷ l)*l + l
+
+            max_row = x
+            max = abs(get(A, x, x))
+            for y in (x+1):last_row_in_block
+                possible = abs(get(A, x, y))
+                if possible > max
+                    max_row = y
+                    max = possible
+                end
+            end
+
+            if max_row != x
+                swap(A, x, max_row)
+            end
+
+            last_x = last_meaningful_index_in_row(A, x)
+            for k in 1:(l-(x% l))
+                y = x + k
+                if abs(get(A, x, x)) < eps(Float64)
+                    eprintln("value too small, possible wrong results!")
+                end
+                multiplayer = -get(A, x, y)/get(A, x, x);
+                set(A, x, y, multiplayer)
+                for xx in (x+1):last_x
+                    set(A, xx, y, get(A, xx, y) + multiplayer*get(A, xx, x))
+                end
+            end
+        end
+
+        return A
+    end
+
+    function LUxbWithPartialSelection(LU::MatrixOfCoeficientsWithPartialSelection, b::RightHandMatrix)
+        y = RHM_from_vector(x_from_L_matrix_and_b_after_swaps(LU, b))
+        return x_from_triangle_matrix_and_b_after_swaps(LU, y)
+    end
+
+    function x_from_L_matrix_and_b_after_swaps(L::MatrixOfCoeficientsWithPartialSelection, b::RightHandMatrix)
+        n = length(b.body)
+        results = zeros(Float64, n)
+        for y in 1:n
+            sum = 1.0
+            for x in first_meaningful_index_in_row(L, y):(y-1)
+                sum -= get(L, x, y)*results[x]
+            end
+            results[y] = sum/get(L, y, y)
+        end
+
+        for i in 1:n
+            if L.swaped_indexes[i] != i
+                results[i], results[L.swaped_indexes[i]] = results[L.swaped_indexes[i]], results[i]
+                L.swaped_indexes[L.swaped_indexes[i]] = L.swaped_indexes[i]
+           end
+        end
+        
         return results
     end
 end
