@@ -164,7 +164,6 @@ module matrixes_representation
     end
 
     function swap(obj::MatrixOfCoeficientsWithPartialSelection, y1::Int64, y2::Int64)
-        println("swap $(y1) $(y2)")
         obj.swaped_indexes[y1], obj.swaped_indexes[y2] = obj.swaped_indexes[y2], obj.swaped_indexes[y1]
     end
 
@@ -210,4 +209,6 @@ module matrixes_representation
     function swap(obj::RightHandMatrix, y1::Int64, y2::Int64)
         obj.body[y1], obj.body[y2] = obj.body[y2], obj.body[y1]
     end
+
+
 end

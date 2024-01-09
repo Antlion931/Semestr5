@@ -102,7 +102,8 @@ function main()
         end
     elseif parsed_args["action"] == "LUxb"
         if parsed_args["selection"]
-            time = @elapsed x = LUxbWithPartialSelection(ALUWithPartialSelection(A), b)
+            time = @elapsed (L, U) = ALUWithPartialSelection(A)
+            time += @elapsed x = LUxbWithPartialSelection(L, U, b)
         else
             time = @elapsed x = LUxb(ALU(A), b)
         end

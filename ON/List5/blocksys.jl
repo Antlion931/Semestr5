@@ -42,8 +42,6 @@ module blocksys
         n = length(b.body)
         l = A.l
         for x in 1:(n-1)
-            last_row_in_block = ((x-1) ÷ l)*l + l
-
             max_row = x
             max = abs(get(A, x, x))
             for k in 1:(l-(x% l))
@@ -92,7 +90,7 @@ module blocksys
         for i in 1:n
             if A.swaped_indexes[i] != i
                 results[i], results[A.swaped_indexes[i]] = results[A.swaped_indexes[i]], results[i]
-                A.swaped_indexes[A.swaped_indexes[i]] = A.swaped_indexes[i]
+                swap(A, i, A.swaped_indexes[i])
            end
         end
 
@@ -139,12 +137,16 @@ module blocksys
     function ALUWithPartialSelection(A::MatrixOfCoeficientsWithPartialSelection)
         n = length(A.body)
         l = A.l
-        for x in 1:(n-1)
-            last_row_in_block = ((x-1) ÷ l)*l + l
+        L = Vector{Vector{Float64}}(undef, n)
 
+        for x in 1:n
+            L[x] = zeros(0)
+        end
+        for x in 1:(n-1)
             max_row = x
             max = abs(get(A, x, x))
-            for y in (x+1):last_row_in_block
+            for k in 1:(l-(x% l))
+                y = x + k
                 possible = abs(get(A, x, y))
                 if possible > max
                     max_row = y
@@ -160,39 +162,43 @@ module blocksys
             for k in 1:(l-(x% l))
                 y = x + k
                 multiplayer = get(A, x, y)/get(A, x, x);
-                set(A, x, y, multiplayer)
-                for xx in (x+1):last_x
+                push!(L[x], multiplayer)
+                for xx in x:last_x
                     set(A, xx, y, get(A, xx, y) - multiplayer*get(A, xx, x))
                 end
             end
         end
 
-        return A
+        return (L, A)
     end
 
-    function LUxbWithPartialSelection(LU::MatrixOfCoeficientsWithPartialSelection, b::RightHandMatrix)
-        y = RHM_from_vector(x_from_L_matrix_and_b_after_swaps(LU, b))
-        return x_from_triangle_matrix_and_b_after_swaps(LU, y)
+    function LUxbWithPartialSelection(L::Vector{Vector{Float64}}, U::MatrixOfCoeficientsWithPartialSelection,  b::RightHandMatrix)
+        y = RHM_from_vector(x_from_L_matrix_and_b_after_swaps(L, U, b))
+        return x_from_triangle_matrix_and_b_after_swaps(U, y)
     end
 
-    function x_from_L_matrix_and_b_after_swaps(L::MatrixOfCoeficientsWithPartialSelection, b::RightHandMatrix)
+    function x_from_L_matrix_and_b_after_swaps(L::Vector{Vector{Float64}}, U::MatrixOfCoeficientsWithPartialSelection, b::RightHandMatrix)
         n = length(b.body)
         results = zeros(Float64, n)
-        for y in 1:n
-            sum = get(b, 1, y)
-            for x in first_meaningful_index_in_row(L, y):(y-1)
-                sum -= get(L, x, y)*results[x]
-            end
-            results[y] = sum
-        end
+
+        swaped_indexes = copy(U.swaped_indexes)
 
         for i in 1:n
-            if L.swaped_indexes[i] != i
-                results[i], results[L.swaped_indexes[i]] = results[L.swaped_indexes[i]], results[i]
-                L.swaped_indexes[L.swaped_indexes[i]] = L.swaped_indexes[i]
+            k = swaped_indexes[i]
+            if k != i
+                swap(b, i, k)
+                swaped_indexes[i], swaped_indexes[k] = swaped_indexes[k], swaped_indexes[i]
             end
         end
-        
+
+        for x in 1:n
+            results[x] = get(b, 1, x)
+            for k in 1:length(L[x])
+                y = x + k
+                set(b, 1, y, get(b, 1, y) - L[x][k]*results[x])
+            end
+        end
+
         return results
     end
 end

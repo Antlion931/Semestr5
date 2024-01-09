@@ -16,7 +16,7 @@ In this List we need to modify the gauss elimination method to solve custom matr
 - [ ] Write *A = LU* solver\
     - [x] There is some error, it doesn't produce ones
     - [x] Wrong swap, It is not changing all possible rows, skips all from B when in A
-    - [ ] L and swaps needs different interpretation
+    - [x] L and swaps needs different interpretation
     - [ ] Make it work with partial selection
 - [ ] Write *LUx = b* solver
 
