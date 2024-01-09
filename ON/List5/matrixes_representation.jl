@@ -106,25 +106,25 @@ module matrixes_representation
 
         if l == n
             for i in 1:n
-                push!(last_meaningful_indexes, n)
+                push!(last_meaningful_indexes, global_x(l, n, i))
                 push!(body, zeros(Float64, n))
             end
         else
             for i in 1:l
-                push!(last_meaningful_indexes, l + i)
-                push!(body, zeros(Float64, 2 * l))
+                push!(last_meaningful_indexes, global_x(l, l + i, i))
+                push!(body, zeros(Float64, 2 * l + 1))
             end
 
             for i in 3:(n ÷ l)
                 for k in 1:l
-                    push!(last_meaningful_indexes, 1 + l + k)
+                    push!(last_meaningful_indexes, global_x(l, 1 + l + k, l * (i - 2) + k))
                     push!(body, zeros(Float64, 1 + 2 * l))
                 end
             end
 
             for i in 1:l
-                push!(last_meaningful_indexes, 1 + l)
-                push!(body, zeros(Float64, 1 + l))
+                push!(last_meaningful_indexes, global_x(l, 1 + l, n - l + i))
+                push!(body, zeros(Float64, 1 + 2*l))
             end
         end
 
@@ -139,42 +139,43 @@ module matrixes_representation
         return x - ((y-1) ÷ obj.l)*obj.l
     end
 
-    function global_x(obj::MatrixOfCoeficientsWithPartialSelection, x::Int64, y::Int64)
-        if y > obj.l
+    function global_x(l::Int64, x::Int64, y::Int64)
+        if y > l
             x -= 1
         end
 
-        return x + ((y-1) ÷ obj.l)*obj.l
+        return x + ((y-1) ÷ l)*l
     end
 
     function get(obj::MatrixOfCoeficientsWithPartialSelection, x::Int64, y::Int64)
         yy = obj.swaped_indexes[y]
-        xx = local_x(obj, x, yy)
+        xx = ((local_x(obj, x, yy) - 1) % (obj.l + obj.l + 1)) + 1
         
         return obj.body[yy][xx]
     end
 
     function set(obj::MatrixOfCoeficientsWithPartialSelection, x::Int64, y::Int64, value::Float64)
-        y = obj.swaped_indexes[y]
-        x = local_x(obj, x, y)
-        if x > obj.last_meaningful_indexes[y]
-            obj.last_meaningful_indexes[y] = x
+        yy = obj.swaped_indexes[y]
+        if x > obj.last_meaningful_indexes[yy]
+            obj.last_meaningful_indexes[yy] = x
         end
-        obj.body[y][x] = value
+        xx = ((local_x(obj, x, yy) - 1) % (obj.l + obj.l + 1)) + 1
+        obj.body[yy][xx] = value
     end
 
     function swap(obj::MatrixOfCoeficientsWithPartialSelection, y1::Int64, y2::Int64)
+        println("swap $(y1) $(y2)")
         obj.swaped_indexes[y1], obj.swaped_indexes[y2] = obj.swaped_indexes[y2], obj.swaped_indexes[y1]
     end
 
     function last_meaningful_index_in_row(obj::MatrixOfCoeficientsWithPartialSelection, y::Int64)
         y = obj.swaped_indexes[y]
-        global_x(obj, obj.last_meaningful_indexes[y], y)
+        return obj.last_meaningful_indexes[y]
     end
 
     function first_meaningful_index_in_row(obj::MatrixOfCoeficientsWithPartialSelection, y::Int64)
         y = obj.swaped_indexes[y]
-        global_x(obj, 1, y)
+        global_x(obj.l, 1, y)
     end
 
     function compute_b_with_x_of_ones(obj::MatrixOfCoeficientsWithPartialSelection)
