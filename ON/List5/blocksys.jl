@@ -131,6 +131,7 @@ module blocksys
         n = length(A.body)
         l = A.l
         L = Vector{Vector{Float64}}(undef, n)
+        P = Vector{Int64}(undef, n)
 
         for x in 1:n
             L[x] = zeros(0)
@@ -140,8 +141,6 @@ module blocksys
             max_row = x
             max = abs(get(A, x, x))
             for k in 1:(l-(x% l))
-            :q
-            :q
                 y = x + k
                 possible = abs(get(A, x, y))
                 if possible > max
@@ -154,11 +153,12 @@ module blocksys
                 swap(A, x, max_row)
             end
 
+            P[x] = max_row
+
             last_x = last_meaningful_index_in_row(A, x)
             for k in 1:(l-(x% l))
                 y = x + k
                 multiplayer = get(A, x, y)/get(A, x, x);
-                println("multiplayer: ", multiplayer)
                 push!(L[x], multiplayer)
                 for xx in x:last_x
                     set(A, xx, y, get(A, xx, y) - multiplayer*get(A, xx, x))
@@ -166,39 +166,31 @@ module blocksys
             end
         end
 
-        println("L: ", L)
-
-        return (L, A)
+        return (L, A, P)
     end
 
-    function LUxbWithPartialSelection(L::Vector{Vector{Float64}}, U::MatrixOfCoeficientsWithPartialSelection,  b::RightHandMatrix)
-        y = RHM_from_vector(x_from_L_matrix_and_b_after_swaps(L, U, b))
+    function LUxbWithPartialSelection(L::Vector{Vector{Float64}}, U::MatrixOfCoeficientsWithPartialSelection, P::Vector{Int64}, b::RightHandMatrix)
+        y = RHM_from_vector(x_from_L_matrix_and_b_after_swaps(L, P, b))
         return x_from_triangle_matrix_and_b_after_swaps(U, y)
     end
 
-    function x_from_L_matrix_and_b_after_swaps(L::Vector{Vector{Float64}}, U::MatrixOfCoeficientsWithPartialSelection, b::RightHandMatrix)
+    function x_from_L_matrix_and_b_after_swaps(L::Vector{Vector{Float64}}, P::Vector{Int64}, b::RightHandMatrix)
         n = length(b.body)
         results = zeros(Float64, n)
 
-        swaped_indexes = copy(U.swaped_indexes)
- 
-         for i in 1:n
-            k = swaped_indexes[i]
-            if k != i
-                swap(b, i, k)
-                swaped_indexes[i], swaped_indexes[k] = swaped_indexes[k], swaped_indexes[i]
+        for x in 1:(n-1)
+            k = P[x]
+            if k != x
+                swap(b, x, k)
             end
-        end
 
-        println("swaped_indexes: ", swaped_indexes)
-
-        for x in 1:n
             results[x] = get(b, 1, x)
             for k in 1:length(L[x])
                 y = x + k
                 set(b, 1, y, get(b, 1, y) - L[x][k]*results[x])
             end
         end
+        results[n] = get(b, 1, n)
 
         return results
     end

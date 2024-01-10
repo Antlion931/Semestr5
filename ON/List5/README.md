@@ -13,14 +13,15 @@ In this List we need to modify the gauss elimination method to solve custom matr
     - [x] Write it without selection
     - [x] Write it with selection
     - [x] Write Zero near zero check
-- [ ] Write *A = LU* solver\
+- [x] Write *A = LU* solver\
     - [x] There is some error, it doesn't produce ones
     - [x] Wrong swap, It is not changing all possible rows, skips all from B when in A
     - [x] L and swaps needs different interpretation
-    - [ ] Make it work with partial selection
+    - [x] Make it work with partial selection
         - [x] There is error when trying to swap rows in *b* from swaps in *A*
         - [x] Make b.txt for every matrix that will result in *x = [1, 2, 3, ..., n]*
-- [ ] Write *LUx = b* solver
+- [x] Write *LUx = b* solver
+- [ ] Write report
 
 # Notes:
 - Gauss elimination method not only simplifies the matrix to triangular matrix, but also computes *A = LU*.
