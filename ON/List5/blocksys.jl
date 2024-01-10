@@ -86,13 +86,6 @@ module blocksys
             end
             results[y] = sum/get(A, y, y)
         end
-        
-        for i in 1:n
-            if A.swaped_indexes[i] != i
-                results[i], results[A.swaped_indexes[i]] = results[A.swaped_indexes[i]], results[i]
-                swap(A, i, A.swaped_indexes[i])
-           end
-        end
 
         return results
     end
@@ -142,10 +135,13 @@ module blocksys
         for x in 1:n
             L[x] = zeros(0)
         end
+
         for x in 1:(n-1)
             max_row = x
             max = abs(get(A, x, x))
             for k in 1:(l-(x% l))
+            :q
+            :q
                 y = x + k
                 possible = abs(get(A, x, y))
                 if possible > max
@@ -162,12 +158,15 @@ module blocksys
             for k in 1:(l-(x% l))
                 y = x + k
                 multiplayer = get(A, x, y)/get(A, x, x);
+                println("multiplayer: ", multiplayer)
                 push!(L[x], multiplayer)
                 for xx in x:last_x
                     set(A, xx, y, get(A, xx, y) - multiplayer*get(A, xx, x))
                 end
             end
         end
+
+        println("L: ", L)
 
         return (L, A)
     end
@@ -182,14 +181,16 @@ module blocksys
         results = zeros(Float64, n)
 
         swaped_indexes = copy(U.swaped_indexes)
-
-        for i in 1:n
+ 
+         for i in 1:n
             k = swaped_indexes[i]
             if k != i
                 swap(b, i, k)
                 swaped_indexes[i], swaped_indexes[k] = swaped_indexes[k], swaped_indexes[i]
             end
         end
+
+        println("swaped_indexes: ", swaped_indexes)
 
         for x in 1:n
             results[x] = get(b, 1, x)

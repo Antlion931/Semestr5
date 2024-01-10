@@ -2,7 +2,7 @@
 
 module matrixes_representation
 
-    export MatrixOfCoeficients, new_MOC, RightHandMatrix, new_RHM, compute_b_with_x_of_ones, MatrixInterface, set, swap, get, last_meaningful_index_in_row, first_meaningful_index_in_row, MatrixOfCoeficientsWithPartialSelection, new_MOCWPS, swap, RHM_from_vector
+    export MatrixOfCoeficients, new_MOC, RightHandMatrix, new_RHM, compute_b_with_x_of_ones, MatrixInterface, set, swap, get, last_meaningful_index_in_row, first_meaningful_index_in_row, MatrixOfCoeficientsWithPartialSelection, new_MOCWPS, swap, RHM_from_vector, compute_b_with_x_of_next_numbers
 
     # Define an abstract type for the common interface
     abstract type MatrixInterface end
@@ -86,6 +86,19 @@ module matrixes_representation
         b = new_RHM(n)
         for i in 1:n
             set(b, 1, i, sum(obj.body[i]))
+        end
+        return b
+    end
+
+    function compute_b_with_x_of_next_numbers(obj::MatrixOfCoeficients)
+        n = length(obj.body)
+        b = new_RHM(n)
+        for i in 1:n
+            sum = 0.0
+            for j in first_meaningful_index_in_row(obj, i):last_meaningful_index_in_row(obj, i)
+                sum += get(obj, j, i) * j
+            end
+            set(b, 1, i, sum)
         end
         return b
     end
@@ -182,6 +195,19 @@ module matrixes_representation
         b = new_RHM(n)
         for i in 1:n
             set(b, 1, i, sum(obj.body[i]))
+        end
+        return b
+    end
+
+    function compute_b_with_x_of_next_numbers(obj::MatrixOfCoeficientsWithPartialSelection)
+        n = length(obj.body)
+        b = new_RHM(n)
+        for i in 1:n
+            sum = 0.0
+            for j in first_meaningful_index_in_row(obj, i):last_meaningful_index_in_row(obj, i)
+                sum += get(obj, j, i) * j
+            end
+            set(b, 1, i, sum)
         end
         return b
     end

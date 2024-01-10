@@ -3,7 +3,7 @@ include("blocksys.jl")
 
 using ArgParse
 using .blocksys: Axb, AxbWithPartialSelection, ALU, LUxb, ALUWithPartialSelection, LUxbWithPartialSelection
-using .matrixes_representation: MatrixOfCoeficients, new_MOC, RightHandMatrix, new_RHM, compute_b_with_x_of_ones, MatrixInterface, set, swap, get, last_meaningful_index_in_row, MatrixOfCoeficientsWithPartialSelection, new_MOCWPS, swap
+using .matrixes_representation: MatrixOfCoeficients, new_MOC, RightHandMatrix, new_RHM, compute_b_with_x_of_ones, MatrixInterface, set, swap, get, last_meaningful_index_in_row, MatrixOfCoeficientsWithPartialSelection, new_MOCWPS, swap, compute_b_with_x_of_next_numbers
 
 function parse_commandline()
     s = ArgParseSettings()

@@ -18,6 +18,8 @@ In this List we need to modify the gauss elimination method to solve custom matr
     - [x] Wrong swap, It is not changing all possible rows, skips all from B when in A
     - [x] L and swaps needs different interpretation
     - [ ] Make it work with partial selection
+        - [x] There is error when trying to swap rows in *b* from swaps in *A*
+        - [x] Make b.txt for every matrix that will result in *x = [1, 2, 3, ..., n]*
 - [ ] Write *LUx = b* solver
 
 # Notes:
