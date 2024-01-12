@@ -137,7 +137,7 @@ module matrixes_representation
 
             for i in 1:l
                 push!(last_meaningful_indexes, global_x(l, 1 + l, n - l + i))
-                push!(body, zeros(Float64, 1 + 2*l))
+                push!(body, zeros(Float64, 1 + l))
             end
         end
 
