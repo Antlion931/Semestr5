@@ -3,7 +3,7 @@ use rand::Rng;
 use std::env;
 use std::process;
 
-fn average_colors(pixels: &[&Rgb<u8>], color_to_block: &[usize], blocks: usize) -> Vec<Rgb<u8>> {
+/*fn average_colors(pixels: &[&Rgb<u8>], color_to_block: &[usize], blocks: usize) -> Vec<Rgb<u8>> {
     let mut red_sums_in_blocks = vec![0; blocks];
     let mut green_sums_in_blocks = vec![0; blocks];
     let mut blue_sums_in_blocks = vec![0; blocks];
@@ -76,7 +76,7 @@ fn blocks_from_colors(pixels: &[&Rgb<u8>], colors: &[Rgb<u8>], old_blocks: &[usi
         })
         .collect()
 }
-
+*/
 fn main() {
     let args: Vec<String> = env::args().collect();
 
@@ -99,11 +99,23 @@ fn main() {
     let mut output = input.clone();
 
     let pixels = output.as_mut_rgb8().unwrap();
-    let n = pixels.width() as usize 
+    let mut count = 0u8;
 
-    for x in 0..pixels.width() {
-        //TODO:
+    let mut rgb_z_2n = [Vec::new(), Vec::new(), Vec::new()];
+
+    for y in 0..pixels.height() {
+        let x_iter: Box<dyn Iterator<Item = u32>>  = if y % 2 == 0 {
+            Box::new(0..pixels.width())
+        } else {
+            Box::new((0..pixels.width()).rev())
+        };
+
+        for x in x_iter {
+            *pixels.get_pixel_mut(x, y) = Rgb([count, count, count]);
+            count = count.wrapping_add(1);
+        }
     }
+
 
     output.save(args[2].as_str()).expect("Failed to save image");
 }
