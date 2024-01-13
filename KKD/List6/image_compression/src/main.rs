@@ -1,83 +1,11 @@
-use image::{ImageBuffer, Rgb};
-use rand::Rng;
+use std::fs::File;
 use std::env;
+use std::io::Write;
 use std::process;
+use std::ptr::write_bytes;
 use image_compression::*;
+use bit_queue::{BitQueue, Bit};
 
-/*fn average_colors(pixels: &[&Rgb<u8>], color_to_block: &[usize], blocks: usize) -> Vec<Rgb<u8>> {
-    let mut red_sums_in_blocks = vec![0; blocks];
-    let mut green_sums_in_blocks = vec![0; blocks];
-    let mut blue_sums_in_blocks = vec![0; blocks];
-    let mut counts_in_blocks = vec![0; blocks];
-
-    for (pixel, block) in pixels.iter().zip(color_to_block.iter()) {
-        red_sums_in_blocks[*block] += pixel[0] as usize;
-        green_sums_in_blocks[*block] += pixel[1] as usize;
-        blue_sums_in_blocks[*block] += pixel[2] as usize;
-        counts_in_blocks[*block] += 1;
-    }
-
-    red_sums_in_blocks
-        .into_iter()
-        .zip(green_sums_in_blocks.into_iter())
-        .zip(blue_sums_in_blocks.into_iter())
-        .zip(counts_in_blocks.into_iter())
-        .map(|(((r, g), b), count)| {
-            if count != 0 {
-                Rgb([(r / count) as u8, (g / count) as u8, (b / count) as u8])
-            } else {
-                Rgb([0, 0, 0])
-            }
-        })
-        .collect()
-}
-
-fn blocks_from_colors(pixels: &[&Rgb<u8>], colors: &[Rgb<u8>], old_blocks: &[usize]) -> Vec<usize> {
-    let mut rng = rand::thread_rng();
-    let new_colors: Vec<_> = colors
-        .iter()
-        .map(|c| {
-            let r;
-            let g;
-            let b;
-
-            if rng.gen_bool(0.5) {
-                r = c[0].saturating_add(1);
-            } else {
-                r = c[0].saturating_sub(1);
-            }
-
-            if rng.gen_bool(0.5) {
-                g = c[1].saturating_add(1);
-            } else {
-                g = c[1].saturating_sub(1);
-            }
-
-            if rng.gen_bool(0.5) {
-                b = c[2].saturating_add(1);
-            } else {
-                b = c[2].saturating_sub(1);
-            }
-
-            Rgb([r, g, b])
-        })
-        .collect();
-
-    pixels
-        .iter()
-        .enumerate()
-        .map(|(n, p)| {
-            let current_distance = color_distance(p, &colors[old_blocks[n]]);
-            let new_distance = color_distance(p, &new_colors[old_blocks[n]]);
-            if current_distance <= new_distance {
-                old_blocks[n]
-            } else {
-                old_blocks[n] + colors.len()
-            }
-        })
-        .collect()
-}
-*/
 fn main() {
     let args: Vec<String> = env::args().collect();
 
@@ -86,23 +14,21 @@ fn main() {
         process::exit(1);
     }
 
-    let mut input = image::open(args[1].as_str()).expect("Failed to open image");
-    let pixels = input
-        .as_mut_rgb8()
-        .expect("Failed to convert image to RGB8")
-        .pixels()
-        .collect::<Vec<_>>();
+    let image = image::open(args[1].as_str()).expect("Failed to open image");
 
     let k = args[3]
         .parse::<usize>()
         .expect("Failed to parse number of colors");
 
-    let mut output = input.clone();
+    assert!(k < 8);
 
-    let pixels = output.as_mut_rgb8().unwrap();
-    let mut count = 0u8;
+    let pixels = image.as_rgb8().unwrap();
 
-    //let mut rgb_z_2n = [Vec::new(), Vec::new(), Vec::new()];
+    let z_filter = Filter::new(|a: f64, b: f64| (a - b) / 2.0);
+    let mut rgb_z_n = [z_filter.clone(), z_filter.clone(), z_filter.clone()];
+
+    let y_filter = Filter::new(|a: f64, b: f64| (a + b) / 2.0);
+    let mut rgb_y_n = [y_filter.clone(), y_filter.clone(), y_filter.clone()];
 
     for y in 0..pixels.height() {
         let x_iter: Box<dyn Iterator<Item = u32>>  = if y % 2 == 0 {
@@ -112,11 +38,100 @@ fn main() {
         };
 
         for x in x_iter {
-            *pixels.get_pixel_mut(x, y) = Rgb([count, count, count]);
-            count = count.wrapping_add(1);
+            for color in 0..3 {
+                let c = pixels.get_pixel(x, y)[color];
+
+                rgb_z_n[color].update(c as f64);
+                rgb_y_n[color].update(c as f64);
+            }
         }
     }
 
+    // take only every other element
+    let rgb_z_2n = rgb_z_n.into_iter().map(|x| x.get_elements().into_iter().enumerate().filter(|(n, _)| n % 2 != 0).map(|(_, v)| v).collect::<Vec<_>>()).collect::<Vec<_>>();
+    let rgb_y_2n = rgb_y_n.into_iter().map(|x| x.get_diffrences_of_elements().into_iter().enumerate().filter(|(n, _)| n % 2 != 0).map(|(_, v)| v).collect::<Vec<_>>()).collect::<Vec<_>>();
 
-    output.save(args[2].as_str()).expect("Failed to save image");
+    let rgb_z_quantized = rgb_z_2n.iter().map(|x| quantize(x, k)).collect::<Vec<_>>();
+    let rgb_y_quantized = rgb_y_2n.iter().map(|x| quantize(x, k)).collect::<Vec<_>>();
+
+    let mut output = BitQueue::new();
+
+    let mut bit_coount = 0;
+
+    //store k
+    for j in 0..3 {
+        if k & (1 << j) == 0 {
+            output.push(Bit::Zero);
+        } else {
+            output.push(Bit::One);
+        }
+
+        bit_coount += 1;
+    }
+
+    //store quantized values
+    for color in 0..3 {
+        for i in rgb_y_quantized[color].iter().chain(rgb_z_quantized[color].iter()) {
+            for byte in i.to_be_bytes() {
+                for j in 0..8 {
+                    if byte & (1 << j) == 0 {
+                        output.push(Bit::Zero);
+                    } else {
+                        output.push(Bit::One);
+                    }
+                    bit_coount += 1;
+                }
+            }
+        }
+    }
+
+    println!("{} bits", bit_coount);
+
+    //store colors and filters as number to quantize
+    for color in 0..3 {
+        let mut decoded_number = 0;
+
+        for i in &rgb_y_2n[color] {
+            let diff = i - decoded_number as f64;
+
+            let (min_index, min) = rgb_y_quantized[color].iter().enumerate().min_by(|(_, a), (_, b)| (**a - diff).abs().partial_cmp(&(**b - diff).abs()).unwrap()).unwrap();
+
+
+            decoded_number += *min as i64;
+
+            for j in 0..k {
+                if min_index & (1 << j) == 0 {
+                    output.push(Bit::Zero);
+                } else {
+                    output.push(Bit::One);
+                }
+                bit_coount += 1;
+            }
+        }
+
+        decoded_number = 0;
+
+        for i in &rgb_z_2n[color] {
+            let diff = i - decoded_number as f64;
+
+            let (min_index, min) = rgb_z_quantized[color].iter().enumerate().min_by(|(_, a), (_, b)| (**a - diff).abs().partial_cmp(&(**b - diff).abs()).unwrap()).unwrap();
+
+            decoded_number += *min as i64;
+
+            for j in 0..k {
+                if min_index & (1 << j) == 0 {
+                    output.push(Bit::Zero);
+                } else {
+                    output.push(Bit::One);
+                }
+                bit_coount += 1;
+            }
+        }
+    }
+
+    let mut output_file = File::create(args[2].as_str()).expect("Failed to create output file");
+
+    println!("{} bits", bit_coount);
+
+    output_file.write_all(&output.get_queue()).unwrap();
 }

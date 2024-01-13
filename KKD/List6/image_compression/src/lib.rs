@@ -1,10 +1,13 @@
+use rand::Rng;
+
+#[derive(Debug, Clone)]
 pub struct Filter<T, F> 
 where
     T: Copy,
     F: Fn(T, T) -> T,
 {
     func: F,
-    elements: Vec<T>,
+    pub elements: Vec<T>,
     last_number: Option<T>,
 }
 
@@ -40,6 +43,66 @@ where
 
         self.elements
     }
+}
+
+pub fn averages_from_blocks(values: &[f64], value_to_block: &[usize], blocks: usize) -> Vec<f64> {
+    let mut sums_in_blocks = vec![0.0; blocks];
+    let mut counts_in_blocks = vec![0; blocks];
+
+    for (v, b) in values.iter().zip(value_to_block.iter()) {
+        sums_in_blocks[*b] += *v;
+        counts_in_blocks[*b] += 1;
+    }
+
+    sums_in_blocks
+        .into_iter()
+        .zip(counts_in_blocks.into_iter())
+        .map(|(sum, count)|if count != 0 {sum / count as f64} else {0.0})
+        .collect()
+}
+
+pub fn blocks_from_averages(values: &[f64], averages: &[f64], old_blocks: &[usize]) -> Vec<usize> {
+    let mut rng = rand::thread_rng();
+    let new_averages: Vec<_> = averages
+        .iter()
+        .map(|c| {
+            let mut new_c = *c;
+
+            if rng.gen_bool(0.5) {
+                new_c += rng.gen_range(0.1..1.0);
+            } else {
+                new_c -= rng.gen_range(0.1..1.0);
+            }
+
+            new_c
+        })
+        .collect();
+
+    values
+        .iter()
+        .enumerate()
+        .map(|(n, v)| {
+            let current_distance = (v - averages[old_blocks[n]]).abs();
+            let new_distance = (v - new_averages[old_blocks[n]]).abs();
+            if current_distance <= new_distance {
+                old_blocks[n]
+            } else {
+                old_blocks[n] + averages.len()
+            }
+        })
+        .collect()
+}
+
+pub fn quantize(values: &[f64], times: usize) -> Vec<f64> {
+    let mut blocks = vec![0; values.len()];
+    let mut averages = averages_from_blocks(&values, &blocks, 1);
+
+    for _ in 0..times {
+        blocks = blocks_from_averages(&values, &averages, &blocks);
+        averages = averages_from_blocks(&values, &blocks, averages.len() * 2);
+    }
+
+    averages
 }
 
 #[cfg(test)]
@@ -100,7 +163,4 @@ mod test {
             assert!(relative_eq!(x, z, epsilon = f64::EPSILON));
         }
     }
-
-
-
 }

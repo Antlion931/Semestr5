@@ -6,13 +6,14 @@
     - [x] unequal quantisers
 - [x] Wirte loops that will zig-zag through the image
     - You can change zig-zag to S pattern, it will be easier to code
-- [ ] Store low-pass and high-pass filters for every color
+- [x] Store low-pass and high-pass filters for every color
     - [x] Write library that will contain structer to represent filters
         - [x] function to update numbers in a filter
         - [x] function to get diffrences
-- [ ] use LGB algorithm to find optimal quantiser for every color and every filter
-- [ ] quantise every color and every filter, be careful to correctly check, so that errors will not grow
-- [ ] Save data that is needed to decode, and decode it
+- [x] use LGB algorithm to find optimal quantiser for every color and every filter
+- [x] quantise every color and every filter, be careful to correctly check, so that errors will not grow
+- [x] Save data that is needed to decode a image
+- [ ] Decode image
 
 # Notes:
 - When coding diffrences, compare them to what decoder would see, to minimize the error. Which in other case would propagate a lot.
@@ -29,4 +30,3 @@
     - y_n should be encoded as diffrences, and x_n as normal, remeber to treat diffrently first element of y_n, x_n as they will not have prior element
     - we will quantise diffrences of y_n and values of z_n
 - Use lbg algorithm to find optimal quantiser
-
