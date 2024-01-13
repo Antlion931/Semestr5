@@ -2,6 +2,7 @@ use image::{ImageBuffer, Rgb};
 use rand::Rng;
 use std::env;
 use std::process;
+use image_compression::*;
 
 /*fn average_colors(pixels: &[&Rgb<u8>], color_to_block: &[usize], blocks: usize) -> Vec<Rgb<u8>> {
     let mut red_sums_in_blocks = vec![0; blocks];
@@ -101,7 +102,7 @@ fn main() {
     let pixels = output.as_mut_rgb8().unwrap();
     let mut count = 0u8;
 
-    let mut rgb_z_2n = [Vec::new(), Vec::new(), Vec::new()];
+    //let mut rgb_z_2n = [Vec::new(), Vec::new(), Vec::new()];
 
     for y in 0..pixels.height() {
         let x_iter: Box<dyn Iterator<Item = u32>>  = if y % 2 == 0 {

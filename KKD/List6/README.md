@@ -7,10 +7,9 @@
 - [x] Wirte loops that will zig-zag through the image
     - You can change zig-zag to S pattern, it will be easier to code
 - [ ] Store low-pass and high-pass filters for every color
-    - [ ] Write library that will contain structer to represent filters
-        - [ ] function to update numbers in a filter
-        - [ ] function to get diffrences
-        - [ ] function to apply quantiser
+    - [x] Write library that will contain structer to represent filters
+        - [x] function to update numbers in a filter
+        - [x] function to get diffrences
 - [ ] use LGB algorithm to find optimal quantiser for every color and every filter
 - [ ] quantise every color and every filter, be careful to correctly check, so that errors will not grow
 - [ ] Save data that is needed to decode, and decode it
