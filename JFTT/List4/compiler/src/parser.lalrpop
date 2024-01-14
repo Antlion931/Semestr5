@@ -1,0 +1,12 @@
+use std::str::FromStr;
+
+use lalrpop_util::ParseError;
+
+grammar;
+
+pub program_all: 
+
+pub Expr: Option<ParserResult> = {
+    <AS> => Some(<>),
+    r"#.{0,}" => ParserResult::ignore(),
+};
