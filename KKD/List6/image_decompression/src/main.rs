@@ -1,9 +1,8 @@
 use elias_coding::decode;
 use std::fs;
 use std::env;
-use std::io::Write;
 use std::process;
-use bit_queue::{BitQueue, Bit};
+use bit_queue::Bit;
 
 fn main() {
     let args: Vec<String> = env::args().collect();
@@ -125,13 +124,12 @@ fn main() {
         let mut colors = [Vec::new(), Vec::new(), Vec::new()];
 
         for color in 0..3 {
-            colors[color].push(rgb_y_2n[color][0] + rgb_z_2n[color][0]);
-            for i in 1..rgb_y_2n[color].len() {
+            for i in 0..rgb_y_2n[color].len() {
                 colors[color].push(rgb_y_2n[color][i] - rgb_z_2n[color][i]);
                 colors[color].push(rgb_y_2n[color][i] + rgb_z_2n[color][i]);
             }
         }
-        
+
         let mut image = image::RgbImage::new(width as u32, height as u32);
 
         let mut index = 0;

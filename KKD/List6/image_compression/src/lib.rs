@@ -58,10 +58,12 @@ pub fn averages_from_blocks(values: &[f64], value_to_block: &[usize], blocks: us
         counts_in_blocks[*b] += 1;
     }
 
+    let mut rng = rand::thread_rng();
+
     sums_in_blocks
         .into_iter()
         .zip(counts_in_blocks.into_iter())
-        .map(|(sum, count)|if count != 0 {sum / count as f64} else {0.0})
+        .map(|(sum, count)|if count != 0 {sum / count as f64} else {rng.gen_range(-255.0..=255.0)})
         .collect()
 }
 

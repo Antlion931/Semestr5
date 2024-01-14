@@ -3,9 +3,8 @@ use std::fs::File;
 use std::env;
 use std::io::Write;
 use std::process;
-use std::ptr::write_bytes;
 use image_compression::*;
-use bit_queue::{BitQueue, Bit};
+use bit_queue::Bit;
 
 fn main() {
     let args: Vec<String> = env::args().collect();
@@ -90,8 +89,6 @@ fn main() {
 */
     let rgb_z_quantized = rgb_z_2n.iter().map(|x| quantize(x, k)).collect::<Vec<_>>();
     let rgb_y_quantized = rgb_y_2n.iter().map(|x| quantize(x, k)).collect::<Vec<_>>();
-
-    println!("rgb_z_quantized: {:?}", rgb_z_quantized[0].len());
 
     let mut output = encode(vec![pixels.width(), pixels.height()], &[]);
 
