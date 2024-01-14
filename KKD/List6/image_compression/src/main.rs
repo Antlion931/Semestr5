@@ -1,3 +1,4 @@
+use elias_coding::encode;
 use std::fs::File;
 use std::env;
 use std::io::Write;
@@ -47,91 +48,117 @@ fn main() {
         }
     }
 
+    for color in 0..3 {
+        rgb_z_n[color].update_with_last();
+        rgb_z_n[color].update_with_last();
+        rgb_y_n[color].update_with_last();
+        rgb_y_n[color].update_with_last();
+    }
+
     // take only every other element
     let rgb_z_2n = rgb_z_n.into_iter().map(|x| x.get_elements().into_iter().enumerate().filter(|(n, _)| n % 2 != 0).map(|(_, v)| v).collect::<Vec<_>>()).collect::<Vec<_>>();
-    let rgb_y_2n = rgb_y_n.into_iter().map(|x| x.get_diffrences_of_elements().into_iter().enumerate().filter(|(n, _)| n % 2 != 0).map(|(_, v)| v).collect::<Vec<_>>()).collect::<Vec<_>>();
+    let rgb_y_2n = rgb_y_n.into_iter().map(|x| x.get_elements().into_iter().enumerate().filter(|(n, _)| n % 2 != 0).map(|(_, v)| v).collect::<Vec<_>>()).collect::<Vec<_>>();
 
+    let mut rgb_y_2n_after_diffrences = [Vec::new(), Vec::new(), Vec::new()];
+    for color in 0..3 {
+        rgb_y_2n_after_diffrences[color].push(rgb_y_2n[color][0]);
+        for i in 1..rgb_y_2n[color].len() {
+            rgb_y_2n_after_diffrences[color].push(rgb_y_2n[color][i] - rgb_y_2n[color][i - 1]);
+        }
+    }
+
+    let rgb_y_2n = rgb_y_2n_after_diffrences;
+
+   /* let mut universal_quantizer = vec![0.0f64];
+
+    for _ in 0..2usize.pow(k as u32) - 1 {
+        let mut new_universal_quantizer = Vec::new();
+
+        new_universal_quantizer.push((-255.0 + universal_quantizer[0]) / 2.0);
+
+        for i in 1..universal_quantizer.len() {
+            new_universal_quantizer.push((universal_quantizer[i - 1] + universal_quantizer[i]) / 2.0);
+        }
+
+        new_universal_quantizer.push((255.0 + universal_quantizer[universal_quantizer.len() - 1]) / 2.0);
+
+        universal_quantizer = new_universal_quantizer;
+    }
+
+    let rgb_z_quantized = vec![universal_quantizer.clone(), universal_quantizer.clone(), universal_quantizer.clone()];
+    let rgb_y_quantized = vec![universal_quantizer.clone(), universal_quantizer.clone(), universal_quantizer.clone()];
+*/
     let rgb_z_quantized = rgb_z_2n.iter().map(|x| quantize(x, k)).collect::<Vec<_>>();
     let rgb_y_quantized = rgb_y_2n.iter().map(|x| quantize(x, k)).collect::<Vec<_>>();
 
-    let mut output = BitQueue::new();
+    println!("rgb_z_quantized: {:?}", rgb_z_quantized[0].len());
 
-    let mut bit_coount = 0;
+    let mut output = encode(vec![pixels.width(), pixels.height()], &[]);
 
     //store k
-    for j in 0..3 {
+    for j in (0..3).rev() {
         if k & (1 << j) == 0 {
             output.push(Bit::Zero);
         } else {
             output.push(Bit::One);
         }
-
-        bit_coount += 1;
     }
 
     //store quantized values
     for color in 0..3 {
         for i in rgb_y_quantized[color].iter().chain(rgb_z_quantized[color].iter()) {
             for byte in i.to_be_bytes() {
-                for j in 0..8 {
+                for j in (0..8).rev() {
                     if byte & (1 << j) == 0 {
                         output.push(Bit::Zero);
                     } else {
                         output.push(Bit::One);
                     }
-                    bit_coount += 1;
                 }
             }
         }
     }
 
-    println!("{} bits", bit_coount);
-
     //store colors and filters as number to quantize
     for color in 0..3 {
-        let mut decoded_number = 0;
+        let mut diff = 0.0;
 
         for i in &rgb_y_2n[color] {
-            let diff = i - decoded_number as f64;
+            let ii = i + diff;
 
-            let (min_index, min) = rgb_y_quantized[color].iter().enumerate().min_by(|(_, a), (_, b)| (**a - diff).abs().partial_cmp(&(**b - diff).abs()).unwrap()).unwrap();
+            let (min_index, min) = rgb_y_quantized[color].iter().enumerate().min_by(|(_, a), (_, b)| (*a - ii).abs().partial_cmp(&(*b - ii).abs()).unwrap()).unwrap();
 
+            diff += i - min;
 
-            decoded_number += *min as i64;
-
-            for j in 0..k {
+            for j in (0..k).rev() {
                 if min_index & (1 << j) == 0 {
                     output.push(Bit::Zero);
                 } else {
                     output.push(Bit::One);
                 }
-                bit_coount += 1;
             }
         }
 
-        decoded_number = 0;
+        diff = 0.0;
 
         for i in &rgb_z_2n[color] {
-            let diff = i - decoded_number as f64;
+            let ii = i + diff;
 
-            let (min_index, min) = rgb_z_quantized[color].iter().enumerate().min_by(|(_, a), (_, b)| (**a - diff).abs().partial_cmp(&(**b - diff).abs()).unwrap()).unwrap();
+            let (min_index, min) = rgb_z_quantized[color].iter().enumerate().min_by(|(_, a), (_, b)| (*a - ii).abs().partial_cmp(&(*b - ii).abs()).unwrap()).unwrap();
 
-            decoded_number += *min as i64;
+            diff += i - min;
 
-            for j in 0..k {
+            for j in (0..k).rev() {
                 if min_index & (1 << j) == 0 {
                     output.push(Bit::Zero);
                 } else {
                     output.push(Bit::One);
                 }
-                bit_coount += 1;
             }
         }
     }
 
     let mut output_file = File::create(args[2].as_str()).expect("Failed to create output file");
-
-    println!("{} bits", bit_coount);
 
     output_file.write_all(&output.get_queue()).unwrap();
 }

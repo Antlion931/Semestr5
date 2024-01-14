@@ -10,3 +10,4 @@ approx = "0.5.1"
 image = "0.24.7"
 rand = "0.8.5"
 bit_queue = { path = "../bit_queue" }
+elias_coding = { path = "../elias_coding" }

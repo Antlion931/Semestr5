@@ -13,7 +13,11 @@
 - [x] use LGB algorithm to find optimal quantiser for every color and every filter
 - [x] quantise every color and every filter, be careful to correctly check, so that errors will not grow
 - [x] Save data that is needed to decode a image
-- [ ] Decode image
+- [x] Decode image
+    - [x] Add image size to file
+    - [x] Get all numbers correctly
+    - [x] Get colors from y and z
+- [ ] Change Name of elias_coding to fibonacci_coding
 
 # Notes:
 - When coding diffrences, compare them to what decoder would see, to minimize the error. Which in other case would propagate a lot.

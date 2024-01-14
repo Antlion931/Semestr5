@@ -32,6 +32,10 @@ where
         self.elements.push((self.func)(new_element, last_element));
     }
 
+    pub fn update_with_last(&mut self) {
+        self.elements.push((self.func)(self.last_number.unwrap(), self.last_number.unwrap()));
+    }
+
     pub fn get_elements(self) -> Vec<T> {
         self.elements
     }

@@ -6,6 +6,7 @@ pub enum Bit {
     One,
 }
 
+#[derive(Debug)]
 pub struct BitQueue<'a> {
     queue: Cow<'a, Vec<u8>>,
     first: u64,

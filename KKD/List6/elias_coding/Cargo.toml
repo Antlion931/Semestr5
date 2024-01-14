@@ -1,11 +1,9 @@
 [package]
-name = "image_decompression"
+name = "elias_coding"
 version = "0.1.0"
 edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-image = "0.24.7"
 bit_queue = { path = "../bit_queue" }
-elias_coding = { path = "../elias_coding" }
