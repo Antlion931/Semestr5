@@ -1,12 +1,115 @@
 use std::str::FromStr;
-
-use lalrpop_util::ParseError;
+use crate::ast::*;
 
 grammar;
 
-pub program_all: 
-
-pub Expr: Option<ParserResult> = {
-    <AS> => Some(<>),
-    r"#.{0,}" => ParserResult::ignore(),
+pub program_all: AST = {
+    <p:procedures> <m:main> => AST { procedures: p, main: m },
 };
+
+procedures: Vec<Procedure> = {
+    <pr:procedures> "PROCEDURE" <ph:proc_head> "IS" <d:declarations> "IN" <c:commands> "END" => {
+        pr.push(Procedure { head: ph, declarations: d, commands: c });
+        return pr;
+    },
+    <pr:procedures> "PROCEDURE" <ph:proc_head> "IS" "IN" <c:commands> "END" => {
+        pr.push(Procedure { head: ph, declarations: Vec::new(), commands: c });
+        return pr;
+    },
+};
+
+main: Main = {
+    "PROGRAM" "IS" <d:declarations> "IN" <c:commands> "END" => Main { declarations: d, commands: c },
+    "PROGRAM" "IS" "IN" <c:commands> "END" => Main { declarations: Vec::new(), commands: c },
+};
+
+commands: Vec<Command> = {
+    <c:commands> <cc:command> => {
+        c.push(cc);
+        return c;
+    },
+    <c:command> => {return vec![c];},
+};
+
+command: Command = {
+    <i:identifier> ":=" <e:expression> ";" => Command::Assign( Assign { identifier: i, expression: e }),
+    "IF" <c:condition> "THEN" <t:commands> "ELSE" <e:commands> "ENDIF" => Command::If( If { condition: c, then_commands: t, else_commands: e }),
+    "IF" <c:condition> "THEN" <t:commands> "ENDIF" => Command::If( If { condition: c, then_commands: t, else_commands: Vec::new() }),
+    "WHILE" <c:condition> "DO" <d:commands> "ENDWHILE" => Command::While( While { condition: c, commands: d }),
+    "REPEAT" <c:commands> "UNTIL" <u:condition> ";" => Command::Repeat( Repeat { commands: c, condition: u }),
+    <p:proc_call> ";" => Command::Call( p ),
+    "READ" <i:identifier> ";" => Command::Read( Read { identifier: i }),
+    "WRITE" <v:value> ";" => Command::Write( Write { value: v }),
+};
+
+proc_head: ProcHead = {
+    <name:r"[_a-z]+"> "(" <a:args_decl> ")" => ProcHead { name: name, params: a },
+};
+
+proc_call: Call = {
+    <name:r"[_a-z]+"> "(" <a:args> ")" => Call { name: name, args: a },
+};
+
+declarations: Vec<Declaration> = {
+    <d:declarations> "," <name:r"[_a-z]+"> => {
+        d.push(Declaration { name: name, decl_type: DeclType::Number });
+        return d;
+    },
+    <d:declarations> "," <name:r"[_a-z]+"> "[" <size:r"[0-9]+"> "]" => {
+        d.push(Declaration { name: name, decl_type: DeclType::Array(u64::from_str(<size>).unwrap()) });
+        return d;
+    },
+    <name:r"[_a-z]+"> => {retrun vec![Declaration { name: name, decl_type: DeclType::Number }];},
+    <name:r"[_a-z]+"> "[" <size:r"[0-9]+"> "]" => {return vec![Declaration { name: name, decl_type: DeclType::Array(u64::from_str(<size>).unwrap()) }];},
+};
+
+args_decl: Vec<ArgDecl> = {
+    <a:args_decl> "," <name:r"[_a-z]+"> => {
+        a.push(ArgDecl { name: name, decl_type: ArgType::Number });
+        return a;
+    },
+    <a:args_decl> "," "T" <name:r"[_a-z]+"> => {
+        a.push(ArgDecl { name: name, decl_type: ArgType::Table });
+        return a;
+    },
+    <name:r"[_a-z]+"> => {return vec![ArgDecl { name: name, decl_type: ArgType::Number }];},
+    "T" <name:r"[_a-z]+"> => {return vec![ArgDecl { name: name, decl_type: ArgType::Table }];},
+};
+
+args: Vec<Arg> = {
+    <a:args> "," <name:r"[_a-z]+"> => {
+        a.push(Arg { name: name });
+        return a;
+    },
+    <name:r"[_a-z]+"> => {return vec![Arg { name: name }];},
+};
+
+expression: Expression = {
+    <a:value> => Expression::Number( a ),
+    <a:value> "+" <b:value> => Expression::Add( a, b ),
+    <a:value> "-" <b:value> => Expression::Sub( a, b ),
+    <a:value> "*" <b:value> => Expression::Mul( a, b ),
+    <a:value> "/" <b:value> => Expression::Div( a, b ),
+    <a:value> "%" <b:value> => Expression::Mod( a, b ),
+};
+
+condition: Condition = {
+    <a:value> "=" <b:value> => Condition::Equal( a, b ),
+    <a:value> "!=" <b:value> => Condition::NotEqual( a, b ),
+    <a:value> "<" <b:value> => Condition::Less( a, b ),
+    <a:value> ">" <b:value> => Condition::Greater( a, b ),
+    <a:value> "<=" <b:value> => Condition::LessEqual( a, b ),
+    <a:value> ">=" <b:value> => Condition::GreaterEqual( a, b ),
+};
+
+value: Value = {
+    r"[0-9]+" => Value::Number( u64::from_str(<>).unwrap() ),
+    <i:identifier> => Value::Identifier( i ),
+};
+
+identifier: Identifier = {
+    r"[_a-z]+" => Identifier( name: <>, identifier_type: IdentifierType::Number ),
+    <name:r"[_a-z]+"> "[" <index:r"[0-9]+"> "]" => Identifier( name: name, identifier_type: IdentifierType::TableWithNumber(u64::from_str(index).unwrap()) ),
+    <name:r"[_a-z]+"> "[" <index:r"[_a-z]+"> "]" => Identifier( name: name, identifier_type: IdentifierType::TableWithIdentifier( index ),
+};
+

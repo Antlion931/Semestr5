@@ -1,3 +1,5 @@
+mod ast;
+
 use lalrpop_util::lalrpop_mod;
 use std::io::{self, BufRead};
 use std::fs;
@@ -14,7 +16,8 @@ fn main() {
 
     let code = fs::read_to_string(&args[1]).expect("Error reading file");
 
-    let ast = parser::
+    let ast = parser::program_all(&code).unwrap();
 
+    println!("{:#?}", ast);
 }
 
