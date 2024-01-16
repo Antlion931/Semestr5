@@ -1,0 +1,12 @@
+PROGRAM IS
+a, b, c, d
+IN
+READ a ;
+READ b ;
+READ c ;
+READ d ;
+WRITE d;
+WRITE c;
+WRITE b;
+WRITE a;
+END
