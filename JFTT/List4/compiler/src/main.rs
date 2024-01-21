@@ -1,10 +1,16 @@
 mod ast;
 mod pre_assembler;
 mod ast_to_pre_assembler;
+mod ast_problem_checker;
 mod pre_assembler_to_assembler;
 
 use lalrpop_util::lalrpop_mod;
 use std::fs;
+use ast_problem_checker::*;
+use codespan_reporting::diagnostic::{Diagnostic, Label};
+use codespan_reporting::files::SimpleFiles;
+use codespan_reporting::term::termcolor::{ColorChoice, StandardStream};
+use codespan_reporting::term;
 
 lalrpop_mod!(pub parser);
 
@@ -27,9 +33,69 @@ fn main() {
             }
             code_without_comments.push(c);
         }
+        code_without_comments.push('\n');
     }
 
     let ast = parser::program_allParser::new().parse(&code_without_comments).unwrap();
+
+    let mut files = SimpleFiles::new();
+    let file_id = files.add(&args[1], &code_without_comments);
+
+    let problems = check_for_problems(&ast);
+    let mut diagnostics = Vec::new();
+
+    let mut therer_was_error = false;
+
+    if !problems.is_empty() {
+        for p in problems {
+            match p {
+                Problem::Error(e) => {
+                    therer_was_error = true;
+                    match e {
+                        ASTError::OverlapingIdentifiers(d) => {
+                            diagnostics.push(Diagnostic::error()
+                                .with_message("There is more than one variable with the same name.")
+                                .with_labels(vec![
+                                    Label::primary(file_id, d.get_start()..d.get_end()).with_message(format!("There is other variable with the name {}.", d.get_name())),
+                                ]));
+                        }
+                        ASTError::FunctionNotDefinedBeforeUsage(d) => {
+                            diagnostics.push(Diagnostic::error()
+                                .with_message("Procedure is used before it is defined.")
+                                .with_labels(vec![
+                                    Label::primary(file_id, d.get_start()..d.get_end()).with_message(format!("There is no definition for {} before it first use.", d.get_name())),
+                                ]));
+                        }
+                        _ => {
+                            println!("Error: Unknown error");
+                        }
+                    }
+                }
+                Problem::Warning(w) => {
+                    match w {
+                        ASTWarning::UninitialazedVarible(d) => {
+                            diagnostics.push(Diagnostic::warning()
+                                .with_message("Variable could be used before initialization.")
+                                .with_labels(vec![
+                                    Label::primary(file_id, d.get_start()..d.get_end()).with_message(format!("Variable {} could be used before initialization.", d.get_name())),
+                                ]));
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    let writer = StandardStream::stderr(ColorChoice::Always);
+    let config = codespan_reporting::term::Config::default();
+
+    for d in diagnostics {
+        term::emit(&mut writer.lock(), &config, &files, &d).expect("Error writing diagnostic");
+    }
+
+    if therer_was_error {
+        std::process::exit(1);
+    }
 
     let pre_assembler = ast_to_pre_assembler::ast_to_pre_assembler(ast);
     let assembler = pre_assembler_to_assembler::pre_assembler_to_assembler(pre_assembler);

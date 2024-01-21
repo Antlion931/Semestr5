@@ -4,26 +4,26 @@ use crate::ast::*;
 grammar;
 
 pub program_all: AST = {
-    <p:procedures> <m:main> => AST::new( p, m ),
+    <l:@L> <p:procedures> <m:main> <r:@R> => AST::new( p, m, l, r ),
 };
 
 procedures: Vec<Procedure> = {
-    <pr:procedures> "PROCEDURE" <ph:proc_head> "IS" <d:declarations> "IN" <c:commands> "END" => {
+    <l:@L> <pr:procedures> "PROCEDURE" <ph:proc_head> "IS" <d:declarations> "IN" <c:commands> "END" <r:@R> => {
         let mut pr = pr;
-        pr.push(Procedure::new( ph, d, c ));
+        pr.push(Procedure::new( ph, d, c, l, r ));
         return pr;
     },
-    <pr:procedures> "PROCEDURE" <ph:proc_head> "IS" "IN" <c:commands> "END" => {
+    <l:@L> <pr:procedures> "PROCEDURE" <ph:proc_head> "IS" "IN" <c:commands> "END" <r:@R> => {
         let mut pr = pr;
-        pr.push(Procedure::new(ph, Vec::new(), c ));
+        pr.push(Procedure::new(ph, Vec::new(), c, l, r));
         return pr;
     },
     => {return Vec::new();},
 };
 
 main: Main = {
-    "PROGRAM" "IS" <d:declarations> "IN" <c:commands> "END" => Main::new( d, c ),
-    "PROGRAM" "IS" "IN" <c:commands> "END" => Main::new( Vec::new(), c ),
+    <l:@L> "PROGRAM" "IS" <d:declarations> "IN" <c:commands> "END" <r:@R> => Main::new( d, c, l, r ),
+    <l:@L> "PROGRAM" "IS" "IN" <c:commands> "END" <r:@R> => Main::new( Vec::new(), c, l, r ),
 };
 
 commands: Vec<Command> = {
@@ -36,61 +36,61 @@ commands: Vec<Command> = {
 };
 
 command: Command = {
-    <i:identifier> ":=" <e:expression> ";" => Command::Assign( Assign::new( i, e ) ),
-    "IF" <c:condition> "THEN" <t:commands> "ELSE" <e:commands> "ENDIF" => Command::If( If::new( c, t, e ) ),
-    "IF" <c:condition> "THEN" <t:commands> "ENDIF" => Command::If( If::new( c, t, Vec::new() ) ),
-    "WHILE" <c:condition> "DO" <d:commands> "ENDWHILE" => Command::While( While::new( c,  d ) ),
-    "REPEAT" <c:commands> "UNTIL" <u:condition> ";" => Command::Repeat( Repeat::new( c, u ) ),
-    <p:proc_call> ";" => Command::Call( p ),
-    "READ" <i:identifier> ";" => Command::Read( Read::new( i ) ),
-    "WRITE" <v:value> ";" => Command::Write( Write::new( v ) ),
+    <l:@L> <i:identifier> ":=" <e:expression> ";" <r:@R> => Command::Assign( Assign::new( i, e, l, r ) ),
+    <l:@L> "IF" <c:condition> "THEN" <t:commands> "ELSE" <e:commands> "ENDIF"  <r:@R> => Command::If( If::new( c, t, e, l, r ) ),
+    <l:@L> "IF" <c:condition> "THEN" <t:commands> "ENDIF"  <r:@R> => Command::If( If::new( c, t, Vec::new(), l, r ) ),
+    <l:@L> "WHILE" <c:condition> "DO" <d:commands> "ENDWHILE"  <r:@R> => Command::While( While::new( c, d, l, r ) ),
+    <l:@L> "REPEAT" <c:commands> "UNTIL" <u:condition> ";"  <r:@R> => Command::Repeat( Repeat::new( c, u, l, r ) ),
+    <p:proc_call> ";" => Command::Call( p),
+    <l:@L> "READ" <i:identifier> ";" <r:@R>  => Command::Read( Read::new( i, l, r ) ),
+    <l:@L> "WRITE" <v:value> ";"  <r:@R> => Command::Write( Write::new( v, l, r ) ),
 };
 
 proc_head: ProcHead = {
-    <name:r"[_a-z]+"> "(" <a:args_decl> ")" => ProcHead::new( name.to_owned(), a ),
+    <l:@L> <name:r"[_a-z]+"> "(" <a:args_decl> ")" <r:@R> => ProcHead::new( name.to_owned(), a, l, r ),
 };
 
 proc_call: Call = {
-    <name:r"[_a-z]+"> "(" <a:args> ")" => Call::new( name.to_owned(), a ),
+    <l:@L> <name:r"[_a-z]+"> "(" <a:args> ")" <r:@R> => Call::new( name.to_owned(), a, l, r ),
 };
 
 declarations: Vec<Declaration> = {
-    <d:declarations> "," <name:r"[_a-z]+"> => {
+    <l:@L> <d:declarations> "," <name:r"[_a-z]+"> <r:@R> => {
         let mut d = d;
-        d.push(Declaration::new( name.to_owned(), DeclType::Number ) );
+        d.push(Declaration::new( name.to_owned(), DeclType::Number, l, r ) );
         return d;
     },
-    <d:declarations> "," <name:r"[_a-z]+"> "[" <size:r"[0-9]+"> "]" => {
+    <l:@L> <d:declarations> "," <name:r"[_a-z]+"> "[" <size:r"[0-9]+"> "]" <r:@R> => {
         let mut d = d;
-        d.push(Declaration::new( name.to_owned(), DeclType::Table(u64::from_str(size).unwrap()) ) );
+        d.push(Declaration::new( name.to_owned(), DeclType::Table(u64::from_str(size).unwrap()), l, r ) );
         return d;
     },
-    <name:r"[_a-z]+"> => {return vec![Declaration::new( name.to_owned(), DeclType::Number ) ];},
-    <name:r"[_a-z]+"> "[" <size:r"[0-9]+"> "]" => {return vec![Declaration::new( name.to_owned(), DeclType::Table(u64::from_str(size).unwrap()) ) ];},
+    <l:@L> <name:r"[_a-z]+"> <r:@R> => {return vec![Declaration::new( name.to_owned(), DeclType::Number, l, r ) ];},
+    <l:@L> <name:r"[_a-z]+"> "[" <size:r"[0-9]+"> "]" <r:@R> => {return vec![Declaration::new( name.to_owned(), DeclType::Table(u64::from_str(size).unwrap()), l, r ) ];},
 };
 
 args_decl: Vec<ArgDecl> = {
-    <a:args_decl> "," <name:r"[_a-z]+"> => {
+    <l:@L> <a:args_decl> "," <name:r"[_a-z]+"> <r:@R> => {
         let mut a = a;
-        a.push(ArgDecl::new( name.to_owned(), ArgType::Number ) );
+        a.push(ArgDecl::new( name.to_owned(), ArgType::Number, l, r ) );
         return a;
     },
-    <a:args_decl> "," "T" <name:r"[_a-z]+"> => {
+    <l:@L> <a:args_decl> "," "T" <name:r"[_a-z]+"> <r:@R> => {
         let mut a = a;
-        a.push(ArgDecl::new( name.to_owned(), ArgType::Table ) );
+        a.push(ArgDecl::new( name.to_owned(), ArgType::Table, l, r ) );
         return a;
     },
-    <name:r"[_a-z]+"> => {return vec![ArgDecl::new( name.to_owned(), ArgType::Number ) ];},
-    "T" <name:r"[_a-z]+"> => {return vec![ArgDecl::new( name.to_owned(), ArgType::Table ) ];},
+    <l:@L> <name:r"[_a-z]+"> <r:@R> => {return vec![ArgDecl::new( name.to_owned(), ArgType::Number, l, r ) ];},
+    <l:@L> "T" <name:r"[_a-z]+"> <r:@R> => {return vec![ArgDecl::new( name.to_owned(), ArgType::Table, l, r ) ];},
 };
 
 args: Vec<Arg> = {
-    <a:args> "," <name:r"[_a-z]+"> => {
+    <l:@L> <a:args> "," <name:r"[_a-z]+"> <r:@R> => {
         let mut a = a;
-        a.push(Arg::new( name.to_owned() ) );
+        a.push(Arg::new( name.to_owned(), l, r ) );
         return a;
     },
-    <name:r"[_a-z]+"> => {return vec![Arg::new( name.to_owned() ) ];},
+    <l:@L> <name:r"[_a-z]+"> <r:@R> => {return vec![Arg::new( name.to_owned(), l, r ) ];},
 };
 
 expression: Expression = {
@@ -112,13 +112,13 @@ condition: Condition = {
 };
 
 value: Value = {
-    r"[0-9]+" => Value::Number( u64::from_str(<>).unwrap() ),
+    <name:r"[0-9]+"> => Value::Number( u64::from_str(name).unwrap() ),
     <i:identifier> => Value::Identifier( i ),
 };
 
 identifier: Identifier = {
-    <name:r"[_a-z]+"> => Identifier::new(  name.to_owned(), IdentifierType::Number ),
-    <name:r"[_a-z]+"> "[" <index:r"[0-9]+"> "]" => Identifier::new( name.to_owned(), IdentifierType::TableWithNumber(u64::from_str(index).unwrap()) ),
-    <name:r"[_a-z]+"> "[" <index:r"[_a-z]+"> "]" => Identifier::new( name.to_owned(), IdentifierType::TableWithIdentifier( index.to_owned() ) ),
+    <l:@L> <name:r"[_a-z]+"> <r:@R> => Identifier::new(  name.to_owned(), IdentifierType::Number, l, r ),
+    <l:@L> <name:r"[_a-z]+"> "[" <index:r"[0-9]+"> "]" <r:@R> => Identifier::new( name.to_owned(), IdentifierType::TableWithNumber(u64::from_str(index).unwrap()), l, r ),
+    <l:@L> <name:r"[_a-z]+"> "[" <index:r"[_a-z]+"> "]" <r:@R> => Identifier::new( name.to_owned(), IdentifierType::TableWithIdentifier( index.to_owned() ), l, r ),
 };
 
