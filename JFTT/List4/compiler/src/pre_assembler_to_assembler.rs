@@ -8,55 +8,55 @@ pub fn pre_assembler_to_assembler(block: Block) -> String {
         match pre {
             PreAssembler::READ => {
                 result.push_str("READ\n");
-            },
+            }
             PreAssembler::WRITE => {
                 result.push_str("WRITE\n");
-            },
+            }
             PreAssembler::ADD(x) => {
                 unimplemented!();
-            },
+            }
             PreAssembler::SUB(x) => {
                 unimplemented!();
-            },
+            }
             PreAssembler::GET(x) => {
                 let mem = block.memory.get(&x).unwrap();
 
                 result.push_str(&generate_const_in_reg('a', *mem));
 
                 result.push_str("LOAD a\n");
-            },
+            }
             PreAssembler::PUT(x) => {
                 let mem = block.memory.get(&x).unwrap();
 
                 result.push_str(&generate_const_in_reg('b', *mem));
 
                 result.push_str("STORE b\n");
-            },
+            }
             PreAssembler::RST(x) => {
                 unimplemented!();
-            },
+            }
             PreAssembler::INC(x) => {
                 unimplemented!();
-            },
+            }
             PreAssembler::DEC(x) => {
                 unimplemented!();
-            },
+            }
             PreAssembler::SHL(x) => {
                 unimplemented!();
-            },
+            }
             PreAssembler::SHR(x) => {
                 unimplemented!();
-            },
+            }
         }
     }
 
     match block.jumps {
         Jumps::HALT => {
             result.push_str("HALT\n");
-        },
+        }
         _ => {
             unimplemented!();
-        },
+        }
     }
 
     result

@@ -1,3 +1,5 @@
+use std::hash::Hash;
+
 pub trait DiagnosticInfo {
     fn get_name(&self) -> &str;
     fn get_start(&self) -> usize;
@@ -14,7 +16,12 @@ pub struct AST {
 
 impl AST {
     pub fn new(procedurs: Vec<Procedure>, main: Main, start: usize, end: usize) -> Self {
-        Self { procedurs, main, start, end }
+        Self {
+            procedurs,
+            main,
+            start,
+            end,
+        }
     }
 }
 
@@ -42,13 +49,19 @@ pub struct Procedure {
 }
 
 impl Procedure {
-    pub fn new(proc_head: ProcHead, declarations: Vec<Declaration>, commands: Vec<Command>, start: usize, end: usize) -> Self {
+    pub fn new(
+        proc_head: ProcHead,
+        declarations: Vec<Declaration>,
+        commands: Vec<Command>,
+        start: usize,
+        end: usize,
+    ) -> Self {
         Self {
             proc_head,
             declarations,
             commands,
             start,
-            end
+            end,
         }
     }
 }
@@ -76,7 +89,12 @@ pub struct Main {
 }
 
 impl Main {
-    pub fn new(declarations: Vec<Declaration>, commands: Vec<Command>, start: usize, end: usize) -> Self {
+    pub fn new(
+        declarations: Vec<Declaration>,
+        commands: Vec<Command>,
+        start: usize,
+        end: usize,
+    ) -> Self {
         Self {
             declarations,
             commands,
@@ -110,7 +128,12 @@ pub struct ProcHead {
 
 impl ProcHead {
     pub fn new(name: String, params: Vec<ArgDecl>, start: usize, end: usize) -> Self {
-        Self { name, params, start, end }
+        Self {
+            name,
+            params,
+            start,
+            end,
+        }
     }
 }
 
@@ -138,7 +161,12 @@ pub struct ArgDecl {
 
 impl ArgDecl {
     pub fn new(name: String, arg_type: ArgType, start: usize, end: usize) -> Self {
-        Self { name, arg_type, start, end}
+        Self {
+            name,
+            arg_type,
+            start,
+            end,
+        }
     }
 }
 
@@ -172,7 +200,12 @@ pub struct Declaration {
 
 impl Declaration {
     pub fn new(name: String, decl_type: DeclType, start: usize, end: usize) -> Self {
-        Self { name, decl_type, start, end }
+        Self {
+            name,
+            decl_type,
+            start,
+            end,
+        }
     }
 }
 
@@ -248,6 +281,21 @@ pub struct Identifier {
     pub end: usize,
 }
 
+impl PartialEq for Identifier {
+    fn eq(&self, other: &Self) -> bool {
+        self.name == other.name && self.indentifier_type == other.indentifier_type
+    }
+}
+
+impl Eq for Identifier {}
+
+impl Hash for Identifier {
+    fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
+        self.name.hash(state);
+        self.indentifier_type.hash(state);
+    }
+}
+
 impl Identifier {
     pub fn new(name: String, indentifier_type: IdentifierType, start: usize, end: usize) -> Self {
         Self {
@@ -278,6 +326,35 @@ pub enum IdentifierType {
     Number,
     TableWithNumber(u64),
     TableWithIdentifier(String),
+}
+
+impl PartialEq for IdentifierType {
+    fn eq(&self, other: &Self) -> bool {
+        match (self, other) {
+            (IdentifierType::Number, IdentifierType::Number) => true,
+            (
+                IdentifierType::TableWithNumber(_),
+                IdentifierType::TableWithNumber(_),
+            ) => true,
+            (
+                IdentifierType::TableWithIdentifier(_),
+                IdentifierType::TableWithIdentifier(_),
+            ) => true,
+            _ => false,
+        }
+    }
+}
+
+impl Eq for IdentifierType {}
+
+impl Hash for IdentifierType {
+    fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
+        match self {
+            IdentifierType::Number => 0.hash(state),
+            IdentifierType::TableWithNumber(_) => 1.hash(state),
+            IdentifierType::TableWithIdentifier(_) => 2.hash(state),
+        }
+    }
 }
 
 #[derive(Debug, Clone)]
@@ -357,7 +434,12 @@ pub struct While {
 
 impl While {
     pub fn new(condition: Condition, commands: Vec<Command>, start: usize, end: usize) -> Self {
-        Self { condition, commands, start, end }
+        Self {
+            condition,
+            commands,
+            start,
+            end,
+        }
     }
 }
 
@@ -385,7 +467,12 @@ pub struct Repeat {
 
 impl Repeat {
     pub fn new(commands: Vec<Command>, condition: Condition, start: usize, end: usize) -> Self {
-        Self { commands, condition, start, end }
+        Self {
+            commands,
+            condition,
+            start,
+            end,
+        }
     }
 }
 
@@ -413,7 +500,12 @@ pub struct Call {
 
 impl Call {
     pub fn new(name: String, args: Vec<Arg>, start: usize, end: usize) -> Self {
-        Self { name, args, start, end }
+        Self {
+            name,
+            args,
+            start,
+            end,
+        }
     }
 }
 
@@ -467,7 +559,11 @@ pub struct Read {
 
 impl Read {
     pub fn new(identifier: Identifier, start: usize, end: usize) -> Self {
-        Self { identifier, start, end }
+        Self {
+            identifier,
+            start,
+            end,
+        }
     }
 }
 

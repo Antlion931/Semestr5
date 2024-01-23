@@ -1,16 +1,16 @@
 mod ast;
-mod pre_assembler;
-mod ast_to_pre_assembler;
 mod ast_problem_checker;
+mod ast_to_pre_assembler;
+mod pre_assembler;
 mod pre_assembler_to_assembler;
 
-use lalrpop_util::lalrpop_mod;
-use std::fs;
 use ast_problem_checker::*;
 use codespan_reporting::diagnostic::{Diagnostic, Label};
 use codespan_reporting::files::SimpleFiles;
-use codespan_reporting::term::termcolor::{ColorChoice, StandardStream};
 use codespan_reporting::term;
+use codespan_reporting::term::termcolor::{ColorChoice, StandardStream};
+use lalrpop_util::lalrpop_mod;
+use std::fs;
 
 lalrpop_mod!(pub parser);
 
@@ -36,7 +36,9 @@ fn main() {
         code_without_comments.push('\n');
     }
 
-    let ast = parser::program_allParser::new().parse(&code_without_comments).unwrap();
+    let ast = parser::program_allParser::new()
+        .parse(&code_without_comments)
+        .unwrap();
 
     let mut files = SimpleFiles::new();
     let file_id = files.add(&args[1], &code_without_comments);
@@ -53,35 +55,153 @@ fn main() {
                     therer_was_error = true;
                     match e {
                         ASTError::OverlapingIdentifiers(d) => {
-                            diagnostics.push(Diagnostic::error()
-                                .with_message("There is more than one variable with the same name.")
-                                .with_labels(vec![
-                                    Label::primary(file_id, d.get_start()..d.get_end()).with_message(format!("There is other variable with the name {}.", d.get_name())),
-                                ]));
+                            diagnostics.push(
+                                Diagnostic::error()
+                                    .with_message(
+                                        "There is more than one variable with the same name.",
+                                    )
+                                    .with_labels(vec![Label::primary(
+                                        file_id,
+                                        d.get_start()..d.get_end(),
+                                    )
+                                    .with_message(format!(
+                                        "There is other variable with the name {}.",
+                                        d.get_name()
+                                    ))]),
+                            );
                         }
                         ASTError::FunctionNotDefinedBeforeUsage(d) => {
-                            diagnostics.push(Diagnostic::error()
-                                .with_message("Procedure is used before it is defined.")
-                                .with_labels(vec![
-                                    Label::primary(file_id, d.get_start()..d.get_end()).with_message(format!("There is no definition for {} before it first use.", d.get_name())),
-                                ]));
+                            diagnostics.push(
+                                Diagnostic::error()
+                                    .with_message("Procedure is used before it is defined.")
+                                    .with_labels(vec![Label::primary(
+                                        file_id,
+                                        d.get_start()..d.get_end(),
+                                    )
+                                    .with_message(format!(
+                                        "There is no definition for {} before it first use.",
+                                        d.get_name()
+                                    ))]),
+                            );
                         }
-                        _ => {
-                            println!("Error: Unknown error");
+                        ASTError::MultipleProceduresWithSameName(d) => {
+                            diagnostics.push(
+                                Diagnostic::error()
+                                    .with_message(
+                                        "There is more than one procedure with the same name.",
+                                    )
+                                    .with_labels(vec![Label::primary(
+                                        file_id,
+                                        d.get_start()..d.get_end(),
+                                    )
+                                    .with_message(format!(
+                                        "There is other procedure with the name {}.",
+                                        d.get_name()
+                                    ))]),
+                            );
+                        }
+                        ASTError::UndeclaredVarible(d) => {
+                            diagnostics.push(
+                                Diagnostic::error()
+                                    .with_message("Variable is not declared declared.")
+                                    .with_labels(vec![Label::primary(
+                                        file_id,
+                                        d.get_start()..d.get_end(),
+                                    )
+                                    .with_message(format!(
+                                        "There is no declaration for {} before it first use.",
+                                        d.get_name()
+                                    ))]),
+                            );
+                        }
+                        ASTError::UninitialazedVarible(d) => {
+                            diagnostics.push(
+                                Diagnostic::error()
+                                    .with_message("Variable is used before initialization.")
+                                    .with_labels(vec![Label::primary(
+                                        file_id,
+                                        d.get_start()..d.get_end(),
+                                    )
+                                    .with_message(format!(
+                                        "Variable {} is used before initialization.",
+                                        d.get_name()
+                                    ))]),
+                            );
+                        }
+                        ASTError::WrongUsageOfTable(d) => {
+                            diagnostics.push(
+                                Diagnostic::error()
+                                    .with_message("Wrong usage of table.")
+                                    .with_labels(vec![Label::primary(
+                                        file_id,
+                                        d.get_start()..d.get_end(),
+                                    )
+                                    .with_message(format!(
+                                        "Wrong usage of table {}.",
+                                        d.get_name()
+                                    ))]),
+                            );
+                        }
+                        ASTError::WrongUsageOfVariable(d) => {
+                            diagnostics.push(
+                                Diagnostic::error()
+                                    .with_message("Wrong usage of variable.")
+                                    .with_labels(vec![Label::primary(
+                                        file_id,
+                                        d.get_start()..d.get_end(),
+                                    )
+                                    .with_message(format!(
+                                        "Wrong usage of variable {}.",
+                                        d.get_name()
+                                    ))]),
+                            );
+                        }
+                        ASTError::WrongParametersOfAFunction(d) => {
+                            diagnostics.push(
+                                Diagnostic::error()
+                                    .with_message("Wrong parameters of a function.")
+                                    .with_labels(vec![Label::primary(
+                                        file_id,
+                                        d.get_start()..d.get_end(),
+                                    )
+                                    .with_message(format!(
+                                        "Wrong parameters of a function {}.",
+                                        d.get_name()
+                                    ))]),
+                            );
+                        }
+                        ASTError::IndexOutOfTable(d) => {
+                            diagnostics.push(
+                                Diagnostic::error()
+                                    .with_message("Index out of table.")
+                                    .with_labels(vec![Label::primary(
+                                        file_id,
+                                        d.get_start()..d.get_end(),
+                                    )
+                                    .with_message(format!(
+                                        "Index out of table {}.",
+                                        d.get_name()
+                                    ))]),
+                            );
                         }
                     }
                 }
-                Problem::Warning(w) => {
-                    match w {
-                        ASTWarning::UninitialazedVarible(d) => {
-                            diagnostics.push(Diagnostic::warning()
+                Problem::Warning(w) => match w {
+                    ASTWarning::UninitialazedVarible(d) => {
+                        diagnostics.push(
+                            Diagnostic::warning()
                                 .with_message("Variable could be used before initialization.")
-                                .with_labels(vec![
-                                    Label::primary(file_id, d.get_start()..d.get_end()).with_message(format!("Variable {} could be used before initialization.", d.get_name())),
-                                ]));
-                        }
+                                .with_labels(vec![Label::primary(
+                                    file_id,
+                                    d.get_start()..d.get_end(),
+                                )
+                                .with_message(format!(
+                                    "Variable {} could be used before initialization.",
+                                    d.get_name()
+                                ))]),
+                        );
                     }
-                }
+                },
             }
         }
     }
@@ -106,8 +226,8 @@ fn main() {
 #[cfg(test)]
 mod test {
     use super::*;
-    use std::io::Write;
     use std::fs::File;
+    use std::io::Write;
     use std::process;
 
     fn tester(code: &str, path: &str, input: &[u64], expected_output: &[u128]) {
@@ -137,11 +257,18 @@ mod test {
 
         let o = String::from_utf8_lossy(&output.stdout);
 
-        let o = o.chars().filter(|c| *c != '>' && *c != '?').collect::<String>();
+        let o = o
+            .chars()
+            .filter(|c| *c != '>' && *c != '?')
+            .collect::<String>();
 
-        let numbers = o.lines().map(|l| l.trim()).filter_map(|l| u128::from_str_radix(l, 10).ok()).collect::<Vec<_>>();
+        let numbers = o
+            .lines()
+            .map(|l| l.trim())
+            .filter_map(|l| u128::from_str_radix(l, 10).ok())
+            .collect::<Vec<_>>();
 
-        assert_eq!( numbers, expected_output);
+        assert_eq!(numbers, expected_output);
     }
 
     #[test]

@@ -32,19 +32,23 @@ pub enum PreAssembler {
 
 pub enum Jumps {
     JUMP(Rc<Block>),
-    JPOS { t: Rc<Block>, f: Rc<Block>},
-    JZERO { t: Rc<Block>, f: Rc<Block>},
+    JPOS { t: Rc<Block>, f: Rc<Block> },
+    JZERO { t: Rc<Block>, f: Rc<Block> },
     HALT,
 }
 
 pub struct Block {
     pub pre_assembler: Vec<PreAssembler>,
     pub jumps: Jumps,
-    pub memory: HashMap<AbstractVarible, u64>
+    pub memory: HashMap<AbstractVarible, u64>,
 }
 
 impl Block {
     pub fn new() -> Self {
-        Self { pre_assembler: Vec::new(), jumps: Jumps::HALT, memory: HashMap::new() }
+        Self {
+            pre_assembler: Vec::new(),
+            jumps: Jumps::HALT,
+            memory: HashMap::new(),
+        }
     }
 }
