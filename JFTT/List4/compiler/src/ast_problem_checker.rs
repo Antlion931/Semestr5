@@ -75,7 +75,6 @@ pub fn check_for_problems(ast: &AST) -> Vec<Problem> {
                     Box::new(call),
                 )));
             }
-
         }
 
         if known_procedures.contains(&proc.proc_head.name) {
@@ -166,7 +165,12 @@ fn get_function_calls_and_problems_from_commands_given_declarations_rec(
                 let mut problem_in_arguments = false;
 
                 if let Some(p) = procedures.iter().find(|x| x.proc_head.name == call.name) {
-                    for (arg, name) in p.proc_head.params.iter().zip(call.args.iter().map(|x| &x.name)) {
+                    for (arg, name) in p
+                        .proc_head
+                        .params
+                        .iter()
+                        .zip(call.args.iter().map(|x| &x.name))
+                    {
                         match arg.arg_type {
                             ArgType::Number => {
                                 let id = Identifier::new(
@@ -176,7 +180,8 @@ fn get_function_calls_and_problems_from_commands_given_declarations_rec(
                                     call.end,
                                 );
 
-                                initialized_variables.insert(id.clone(), IdentifierState::Initialized);
+                                initialized_variables
+                                    .insert(id.clone(), IdentifierState::Initialized);
 
                                 let mut new_problems = check_if_identifier_is_ok(
                                     &id,
@@ -201,7 +206,8 @@ fn get_function_calls_and_problems_from_commands_given_declarations_rec(
                                     call.end,
                                 );
 
-                                initialized_tables.insert(id.name.clone(), IdentifierState::Initialized);
+                                initialized_tables
+                                    .insert(id.name.clone(), IdentifierState::Initialized);
 
                                 let mut new_problems = check_if_identifier_is_ok(
                                     &id,
@@ -299,10 +305,12 @@ fn get_function_calls_and_problems_from_commands_given_declarations_rec(
                                 )));
                             }
                             IdentifierType::TableWithNumber(_) => {
-                                if IdentifierState::Initialized == *initialized_tables.get(k.name.as_str()).unwrap() {
-                                    problems.push(Problem::Warning(ASTWarning::UninitialazedVarible(
-                                        Box::new(k.clone()),
-                                    )));
+                                if IdentifierState::Initialized
+                                    == *initialized_tables.get(k.name.as_str()).unwrap()
+                                {
+                                    problems.push(Problem::Warning(
+                                        ASTWarning::UninitialazedVarible(Box::new(k.clone())),
+                                    ));
 
                                     *v = IdentifierState::Initialized;
                                 } else {
@@ -312,10 +320,12 @@ fn get_function_calls_and_problems_from_commands_given_declarations_rec(
                                 }
                             }
                             IdentifierType::TableWithIdentifier(_) => {
-                                if IdentifierState::Initialized == *initialized_tables.get(k.name.as_str()).unwrap() {
-                                    problems.push(Problem::Warning(ASTWarning::UninitialazedVarible(
-                                        Box::new(k.clone()),
-                                    )));
+                                if IdentifierState::Initialized
+                                    == *initialized_tables.get(k.name.as_str()).unwrap()
+                                {
+                                    problems.push(Problem::Warning(
+                                        ASTWarning::UninitialazedVarible(Box::new(k.clone())),
+                                    ));
 
                                     *v = IdentifierState::Initialized;
                                 } else {
@@ -325,11 +335,8 @@ fn get_function_calls_and_problems_from_commands_given_declarations_rec(
                                 }
                             }
                         }
-
                     }
                 }
-
-
             }
             Command::Repeat(c) => {
                 let (mut new_calls, mut new_problems) =
@@ -355,7 +362,7 @@ fn get_function_calls_and_problems_from_commands_given_declarations_rec(
                 );
                 problems.append(&mut new_problems);
 
-            for (k, v) in initialized_variables.iter_mut() {
+                for (k, v) in initialized_variables.iter_mut() {
                     if *v == IdentifierState::PossilbyUninitialized {
                         match k.indentifier_type {
                             IdentifierType::Number => {
@@ -364,10 +371,12 @@ fn get_function_calls_and_problems_from_commands_given_declarations_rec(
                                 )));
                             }
                             IdentifierType::TableWithNumber(_) => {
-                                if IdentifierState::Initialized == *initialized_tables.get(k.name.as_str()).unwrap() {
-                                    problems.push(Problem::Warning(ASTWarning::UninitialazedVarible(
-                                        Box::new(k.clone()),
-                                    )));
+                                if IdentifierState::Initialized
+                                    == *initialized_tables.get(k.name.as_str()).unwrap()
+                                {
+                                    problems.push(Problem::Warning(
+                                        ASTWarning::UninitialazedVarible(Box::new(k.clone())),
+                                    ));
 
                                     *v = IdentifierState::Initialized;
                                 } else {
@@ -377,10 +386,12 @@ fn get_function_calls_and_problems_from_commands_given_declarations_rec(
                                 }
                             }
                             IdentifierType::TableWithIdentifier(_) => {
-                                if IdentifierState::Initialized == *initialized_tables.get(k.name.as_str()).unwrap() {
-                                    problems.push(Problem::Warning(ASTWarning::UninitialazedVarible(
-                                        Box::new(k.clone()),
-                                    )));
+                                if IdentifierState::Initialized
+                                    == *initialized_tables.get(k.name.as_str()).unwrap()
+                                {
+                                    problems.push(Problem::Warning(
+                                        ASTWarning::UninitialazedVarible(Box::new(k.clone())),
+                                    ));
 
                                     *v = IdentifierState::Initialized;
                                 } else {
@@ -390,10 +401,8 @@ fn get_function_calls_and_problems_from_commands_given_declarations_rec(
                                 }
                             }
                         }
-
                     }
                 }
-
             }
             Command::Assign(assign) => {
                 let id = assign.identifier.clone();
@@ -624,10 +633,8 @@ fn check_if_identifier_is_ok(
                 DeclType::Number => {
                     if !initialized_variables.contains_key(id) {
                         if loop_depth != 0 {
-                            initialized_variables.insert(
-                                id.clone(),
-                                IdentifierState::PossilbyUninitialized,
-                            );
+                            initialized_variables
+                                .insert(id.clone(), IdentifierState::PossilbyUninitialized);
                         } else {
                             problems.push(Problem::Error(ASTError::UninitialazedVarible(
                                 Box::new(id.clone()),
@@ -651,10 +658,8 @@ fn check_if_identifier_is_ok(
                     if !initialized_tables.contains_key(&id.name) {
                         if !initialized_variables.contains_key(id) {
                             if loop_depth != 0 {
-                                initialized_variables.insert(
-                                    id.clone(),
-                                    IdentifierState::PossilbyUninitialized,
-                                );
+                                initialized_variables
+                                    .insert(id.clone(), IdentifierState::PossilbyUninitialized);
                             } else {
                                 problems.push(Problem::Error(ASTError::UninitialazedVarible(
                                     Box::new(id.clone()),
@@ -860,6 +865,6 @@ fn problems_in_condition(
             problems.append(&mut new_problems);
         }
     }
-    
+
     problems
 }

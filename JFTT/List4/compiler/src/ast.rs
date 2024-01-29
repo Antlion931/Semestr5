@@ -332,14 +332,10 @@ impl PartialEq for IdentifierType {
     fn eq(&self, other: &Self) -> bool {
         match (self, other) {
             (IdentifierType::Number, IdentifierType::Number) => true,
-            (
-                IdentifierType::TableWithNumber(_),
-                IdentifierType::TableWithNumber(_),
-            ) => true,
-            (
-                IdentifierType::TableWithIdentifier(_),
-                IdentifierType::TableWithIdentifier(_),
-            ) => true,
+            (IdentifierType::TableWithNumber(_), IdentifierType::TableWithNumber(_)) => true,
+            (IdentifierType::TableWithIdentifier(_), IdentifierType::TableWithIdentifier(_)) => {
+                true
+            }
             _ => false,
         }
     }

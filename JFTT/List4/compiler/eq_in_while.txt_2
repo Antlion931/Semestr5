@@ -1,0 +1,62 @@
+# READ
+READ
+# PUT Else(Var(Main, "a"))
+RST b
+STORE b
+# READ
+READ
+# PUT Else(Var(Main, "b"))
+RST b
+INC b
+STORE b
+# LABEL 0
+# GET Else(Var(Main, "a"))
+RST b
+LOAD b
+# SUB Else(Var(Main, "b"))
+RST b
+INC b
+PUT c
+LOAD b
+PUT d
+GET c
+SUB d
+# JPOS 1
+JPOS 39
+# GET Else(Var(Main, "b"))
+RST b
+INC b
+LOAD b
+# SUB Else(Var(Main, "a"))
+RST b
+PUT c
+LOAD b
+PUT d
+GET c
+SUB d
+# JPOS 1
+JPOS 39
+# GET Else(Const(1))
+RST a
+INC a
+# WRITE
+WRITE
+# READ
+READ
+# PUT Else(Var(Main, "a"))
+RST b
+STORE b
+# READ
+READ
+# PUT Else(Var(Main, "b"))
+RST b
+INC b
+STORE b
+# JUMP 0
+JUMP 7
+# JUMP 2
+JUMP 39
+# LABEL 1
+# LABEL 2
+# HALT
+HALT
