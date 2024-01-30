@@ -3,8 +3,9 @@ use crate::common::*;
 use crate::pre_assembler::*;
 use std::collections::HashMap;
 
-pub fn ast_to_pre_assembler(ast: AST) -> Block {
+pub fn ast_to_pre_assembler(ast: AST) -> (Block, CompileInfo) {
     let mut result = Block::new();
+    let mut compile_info = CompileInfo::new();
 
     let mut label_counter = Counter::new();
     let mut index_counter = Counter::new();
@@ -19,6 +20,7 @@ pub fn ast_to_pre_assembler(ast: AST) -> Block {
         &ast.main.commands,
         ProcType::Main,
         &mut result,
+        &mut compile_info,
         &mut index_counter,
         &mut label_counter,
         &procedures_labels,
@@ -34,10 +36,10 @@ pub fn ast_to_pre_assembler(ast: AST) -> Block {
             procedures_labels.get(p.get_name()).unwrap().clone(),
         ));
         add_commands(
-
             &p.commands,
             ProcType::Procedure(p.get_name().to_string()),
             &mut result,
+            &mut compile_info,
             &mut index_counter,
             &mut label_counter,
             &procedures_labels,
@@ -72,13 +74,14 @@ pub fn ast_to_pre_assembler(ast: AST) -> Block {
             )));
     }
 
-    result
+    (result, compile_info)
 }
 
 fn add_commands(
     commands: &Vec<Command>,
     proc_type: ProcType,
     result: &mut Block,
+    compile_info: &mut CompileInfo,
     index_counter: &mut Counter,
     label_counter: &mut Counter,
     procedures_labels: &HashMap<String, u64>,
@@ -89,17 +92,11 @@ fn add_commands(
     for d in declarations {
         match d.decl_type {
             DeclType::Number => {
-                result.memory.insert(
-                    AbstractVarible::Else(AbstractNumber::Var(proc_type.clone(), d.name.clone())),
-                    index_counter.next(),
-                );
+                compile_info.memory.entry(AbstractVarible::Else(AbstractNumber::Var(proc_type.clone(), d.name.clone()))).or_insert_with(|| index_counter.next());
             }
             DeclType::Table(x) => {
                 for i in 0..x {
-                    result.memory.insert(
-                        AbstractVarible::Table(d.name.clone(), AbstractNumber::Const(i)),
-                        index_counter.next(),
-                    );
+                    compile_info.memory.entry(AbstractVarible::Table(proc_type.clone(), d.name.clone(), AbstractNumber::Const(i))).or_insert_with(|| index_counter.next());
                 }
             }
         }
@@ -171,8 +168,8 @@ fn add_commands(
                         )));
                 }
                 Expression::Mul(a, b) => {
-                    if result.mul_label.is_none() {
-                        result.mul_label = Some(label_counter.next());
+                    if compile_info.mul_label.is_none() {
+                        compile_info.mul_label = Some(label_counter.next());
                         let _ = label_counter.next(); // while inside of mul
                         let _ = label_counter.next(); // if inside of mul
                     }
@@ -201,9 +198,8 @@ fn add_commands(
                         )));
                 }
                 Expression::Div(a, b) => {
-                    if result.div_label.is_none() {
-                        result.div_label = Some(label_counter.next());
-                        let _ = label_counter.next();
+                    if compile_info.div_label.is_none() {
+                        compile_info.div_label = Some(label_counter.next());
                         let _ = label_counter.next();
                         let _ = label_counter.next();
                         let _ = label_counter.next();
@@ -234,8 +230,13 @@ fn add_commands(
                         )));
                 }
                 Expression::Mod(a, b) => {
-                    if result.mod_label.is_none() {
-                        result.mod_label = Some(label_counter.next());
+                    if compile_info.mod_label.is_none() {
+                        compile_info.mod_label = Some(label_counter.next());
+                        let _ = label_counter.next();
+                        let _ = label_counter.next();
+                        let _ = label_counter.next();
+                        let _ = label_counter.next();
+                        let _ = label_counter.next();
                     }
 
                     result.pre_assembler.push(PreAssembler::GET(value_to_abstract_varible(
@@ -243,14 +244,14 @@ fn add_commands(
                         proc_type.clone(),
                         arguments,
                     )));
-                    result.pre_assembler.push(PreAssembler::MOVE('b'));
+                    result.pre_assembler.push(PreAssembler::MOVE('h'));
 
                     result.pre_assembler.push(PreAssembler::GET(value_to_abstract_varible(
                         b,
                         proc_type.clone(),
                         arguments,
                     )));
-                    result.pre_assembler.push(PreAssembler::MOVE('c'));
+                    result.pre_assembler.push(PreAssembler::MOVE('g'));
 
                     result.pre_assembler.push(PreAssembler::MOD);
                     result
@@ -269,6 +270,7 @@ fn add_commands(
                     &x.then_commands,
                     proc_type.clone(),
                     &mut true_block,
+                    compile_info,
                     index_counter,
                     label_counter,
                     procedures_labels,
@@ -283,6 +285,7 @@ fn add_commands(
                     &x.else_commands,
                     proc_type.clone(),
                     &mut false_block,
+                    compile_info,
                     index_counter,
                     label_counter,
                     procedures_labels,
@@ -314,6 +317,7 @@ fn add_commands(
                     &x.commands,
                     proc_type.clone(),
                     &mut true_block,
+                    compile_info,
                     index_counter,
                     label_counter,
                     procedures_labels,
@@ -337,7 +341,7 @@ fn add_commands(
                 );
             }
             Command::Repeat(x) => {
-                let mut true_block = Block::new();
+                let mut false_block = Block::new();
 
                 let repeat_label = label_counter.next();
                 let start_label = label_counter.next();
@@ -348,7 +352,8 @@ fn add_commands(
                 add_commands(
                     &x.commands,
                     proc_type.clone(),
-                    &mut true_block,
+                    &mut false_block,
+                    compile_info,
                     index_counter,
                     label_counter,
                     procedures_labels,
@@ -357,8 +362,8 @@ fn add_commands(
                     arguments,
                 );
 
-                true_block.pre_assembler.insert(0, PreAssembler::LABEL(start_label.clone()));
-                true_block.pre_assembler.push(PreAssembler::JUMP(repeat_label));
+                false_block.pre_assembler.insert(0, PreAssembler::LABEL(start_label.clone()));
+                false_block.pre_assembler.push(PreAssembler::JUMP(repeat_label));
 
                 condition_to_preassembler(
                     x.condition.clone(),
@@ -368,8 +373,8 @@ fn add_commands(
                     label_counter,
                     declarations,
                     arguments,
-                    &true_block.pre_assembler,
                     &Vec::new(),
+                    &false_block.pre_assembler,
                 );
             }
             Command::Call(x) => {
@@ -386,10 +391,14 @@ fn add_commands(
                             ProcType::Procedure(proc.get_name().to_string()),
                             param.name.clone(),
                         )),
-                        ArgType::Table => unimplemented!(),
+                        ArgType::Table => AbstractVarible::Table(
+                                ProcType::Procedure(proc.get_name().to_string()),
+                                param.name.clone(),
+                                AbstractNumber::Const(0),
+                            )
                     };
 
-                    let place = result
+                    let place = compile_info 
                         .memory
                         .entry(p.clone())
                         .or_insert_with(|| index_counter.next())
@@ -402,36 +411,48 @@ fn add_commands(
                                 param.name.clone(),
                             ))),
                         )),
-                        ArgType::Table => unimplemented!(),
+                        ArgType::Table => AbstractVarible::Else(AbstractNumber::Pointer(
+                            Box::new(AbstractVarible::Table(
+                                ProcType::Procedure(proc.get_name().to_string()),
+                                param.name.clone(),
+                                AbstractNumber::Const(0),
+                            )),
+                        )),
                     };
 
-                    let _ = result
+                    let _ = compile_info 
                         .memory
                         .entry(p_pointer.clone())
                         .or_insert(place.clone());
 
-                    if let Some(_) = result.memory.get(&AbstractVarible::Else(AbstractNumber::Pointer(Box::new(AbstractVarible::Else(AbstractNumber::Var(
+                    if let Some(_) = compile_info.memory.get(&AbstractVarible::Else(AbstractNumber::Pointer(Box::new(AbstractVarible::Else(AbstractNumber::Var(
                             proc_type.clone(),
                             arg.name.clone(),
                         )))))) {
                         result.pre_assembler.push(PreAssembler::GET(AbstractVarible::Else(
                                 AbstractNumber::Var(proc_type.clone(), arg.name.clone()),
                         )));
-                    } else if let Some(_) = result.memory.get(&AbstractVarible::Else(AbstractNumber::Pointer(Box::new(AbstractVarible::Table(
+                    } else if let Some(_) = compile_info.memory.get(&AbstractVarible::Else(AbstractNumber::Pointer(Box::new(AbstractVarible::Table(
+                            proc_type.clone(),
                             arg.name.clone(),
                             AbstractNumber::Const(0),
                         ))))) {
-                        unimplemented!();
-                    } else if let Some(m) = result.memory.get(&AbstractVarible::Table(
+                        result.pre_assembler.push(PreAssembler::GET(AbstractVarible::Table(
+                                proc_type.clone(),
+                                arg.name.clone(),
+                                AbstractNumber::Const(0),
+                        )));
+                    } else if let Some(m) = compile_info.memory.get(&AbstractVarible::Table(
+                            proc_type.clone(),
                             arg.name.clone(),
-                            AbstractNumber::Var(proc_type.clone(), arg.name.clone()))) {
+                            AbstractNumber::Const(0),)) {
                         result
                             .pre_assembler
                             .push(PreAssembler::GET(AbstractVarible::Else(
                                 AbstractNumber::Const(*m),
                             )));
                     } else {
-                        let m = result.memory.get(&AbstractVarible::Else(AbstractNumber::Var(
+                        let m = compile_info.memory.get(&AbstractVarible::Else(AbstractNumber::Var(
                             proc_type.clone(),
                             arg.name.clone(),
                         ))).unwrap();
@@ -452,7 +473,7 @@ fn add_commands(
                     ProcType::Procedure(x.name.clone()),
                 ));
 
-                let _ = result
+                let _ = compile_info
                     .memory
                     .entry(proc_return.clone())
                     .or_insert_with(|| index_counter.next());
@@ -498,13 +519,22 @@ fn identifier_to_abstract_varible(
                 AbstractVarible::Else(AbstractNumber::Var(proc_type, id.name)),
             ))),
             IdentifierType::TableWithNumber(x) => AbstractVarible::Else(AbstractNumber::Pointer(
-                Box::new(AbstractVarible::Table(id.name, AbstractNumber::Const(x))),
+                Box::new(AbstractVarible::Table(proc_type, id.name, AbstractNumber::Const(x))),
             )),
             IdentifierType::TableWithIdentifier(x) => {
-                AbstractVarible::Else(AbstractNumber::Pointer(Box::new(AbstractVarible::Table(
-                    id.name,
-                    AbstractNumber::Var(proc_type, x),
-                ))))
+                if params.iter().any(|xx| xx.name == x) {
+                    AbstractVarible::Else(AbstractNumber::Pointer(Box::new(AbstractVarible::Table(
+                            proc_type.clone(),
+                        id.name,
+                        AbstractNumber::Pointer(Box::new(AbstractVarible::Else(AbstractNumber::Var(proc_type.clone(), x))))
+                    ))))
+                } else {
+                    AbstractVarible::Else(AbstractNumber::Pointer(Box::new(AbstractVarible::Table(
+                            proc_type.clone(),
+                        id.name,
+                        AbstractNumber::Var(proc_type, x),
+                    ))))
+                }
             }
         }
     } else {
@@ -513,10 +543,22 @@ fn identifier_to_abstract_varible(
                 AbstractVarible::Else(AbstractNumber::Var(proc_type, id.name))
             }
             IdentifierType::TableWithNumber(x) => {
-                AbstractVarible::Table(id.name, AbstractNumber::Const(x))
+                AbstractVarible::Table(proc_type, id.name, AbstractNumber::Const(x))
             }
             IdentifierType::TableWithIdentifier(x) => {
-                AbstractVarible::Table(id.name, AbstractNumber::Var(proc_type, x))
+                if params.iter().any(|xx| xx.name == x) {
+                    AbstractVarible::Table(
+                            proc_type.clone(),
+                        id.name,
+                        AbstractNumber::Pointer(Box::new(AbstractVarible::Else(AbstractNumber::Var(proc_type.clone(), x))))
+                    )
+                } else {
+                    AbstractVarible::Table(
+                            proc_type.clone(),
+                        id.name,
+                        AbstractNumber::Var(proc_type, x),
+                    )
+                }
             }
         }
     }

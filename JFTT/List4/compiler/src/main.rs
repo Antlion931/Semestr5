@@ -5,6 +5,7 @@ mod common;
 mod pre_assembler;
 mod pre_assembler_to_assembler;
 
+use std::io::Write;
 use ast_problem_checker::*;
 use codespan_reporting::diagnostic::{Diagnostic, Label};
 use codespan_reporting::files::SimpleFiles;
@@ -18,8 +19,8 @@ lalrpop_mod!(pub parser);
 fn main() {
     let args: Vec<String> = std::env::args().collect();
 
-    if args.len() != 2 {
-        println!("Usage: {} <filename>", args[0]);
+    if args.len() != 3 {
+        println!("Usage: {} <filename> <output>", args[0]);
         std::process::exit(1);
     }
 
@@ -218,10 +219,15 @@ fn main() {
         std::process::exit(1);
     }
 
-    let pre_assembler = ast_to_pre_assembler::ast_to_pre_assembler(ast);
-    let assembler = pre_assembler_to_assembler::pre_assembler_to_assembler(pre_assembler);
+    let (pre_assembler, compile_info) = ast_to_pre_assembler::ast_to_pre_assembler(ast);
 
-    println!("{assembler}");
+    let assembler = pre_assembler_to_assembler::pre_assembler_to_assembler(pre_assembler, compile_info);
+
+    let output_path = &args[2];
+
+    let mut compiled = fs::File::create(output_path).unwrap();
+
+    write!(compiled, "{}", assembler).unwrap();
 }
 
 #[cfg(test)]
@@ -234,8 +240,8 @@ mod test {
     fn tester(code: &str, path: &str, input: &[u64], expected_output: &[u128]) {
         let ast = parser::program_allParser::new().parse(&code).unwrap();
 
-        let pre_assembler = ast_to_pre_assembler::ast_to_pre_assembler(ast);
-        let assembler = pre_assembler_to_assembler::pre_assembler_to_assembler(pre_assembler);
+    let (pre_assembler, compile_info) = ast_to_pre_assembler::ast_to_pre_assembler(ast);
+    let assembler = pre_assembler_to_assembler::pre_assembler_to_assembler(pre_assembler, compile_info);
 
         let mut compiled = File::create(path).unwrap();
 
@@ -289,11 +295,8 @@ mod test {
 
         let ast = parser::program_allParser::new().parse(&code_without_comments).unwrap();
 
-        let pre_assembler = ast_to_pre_assembler::ast_to_pre_assembler(ast);
-
-        println!("{:#?}", pre_assembler.memory);
-
-        let assembler = pre_assembler_to_assembler::pre_assembler_to_assembler(pre_assembler);
+        let (pre_assembler, compile_info) = ast_to_pre_assembler::ast_to_pre_assembler(ast);
+        let assembler = pre_assembler_to_assembler::pre_assembler_to_assembler(pre_assembler, compile_info);
 
         let mut compiled = File::create(compiled_path).unwrap();
 
@@ -458,8 +461,8 @@ WRITE 0;
 ENDIF
 END";
 
-        tester(code, "simple_if_eq_1.txt", &[1, 1], &[1]);
-        tester(code, "simple_if_eq_2.txt", &[1, 2], &[0]);
+        tester(code, "simple_if_eq.txt", &[1, 1], &[1]);
+        tester(code, "simple_if_eq.txt", &[1, 2], &[0]);
     }
 
     #[test]
@@ -508,9 +511,9 @@ ENDIF
     
 END";
     
-            tester(code, "all_conditions_in_if_1.txt", &[1, 1], &[1, 0, 0, 1, 0, 1]);
-            tester(code, "all_conditions_in_if_2.txt", &[1, 2], &[0, 1, 1, 1, 0, 0]);
-            tester(code, "all_conditions_in_if_3.txt", &[2, 1], &[0, 1, 0, 0, 1, 1]);
+            tester(code, "all_conditions_in_if.txt", &[1, 1], &[1, 0, 0, 1, 0, 1]);
+            tester(code, "all_conditions_in_if.txt", &[1, 2], &[0, 1, 1, 1, 0, 0]);
+            tester(code, "all_conditions_in_if.txt", &[2, 1], &[0, 1, 0, 0, 1, 1]);
         }
 
     #[test]
@@ -527,8 +530,8 @@ WHILE a = b DO
 ENDWHILE
     END";
 
-        tester(code, "eq_in_while.txt_1", &[1, 1, 2, 2, 3, 3, 4, 5], &[1, 1, 1]);
-        tester(code, "eq_in_while.txt_2", &[1, 2], &[]);
+        tester(code, "eq_in_while.txt", &[1, 1, 2, 2, 3, 3, 4, 5], &[1, 1, 1]);
+        tester(code, "eq_in_while.txt", &[1, 2], &[]);
     }
 
     #[test]
@@ -545,8 +548,8 @@ WHILE a != b DO
 ENDWHILE
 END";
 
-        tester(code, "not_eq_in_while_1.txt", &[1, 1, 2, 2, 3, 3, 4, 5], &[]);
-        tester(code, "not_eq_in_while_2.txt", &[1, 2, 3, 1, 2, 2], &[1, 1]);
+        tester(code, "not_eq_in_while.txt", &[1, 1, 2, 2, 3, 3, 4, 5], &[]);
+        tester(code, "not_eq_in_while.txt", &[1, 2, 3, 1, 2, 2], &[1, 1]);
     }
 
     #[test]
@@ -563,8 +566,8 @@ WHILE a < b DO
 ENDWHILE
 END";
 
-        tester(code, "lt_in_while_1.txt", &[1, 1, 2, 2, 3, 3, 5, 4], &[]);
-        tester(code, "lt_in_while_2.txt", &[1, 2, 3, 6, 3, 1], &[1, 1]);
+        tester(code, "lt_in_while.txt", &[1, 1, 2, 2, 3, 3, 5, 4], &[]);
+        tester(code, "lt_in_while.txt", &[1, 2, 3, 6, 3, 1], &[1, 1]);
     }
 
     #[test]
@@ -581,8 +584,8 @@ WHILE a <= b DO
 ENDWHILE
 END";
 
-        tester(code, "le_in_while_1.txt", &[1, 1, 2, 2, 3, 3, 5, 4], &[1, 1, 1]);
-        tester(code, "le_in_while_2.txt", &[1, 2, 3, 6, 3, 1], &[1, 1]);
+        tester(code, "le_in_while.txt", &[1, 1, 2, 2, 3, 3, 5, 4], &[1, 1, 1]);
+        tester(code, "le_in_while.txt", &[1, 2, 3, 6, 3, 1], &[1, 1]);
     }
 
     #[test]
@@ -599,8 +602,8 @@ WHILE a > b DO
 ENDWHILE
 END";
 
-        tester(code, "gr_in_while_1.txt", &[1, 1, 2, 2, 3, 3, 4, 5], &[]);
-        tester(code, "gr_in_while_2.txt", &[2, 1, 6, 3, 1, 3], &[1, 1]);
+        tester(code, "gr_in_while.txt", &[1, 1, 2, 2, 3, 3, 4, 5], &[]);
+        tester(code, "gr_in_while.txt", &[2, 1, 6, 3, 1, 3], &[1, 1]);
     }
 
     #[test]
@@ -617,8 +620,8 @@ WHILE a >= b DO
 ENDWHILE
 END";
 
-        tester(code, "ge_in_while_1.txt", &[1, 1, 2, 2, 3, 3, 4, 5], &[1, 1, 1]);
-        tester(code, "ge_in_while_2.txt", &[2, 1, 6, 3, 1, 3], &[1, 1]);
+        tester(code, "ge_in_while.txt", &[1, 1, 2, 2, 3, 3, 4, 5], &[1, 1, 1]);
+        tester(code, "ge_in_while.txt", &[2, 1, 6, 3, 1, 3], &[1, 1]);
     }
 
     #[test]
@@ -633,8 +636,8 @@ REPEAT
 UNTIL a = b;
 END";
 
-        tester(code, "eq_in_repeat_1.txt", &[1, 1, 2, 2, 3, 3, 4, 5], &[1, 1, 1, 1]);
-        tester(code, "eq_in_repeat_2.txt", &[1, 2], &[1]);
+        tester(code, "eq_in_repeat.txt", &[1, 1, 2, 2, 3, 3, 4, 5], &[1]);
+        tester(code, "eq_in_repeat.txt", &[1, 2, 2, 2], &[1, 1]);
     }
 
     #[test]
@@ -649,8 +652,8 @@ REPEAT
 UNTIL a != b;
 END";
 
-        tester(code, "not_eq_in_repeat_1.txt", &[1, 1, 2, 2, 3, 3, 4, 5], &[1]);
-        tester(code, "not_eq_in_repeat_2.txt", &[1, 2, 3, 1, 2, 2], &[1, 1, 1]);
+        tester(code, "not_eq_in_repeat.txt", &[1, 1, 2, 2, 3, 3, 4, 5], &[1, 1, 1, 1]);
+        tester(code, "not_eq_in_repeat.txt", &[1, 2, 3, 1, 2, 2], &[1]);
     }
 
     #[test]
@@ -665,8 +668,8 @@ REPEAT
 UNTIL a < b;
 END";
 
-        tester(code, "lt_in_repeat_1.txt", &[1, 1, 2, 2, 3, 3, 5, 4], &[1]);
-        tester(code, "lt_in_repeat_2.txt", &[1, 2, 3, 6, 3, 1], &[1, 1, 1]);
+        tester(code, "lt_in_repeat.txt", &[1, 1, 2, 2, 3, 3, 4, 5], &[1, 1, 1, 1]);
+        tester(code, "lt_in_repeat.txt", &[2, 1, 6, 3, 1, 3], &[1, 1, 1]);
     }
 
     #[test]
@@ -681,8 +684,8 @@ REPEAT
 UNTIL a <= b;
 END";
 
-        tester(code, "le_in_repeat_1.txt", &[1, 1, 2, 2, 3, 3, 5, 4], &[1, 1, 1, 1]);
-        tester(code, "le_in_repeat_2.txt", &[1, 2, 3, 6, 3, 1], &[1, 1, 1]);
+        tester(code, "le_in_repeat.txt", &[1, 1, 2, 2, 3, 3, 5, 4], &[1]);
+        tester(code, "le_in_repeat.txt", &[2, 1, 6, 3, 1, 3], &[1, 1, 1]);
     }
 
     #[test]
@@ -697,8 +700,8 @@ REPEAT
 UNTIL a > b;
 END";
 
-        tester(code, "gr_in_repeat_1.txt", &[1, 1, 2, 2, 3, 3, 4, 5], &[1]);
-        tester(code, "gr_in_repeat_2.txt", &[2, 1, 6, 3, 1, 3], &[1, 1, 1]);
+        tester(code, "gr_in_repeat.txt", &[1, 1, 2, 2, 3, 3, 5, 4], &[1, 1, 1, 1]);
+        tester(code, "gr_in_repeat.txt", &[2, 1, 6, 3, 1, 3], &[1]);
     }
 
     #[test]
@@ -713,8 +716,8 @@ REPEAT
 UNTIL a >= b;
 END";
 
-        tester(code, "ge_in_repeat_1.txt", &[1, 1, 2, 2, 3, 3, 4, 5], &[1, 1, 1, 1]);
-        tester(code, "ge_in_repeat_2.txt", &[2, 1, 6, 3, 1, 3], &[1, 1, 1]);
+        tester(code, "ge_in_repeat.txt", &[1, 1, 2, 2, 3, 3, 4, 5], &[1]);
+        tester(code, "ge_in_repeat.txt", &[1, 2, 6, 3, 3, 1], &[1, 1]);
     }
 
     #[test]
@@ -729,8 +732,8 @@ END";
 
     #[test]
     fn example_7() {
-        file_tester("../examples/example7.imp", "example_7_1.txt", &[0, 0, 0], &[31000, 40900, 2222010]);
-        file_tester("../examples/example7.imp", "example_7_2.txt", &[1, 0, 2], &[31001, 40900, 2222012]);
+        file_tester("../examples/example7.imp", "example_7.txt", &[0, 0, 0], &[31000, 40900, 2222010]);
+        file_tester("../examples/example7.imp", "example_7.txt", &[1, 0, 2], &[31001, 40900, 2222012]);
     }
 
     #[test]
@@ -749,10 +752,10 @@ a := a * b;
 WRITE a;
 END";
     
-            tester(code, "simple_mul_1.txt", &[2, 3], &[6]);
-            tester(code, "simple_mul_2.txt", &[3, 2], &[6]);
-            tester(code, "simple_mul_3.txt", &[3, 0], &[0]);
-            tester(code, "simple_mul_4.txt", &[0, 3], &[0]);
+            tester(code, "simple_mul.txt", &[2, 3], &[6]);
+            tester(code, "simple_mul.txt", &[3, 2], &[6]);
+            tester(code, "simple_mul.txt", &[3, 0], &[0]);
+            tester(code, "simple_mul.txt", &[0, 3], &[0]);
         }
 
     #[test]
@@ -766,9 +769,56 @@ a := a / b;
 WRITE a;
 END";
     
-            tester(code, "simple_div_1.txt", &[6, 3], &[2]);
-            tester(code, "simple_div_2.txt", &[3, 2], &[1]);
-            tester(code, "simple_div_3.txt", &[3, 0], &[0]);
-            tester(code, "simple_div_4.txt", &[0, 3], &[0]);
+            tester(code, "simple_div.txt", &[6, 3], &[2]);
+            tester(code, "simple_div.txt", &[3, 2], &[1]);
+            tester(code, "simple_div.txt", &[3, 0], &[0]);
+            tester(code, "simple_div.txt", &[0, 3], &[0]);
         }
+
+    #[test]
+    fn simple_mod() {
+        let code = "PROGRAM IS
+a, b
+IN
+READ a ;
+READ b ;
+a := a % b;
+WRITE a;
+END";
+    
+            tester(code, "simple_mod.txt", &[6, 3], &[0]);
+            tester(code, "simple_mod.txt", &[3, 2], &[1]);
+            tester(code, "simple_mod.txt", &[3, 0], &[0]);
+            tester(code, "simple_mod.txt", &[0, 3], &[0]);
+        }
+
+    #[test]
+    fn example_5() {
+        file_tester("../examples/example5.imp", "example_5.txt", &[1234567890, 1234567890987654321, 987654321], &[674106858]);
+    }
+
+    #[test]
+    fn example_4() {
+        file_tester("../examples/example4.imp", "example_4.txt", &[20, 9], &[167960]);
+    }
+
+    #[test]
+    fn program_0() {
+        file_tester("../examples/program0.imp", "program_0.txt", &[13], &[1, 0, 1, 1]);
+    }
+
+    #[test]
+    fn program_3() {
+        file_tester("../examples/program3.imp", "program_3.txt", &[154], &[2, 1, 7, 1, 11, 1]);
+    }
+
+    #[test]
+    fn example_6() {
+        file_tester("../examples/example6.imp", "example_6.txt", &[20], &[2432902008176640000, 6765]);
+    }
+
+    #[test]
+    fn example_9() {
+        file_tester("../examples/example9.imp", "example_9.txt", &[20, 9], &[167960]);
+    }
 }
