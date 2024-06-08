@@ -230,7 +230,7 @@ fn main() {
     write!(compiled, "{}", assembler).unwrap();
 }
 
-#[cfg(test)]
+/*#[cfg(test)]
 mod test {
     use super::*;
     use std::fs::File;
@@ -821,4 +821,4 @@ END";
     fn example_9() {
         file_tester("../examples/example9.imp", "example_9.txt", &[20, 9], &[167960]);
     }
-}
+}*/

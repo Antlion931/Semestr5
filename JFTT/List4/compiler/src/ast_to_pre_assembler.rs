@@ -32,6 +32,10 @@ pub fn ast_to_pre_assembler(ast: AST) -> (Block, CompileInfo) {
     result.pre_assembler.push(PreAssembler::HALT);
 
     for p in ast.procedurs.iter().rev() {
+        if !compile_info.used_procedures.contains(p) {
+            continue;
+        }
+
         result.pre_assembler.push(PreAssembler::LABEL(
             procedures_labels.get(p.get_name()).unwrap().clone(),
         ));
@@ -122,20 +126,21 @@ fn add_commands(
                         )));
                 }
                 Expression::Add(a, b) => {
-                    result
-                        .pre_assembler
-                        .push(PreAssembler::GET(value_to_abstract_varible(
-                            a,
-                            proc_type.clone(),
-                            arguments,
-                        )));
-                    result
-                        .pre_assembler
-                        .push(PreAssembler::ADD(value_to_abstract_varible(
-                            b,
-                            proc_type.clone(),
-                            arguments,
-                        )));
+                    result.pre_assembler.push(PreAssembler::GET(value_to_abstract_varible(
+                        a,
+                        proc_type.clone(),
+                        arguments,
+                    )));
+                    result.pre_assembler.push(PreAssembler::MOVE('h'));
+
+                    result.pre_assembler.push(PreAssembler::GET(value_to_abstract_varible(
+                        b,
+                        proc_type.clone(),
+                        arguments,
+                    )));
+                    result.pre_assembler.push(PreAssembler::MOVE('g'));
+
+                    result.pre_assembler.push(PreAssembler::ADD);
                     result
                         .pre_assembler
                         .push(PreAssembler::PUT(identifier_to_abstract_varible(
@@ -145,20 +150,21 @@ fn add_commands(
                         )));
                 }
                 Expression::Sub(a, b) => {
-                    result
-                        .pre_assembler
-                        .push(PreAssembler::GET(value_to_abstract_varible(
-                            a,
-                            proc_type.clone(),
-                            arguments,
-                        )));
-                    result
-                        .pre_assembler
-                        .push(PreAssembler::SUB(value_to_abstract_varible(
-                            b,
-                            proc_type.clone(),
-                            arguments,
-                        )));
+                    result.pre_assembler.push(PreAssembler::GET(value_to_abstract_varible(
+                        a,
+                        proc_type.clone(),
+                        arguments,
+                    )));
+                    result.pre_assembler.push(PreAssembler::MOVE('h'));
+
+                    result.pre_assembler.push(PreAssembler::GET(value_to_abstract_varible(
+                        b,
+                        proc_type.clone(),
+                        arguments,
+                    )));
+                    result.pre_assembler.push(PreAssembler::MOVE('g'));
+
+                    result.pre_assembler.push(PreAssembler::SUB);
                     result
                         .pre_assembler
                         .push(PreAssembler::PUT(identifier_to_abstract_varible(
@@ -384,6 +390,8 @@ fn add_commands(
                     .cloned()
                     .unwrap();
 
+                compile_info.used_procedures.insert(proc.clone());
+
                 for (arg, param) in x.args.iter().zip(proc.proc_head.params.iter()) {
 
                     let p = match param.arg_type {
@@ -596,26 +604,34 @@ fn condition_to_preassembler(
                 proc_type.clone(),
                 arguments,
             )));
+            result.pre_assembler.push(PreAssembler::MOVE('h'));
 
-            result.pre_assembler.push(PreAssembler::SUB(value_to_abstract_varible(
+            result.pre_assembler.push(PreAssembler::GET(value_to_abstract_varible(
                 b.clone(),
                 proc_type.clone(),
                 arguments,
             )));
+            result.pre_assembler.push(PreAssembler::MOVE('g'));
+
+            result.pre_assembler.push(PreAssembler::SUB);
 
             result.pre_assembler.push(PreAssembler::JPOS(false_label.clone()));
+
+            result.pre_assembler.push(PreAssembler::GET(value_to_abstract_varible(
+                a,
+                proc_type.clone(),
+                arguments,
+            )));
+            result.pre_assembler.push(PreAssembler::MOVE('g'));
 
             result.pre_assembler.push(PreAssembler::GET(value_to_abstract_varible(
                 b,
                 proc_type.clone(),
                 arguments,
             )));
+            result.pre_assembler.push(PreAssembler::MOVE('h'));
 
-            result.pre_assembler.push(PreAssembler::SUB(value_to_abstract_varible(
-                a,
-                proc_type.clone(),
-                arguments,
-            )));
+            result.pre_assembler.push(PreAssembler::SUB);
 
             result.pre_assembler.push(PreAssembler::JPOS(false_label.clone()));
             result.pre_assembler.extend(true_commands.clone());
@@ -642,16 +658,20 @@ fn condition_to_preassembler(
             let end_label = label_counter.next();
 
             result.pre_assembler.push(PreAssembler::GET(value_to_abstract_varible(
-                b,
-                proc_type.clone(),
-                arguments,
-            )));
-
-            result.pre_assembler.push(PreAssembler::SUB(value_to_abstract_varible(
                 a,
                 proc_type.clone(),
                 arguments,
             )));
+            result.pre_assembler.push(PreAssembler::MOVE('g'));
+
+            result.pre_assembler.push(PreAssembler::GET(value_to_abstract_varible(
+                b,
+                proc_type.clone(),
+                arguments,
+            )));
+            result.pre_assembler.push(PreAssembler::MOVE('h'));
+
+            result.pre_assembler.push(PreAssembler::SUB);
 
             result.pre_assembler.push(PreAssembler::JZERO(false_label.clone()));
             result.pre_assembler.extend(true_commands.clone());

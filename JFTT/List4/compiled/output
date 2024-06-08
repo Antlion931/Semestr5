@@ -1,167 +1,18 @@
-# GET Else(Const(23))
-RST a
-INC a
-SHL a
-SHL a
-INC a
-SHL a
-INC a
-SHL a
-INC a
-# PUT Else(Var(Main, "n"))
-RST b
-INC b
-SHL b
-SHL b
-INC b
-SHL b
-INC b
-SHL b
-INC b
-STORE b
-# GET Else(Const(0))
-RST a
-# PUT Table(Procedure("shuffle"), "t", Const(0))
+# READ
+READ
+# PUT Else(Var(Main, "p"))
 RST b
 INC b
 SHL b
 INC b
-SHL b
-SHL b
-SHL b
-STORE b
-# GET Else(Const(23))
-RST a
-INC a
-SHL a
-SHL a
-INC a
-SHL a
-INC a
-SHL a
-INC a
-# PUT Else(Var(Procedure("shuffle"), "n"))
-RST b
-INC b
-SHL b
-INC b
-SHL b
 SHL b
 SHL b
 INC b
 STORE b
-# STRK
+# READ
+READ
+# PUT Else(Var(Main, "q"))
 RST b
-INC b
-SHL b
-INC b
-SHL b
-SHL b
-INC b
-SHL b
-STRK a
-STORE b
-# JUMP 0
-JUMP 653
-# GET Else(Const(0))
-RST a
-# PUT Table(Procedure("write"), "t", Const(0))
-RST b
-INC b
-SHL b
-INC b
-SHL b
-SHL b
-INC b
-SHL b
-INC b
-STORE b
-# GET Else(Const(23))
-RST a
-INC a
-SHL a
-SHL a
-INC a
-SHL a
-INC a
-SHL a
-INC a
-# PUT Else(Var(Procedure("write"), "n"))
-RST b
-INC b
-SHL b
-INC b
-SHL b
-INC b
-SHL b
-SHL b
-STORE b
-# STRK
-RST b
-INC b
-SHL b
-INC b
-SHL b
-INC b
-SHL b
-SHL b
-INC b
-STRK a
-STORE b
-# JUMP 2
-JUMP 225
-# GET Else(Const(1234567890))
-RST a
-INC a
-SHL a
-SHL a
-SHL a
-INC a
-SHL a
-SHL a
-SHL a
-INC a
-SHL a
-INC a
-SHL a
-SHL a
-SHL a
-INC a
-SHL a
-SHL a
-INC a
-SHL a
-INC a
-SHL a
-SHL a
-SHL a
-SHL a
-SHL a
-SHL a
-SHL a
-SHL a
-INC a
-SHL a
-SHL a
-INC a
-SHL a
-INC a
-SHL a
-SHL a
-INC a
-SHL a
-SHL a
-SHL a
-INC a
-SHL a
-# WRITE
-WRITE
-# GET Else(Const(0))
-RST a
-# PUT Table(Procedure("sort"), "t", Const(0))
-RST b
-INC b
-SHL b
 INC b
 SHL b
 INC b
@@ -169,46 +20,10 @@ SHL b
 INC b
 SHL b
 STORE b
-# GET Else(Const(23))
-RST a
-INC a
-SHL a
-SHL a
-INC a
-SHL a
-INC a
-SHL a
-INC a
-# PUT Else(Var(Procedure("sort"), "n"))
+# READ
+READ
+# PUT Else(Var(Main, "a"))
 RST b
-INC b
-SHL b
-INC b
-SHL b
-INC b
-SHL b
-INC b
-SHL b
-INC b
-STORE b
-# STRK
-RST b
-INC b
-SHL b
-SHL b
-SHL b
-SHL b
-SHL b
-STRK a
-STORE b
-# JUMP 1
-JUMP 319
-# GET Else(Const(0))
-RST a
-# PUT Table(Procedure("write"), "t", Const(0))
-RST b
-INC b
-SHL b
 INC b
 SHL b
 SHL b
@@ -216,550 +31,1321 @@ INC b
 SHL b
 INC b
 STORE b
-# GET Else(Const(23))
-RST a
-INC a
-SHL a
-SHL a
-INC a
-SHL a
-INC a
-SHL a
-INC a
-# PUT Else(Var(Procedure("write"), "n"))
+# READ
+READ
+# PUT Else(Var(Main, "b"))
 RST b
-INC b
-SHL b
 INC b
 SHL b
 INC b
 SHL b
 SHL b
 STORE b
-# STRK
+# READ
+READ
+# PUT Else(Var(Main, "x"))
 RST b
 INC b
-SHL b
-INC b
-SHL b
-INC b
-SHL b
-SHL b
-INC b
-STRK a
-STORE b
-# JUMP 2
-JUMP 225
-# HALT
-HALT
-# LABEL 2
-# GET Else(Const(0))
-RST a
-# PUT Else(Var(Procedure("write"), "i"))
-RST b
-INC b
-SHL b
-SHL b
 SHL b
 SHL b
 SHL b
 INC b
 STORE b
-# LABEL 3
-# GET Else(Pointer(Else(Var(Procedure("write"), "n"))))
+# READ
+READ
+# PUT Else(Var(Main, "y"))
 RST b
 INC b
 SHL b
-INC b
 SHL b
 INC b
+SHL b
+STORE b
+# JUMP 8
+JUMP 111
+# LABEL 7
+# GET Else(Var(Main, "op"))
+RST b
+INC b
+SHL b
 SHL b
 SHL b
 LOAD b
-LOAD a
-# SUB Else(Var(Procedure("write"), "i"))
+# MOVE h
+PUT h
+# GET Else(Const(999))
+RST a
+INC a
+SHL a
+INC a
+SHL a
+INC a
+SHL a
+INC a
+SHL a
+INC a
+SHL a
+SHL a
+SHL a
+INC a
+SHL a
+INC a
+SHL a
+INC a
+# MOVE g
+PUT g
+# SUB
+GET h
+SUB g
+# JPOS 25
+JPOS 111
+# GET Else(Var(Main, "op"))
 RST b
 INC b
 SHL b
 SHL b
 SHL b
+LOAD b
+# MOVE g
+PUT g
+# GET Else(Const(999))
+RST a
+INC a
+SHL a
+INC a
+SHL a
+INC a
+SHL a
+INC a
+SHL a
+INC a
+SHL a
+SHL a
+SHL a
+INC a
+SHL a
+INC a
+SHL a
+INC a
+# MOVE h
+PUT h
+# SUB
+GET h
+SUB g
+# JPOS 25
+JPOS 111
+# JUMP 26
+JUMP 1453
+# LABEL 25
+# LABEL 8
+# READ
+READ
+# PUT Else(Var(Main, "op"))
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+STORE b
+# GET Else(Var(Main, "op"))
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+LOAD b
+# MOVE h
+PUT h
+# GET Else(Const(0))
+RST a
+# MOVE g
+PUT g
+# SUB
+GET h
+SUB g
+# JPOS 9
+JPOS 200
+# GET Else(Var(Main, "op"))
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+LOAD b
+# MOVE g
+PUT g
+# GET Else(Const(0))
+RST a
+# MOVE h
+PUT h
+# SUB
+GET h
+SUB g
+# JPOS 9
+JPOS 200
+# READ
+READ
+# PUT Else(Var(Main, "ra"))
+RST b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+STORE b
+# GET Else(Var(Main, "x"))
+RST b
+INC b
+SHL b
 SHL b
 SHL b
 INC b
+LOAD b
+# PUT Table(Main, "regx", Var(Main, "ra"))
 PUT c
+RST b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+INC b
 LOAD b
+RST b
+ADD b
 PUT d
 GET c
-SUB d
-# JZERO 4
-JZERO 305
-# GET Else(Pointer(Table(Procedure("write"), "t", Var(Procedure("write"), "i"))))
+STORE d
+# GET Else(Var(Main, "y"))
 RST b
 INC b
 SHL b
 SHL b
-SHL b
-SHL b
-SHL b
 INC b
+SHL b
 LOAD b
+# PUT Table(Main, "regy", Var(Main, "ra"))
 PUT c
 RST b
 INC b
 SHL b
 INC b
 SHL b
-SHL b
 INC b
 SHL b
 INC b
 LOAD b
-ADD c
-LOAD a
-# WRITE
-WRITE
-# GET Else(Var(Procedure("write"), "i"))
 RST b
 INC b
 SHL b
 SHL b
-SHL b
-SHL b
-SHL b
-INC b
-LOAD b
-# ADD Else(Const(1))
-RST b
-INC b
 ADD b
-# PUT Else(Var(Procedure("write"), "i"))
+PUT d
+GET c
+STORE d
+# JUMP 10
+JUMP 200
+# LABEL 9
+# LABEL 10
+# GET Else(Var(Main, "op"))
 RST b
 INC b
 SHL b
 SHL b
 SHL b
-SHL b
-SHL b
-INC b
-STORE b
-# JUMP 3
-JUMP 235
-# JUMP 5
-JUMP 305
-# LABEL 4
-# LABEL 5
-# GET Else(ProcedureReturn(Procedure("write")))
-RST b
-INC b
-SHL b
-INC b
-SHL b
-INC b
-SHL b
-SHL b
-INC b
 LOAD b
-# INC Else(Accumulator)
-INC a
-# INC Else(Accumulator)
-INC a
-# INC Else(Accumulator)
-INC a
-# JUMPR
-JUMPR a
-# LABEL 1
+# MOVE h
+PUT h
 # GET Else(Const(1))
 RST a
 INC a
-# PUT Else(Var(Procedure("sort"), "i"))
+# MOVE g
+PUT g
+# SUB
+GET h
+SUB g
+# JPOS 11
+JPOS 272
+# GET Else(Var(Main, "op"))
 RST b
 INC b
 SHL b
-SHL b
-SHL b
-SHL b
-INC b
-SHL b
-INC b
-STORE b
-# LABEL 6
-# GET Else(Pointer(Else(Var(Procedure("sort"), "n"))))
-RST b
-INC b
-SHL b
-INC b
-SHL b
-INC b
-SHL b
-INC b
-SHL b
-INC b
-LOAD b
-LOAD a
-# SUB Else(Var(Procedure("sort"), "i"))
-RST b
-INC b
-SHL b
-SHL b
-SHL b
-SHL b
-INC b
-SHL b
-INC b
-PUT c
-LOAD b
-PUT d
-GET c
-SUB d
-# JZERO 12
-JZERO 641
-# GET Else(Pointer(Table(Procedure("sort"), "t", Var(Procedure("sort"), "i"))))
-RST b
-INC b
-SHL b
-SHL b
-SHL b
-SHL b
-INC b
-SHL b
-INC b
-LOAD b
-PUT c
-RST b
-INC b
-SHL b
-INC b
-SHL b
-INC b
-SHL b
-INC b
-SHL b
-LOAD b
-ADD c
-LOAD a
-# PUT Else(Var(Procedure("sort"), "x"))
-RST b
-INC b
-SHL b
-SHL b
-SHL b
-SHL b
-INC b
-SHL b
-STORE b
-# GET Else(Var(Procedure("sort"), "i"))
-RST b
-INC b
-SHL b
-SHL b
-SHL b
-SHL b
-INC b
-SHL b
-INC b
-LOAD b
-# PUT Else(Var(Procedure("sort"), "j"))
-RST b
-INC b
-SHL b
-SHL b
-SHL b
-INC b
-SHL b
-SHL b
-STORE b
-# LABEL 7
-# GET Else(Var(Procedure("sort"), "j"))
-RST b
-INC b
-SHL b
-SHL b
-SHL b
-INC b
 SHL b
 SHL b
 LOAD b
-# SUB Else(Const(0))
-RST b
-SUB b
-# JZERO 10
-JZERO 581
-# GET Else(Var(Procedure("sort"), "j"))
-RST b
-INC b
-SHL b
-SHL b
-SHL b
-INC b
-SHL b
-SHL b
-LOAD b
-# SUB Else(Const(1))
-RST b
-INC b
-SUB b
-# PUT Else(Var(Procedure("sort"), "k"))
-RST b
-INC b
-SHL b
-SHL b
-SHL b
-INC b
-SHL b
-SHL b
-INC b
-STORE b
-# GET Else(Pointer(Table(Procedure("sort"), "t", Var(Procedure("sort"), "k"))))
-RST b
-INC b
-SHL b
-SHL b
-SHL b
-INC b
-SHL b
-SHL b
-INC b
-LOAD b
-PUT c
-RST b
-INC b
-SHL b
-INC b
-SHL b
-INC b
-SHL b
-INC b
-SHL b
-LOAD b
-ADD c
-LOAD a
-# SUB Else(Var(Procedure("sort"), "x"))
-RST b
-INC b
-SHL b
-SHL b
-SHL b
-SHL b
-INC b
-SHL b
-PUT c
-LOAD b
-PUT d
-GET c
-SUB d
-# JZERO 8
-JZERO 550
-# GET Else(Pointer(Table(Procedure("sort"), "t", Var(Procedure("sort"), "k"))))
-RST b
-INC b
-SHL b
-SHL b
-SHL b
-INC b
-SHL b
-SHL b
-INC b
-LOAD b
-PUT c
-RST b
-INC b
-SHL b
-INC b
-SHL b
-INC b
-SHL b
-INC b
-SHL b
-LOAD b
-ADD c
-LOAD a
-# PUT Else(Pointer(Table(Procedure("sort"), "t", Var(Procedure("sort"), "j"))))
-PUT c
-RST b
-INC b
-SHL b
-SHL b
-SHL b
-INC b
-SHL b
-SHL b
-LOAD b
-PUT d
-RST b
-INC b
-SHL b
-INC b
-SHL b
-INC b
-SHL b
-INC b
-SHL b
-LOAD b
-ADD d
-PUT d
-GET c
-STORE d
-# GET Else(Var(Procedure("sort"), "j"))
-RST b
-INC b
-SHL b
-SHL b
-SHL b
-INC b
-SHL b
-SHL b
-LOAD b
-# SUB Else(Const(1))
-RST b
-INC b
-SUB b
-# PUT Else(Var(Procedure("sort"), "j"))
-RST b
-INC b
-SHL b
-SHL b
-SHL b
-INC b
-SHL b
-SHL b
-STORE b
-# JUMP 9
-JUMP 579
-# LABEL 8
-# GET Else(Var(Procedure("sort"), "j"))
-RST b
-INC b
-SHL b
-SHL b
-SHL b
-INC b
-SHL b
-SHL b
-LOAD b
-# PUT Else(Var(Procedure("sort"), "k"))
-RST b
-INC b
-SHL b
-SHL b
-SHL b
-INC b
-SHL b
-SHL b
-INC b
-STORE b
-# GET Else(Const(0))
+# MOVE g
+PUT g
+# GET Else(Const(1))
 RST a
-# PUT Else(Var(Procedure("sort"), "j"))
+INC a
+# MOVE h
+PUT h
+# SUB
+GET h
+SUB g
+# JPOS 11
+JPOS 272
+# READ
+READ
+# PUT Else(Var(Main, "ra"))
 RST b
 INC b
 SHL b
-SHL b
+INC b
 SHL b
 INC b
 SHL b
-SHL b
+INC b
 STORE b
-# LABEL 9
-# JUMP 7
-JUMP 409
-# JUMP 11
-JUMP 581
-# LABEL 10
-# LABEL 11
-# GET Else(Var(Procedure("sort"), "x"))
-RST b
-INC b
-SHL b
-SHL b
-SHL b
-SHL b
-INC b
-SHL b
-LOAD b
-# PUT Else(Pointer(Table(Procedure("sort"), "t", Var(Procedure("sort"), "k"))))
+# READ
+READ
+# PUT Table(Main, "regx", Var(Main, "ra"))
 PUT c
 RST b
 INC b
 SHL b
-SHL b
-SHL b
 INC b
 SHL b
+INC b
 SHL b
 INC b
 LOAD b
-PUT d
 RST b
-INC b
-SHL b
-INC b
-SHL b
-INC b
-SHL b
-INC b
-SHL b
-LOAD b
-ADD d
+ADD b
 PUT d
 GET c
 STORE d
-# GET Else(Var(Procedure("sort"), "i"))
+# READ
+READ
+# PUT Table(Main, "regy", Var(Main, "ra"))
+PUT c
 RST b
 INC b
 SHL b
-SHL b
-SHL b
+INC b
 SHL b
 INC b
 SHL b
 INC b
 LOAD b
-# ADD Else(Const(1))
 RST b
 INC b
+SHL b
+SHL b
 ADD b
-# PUT Else(Var(Procedure("sort"), "i"))
+PUT d
+GET c
+STORE d
+# JUMP 12
+JUMP 272
+# LABEL 11
+# LABEL 12
+# GET Else(Var(Main, "op"))
 RST b
 INC b
 SHL b
 SHL b
 SHL b
+LOAD b
+# MOVE h
+PUT h
+# GET Else(Const(4))
+RST a
+INC a
+SHL a
+SHL a
+# MOVE g
+PUT g
+# SUB
+GET h
+SUB g
+# JPOS 13
+JPOS 342
+# GET Else(Var(Main, "op"))
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+LOAD b
+# MOVE g
+PUT g
+# GET Else(Const(4))
+RST a
+INC a
+SHL a
+SHL a
+# MOVE h
+PUT h
+# SUB
+GET h
+SUB g
+# JPOS 13
+JPOS 342
+# READ
+READ
+# PUT Else(Var(Main, "ra"))
+RST b
+INC b
+SHL b
+INC b
 SHL b
 INC b
 SHL b
 INC b
 STORE b
-# JUMP 6
-JUMP 331
-# JUMP 13
-JUMP 641
-# LABEL 12
+# GET Table(Main, "regx", Var(Main, "ra"))
+RST b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+LOAD b
+RST b
+ADD b
+LOAD a
+# WRITE
+WRITE
+# GET Table(Main, "regy", Var(Main, "ra"))
+RST b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+LOAD b
+RST b
+INC b
+SHL b
+SHL b
+ADD b
+LOAD a
+# WRITE
+WRITE
+# JUMP 14
+JUMP 342
 # LABEL 13
-# GET Else(ProcedureReturn(Procedure("sort")))
+# LABEL 14
+# GET Else(Var(Main, "op"))
 RST b
 INC b
 SHL b
 SHL b
 SHL b
-SHL b
-SHL b
 LOAD b
-# INC Else(Accumulator)
-INC a
-# INC Else(Accumulator)
-INC a
-# INC Else(Accumulator)
-INC a
-# JUMPR
-JUMPR a
-# LABEL 0
+# MOVE h
+PUT h
 # GET Else(Const(5))
 RST a
 INC a
 SHL a
 SHL a
 INC a
-# PUT Else(Var(Procedure("shuffle"), "q"))
+# MOVE g
+PUT g
+# SUB
+GET h
+SUB g
+# JPOS 15
+JPOS 542
+# GET Else(Var(Main, "op"))
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+LOAD b
+# MOVE g
+PUT g
+# GET Else(Const(5))
+RST a
+INC a
+SHL a
+SHL a
+INC a
+# MOVE h
+PUT h
+# SUB
+GET h
+SUB g
+# JPOS 15
+JPOS 542
+# READ
+READ
+# PUT Else(Var(Main, "ra"))
+RST b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+STORE b
+# GET Table(Main, "regy", Var(Main, "ra"))
+RST b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+LOAD b
+RST b
+INC b
+SHL b
+SHL b
+ADD b
+LOAD a
+# PUT Else(Var(Main, "rb"))
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+SHL b
+STORE b
+# GET Table(Main, "regx", Var(Main, "ra"))
+RST b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+LOAD b
+RST b
+ADD b
+LOAD a
+# PUT Else(Var(Main, "ra"))
+RST b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+STORE b
+# GET Else(Const(17))
+RST a
+INC a
+SHL a
+SHL a
+SHL a
+SHL a
+INC a
+# PUT Else(Var(Procedure("ec_check"), "r"))
+RST b
+INC b
+SHL b
+SHL b
+INC b
+SHL b
+SHL b
+STORE b
+# GET Else(Const(15))
+RST a
+INC a
+SHL a
+INC a
+SHL a
+INC a
+SHL a
+INC a
+# PUT Else(Var(Procedure("ec_check"), "x"))
+RST b
+INC b
+SHL b
+SHL b
+INC b
+SHL b
+SHL b
+INC b
+STORE b
+# GET Else(Const(16))
+RST a
+INC a
+SHL a
+SHL a
+SHL a
+SHL a
+# PUT Else(Var(Procedure("ec_check"), "y"))
+RST b
+INC b
+SHL b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+STORE b
+# GET Else(Const(11))
+RST a
+INC a
+SHL a
+SHL a
+INC a
+SHL a
+INC a
+# PUT Else(Var(Procedure("ec_check"), "a"))
+RST b
+INC b
+SHL b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+STORE b
+# GET Else(Const(12))
+RST a
+INC a
+SHL a
+INC a
+SHL a
+SHL a
+# PUT Else(Var(Procedure("ec_check"), "b"))
+RST b
+INC b
+SHL b
+INC b
+SHL b
+SHL b
+SHL b
+STORE b
+# GET Else(Const(13))
+RST a
+INC a
+SHL a
+INC a
+SHL a
+SHL a
+INC a
+# PUT Else(Var(Procedure("ec_check"), "p"))
+RST b
+INC b
+SHL b
+INC b
+SHL b
+SHL b
+SHL b
+INC b
+STORE b
+# STRK
+RST b
+INC b
+SHL b
+INC b
+SHL b
+SHL b
+INC b
+SHL b
+STRK a
+STORE b
+# JUMP 3
+JUMP 4134
+# GET Else(Var(Main, "ta"))
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+SHL b
+INC b
+LOAD b
+# WRITE
+WRITE
+# JUMP 16
+JUMP 542
+# LABEL 15
+# LABEL 16
+# GET Else(Var(Main, "op"))
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+LOAD b
+# MOVE h
+PUT h
+# GET Else(Const(8))
+RST a
+INC a
+SHL a
+SHL a
+SHL a
+# MOVE g
+PUT g
+# SUB
+GET h
+SUB g
+# JPOS 17
+JPOS 649
+# GET Else(Var(Main, "op"))
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+LOAD b
+# MOVE g
+PUT g
+# GET Else(Const(8))
+RST a
+INC a
+SHL a
+SHL a
+SHL a
+# MOVE h
+PUT h
+# SUB
+GET h
+SUB g
+# JPOS 17
+JPOS 649
+# READ
+READ
+# PUT Else(Var(Main, "ra"))
+RST b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+STORE b
+# READ
+READ
+# PUT Else(Var(Main, "rb"))
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+SHL b
+STORE b
+# GET Table(Main, "regx", Var(Main, "rb"))
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+SHL b
+LOAD b
+RST b
+ADD b
+LOAD a
+# PUT Table(Main, "regx", Var(Main, "ra"))
+PUT c
+RST b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+LOAD b
+RST b
+ADD b
+PUT d
+GET c
+STORE d
+# GET Table(Main, "regy", Var(Main, "rb"))
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+SHL b
+LOAD b
+RST b
+INC b
+SHL b
+SHL b
+ADD b
+LOAD a
+# PUT Table(Main, "regy", Var(Main, "ra"))
+PUT c
+RST b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+LOAD b
+RST b
+INC b
+SHL b
+SHL b
+ADD b
+PUT d
+GET c
+STORE d
+# JUMP 18
+JUMP 649
+# LABEL 17
+# LABEL 18
+# GET Else(Var(Main, "op"))
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+LOAD b
+# MOVE h
+PUT h
+# GET Else(Const(9))
+RST a
+INC a
+SHL a
+SHL a
+SHL a
+INC a
+# MOVE g
+PUT g
+# SUB
+GET h
+SUB g
+# JPOS 19
+JPOS 880
+# GET Else(Var(Main, "op"))
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+LOAD b
+# MOVE g
+PUT g
+# GET Else(Const(9))
+RST a
+INC a
+SHL a
+SHL a
+SHL a
+INC a
+# MOVE h
+PUT h
+# SUB
+GET h
+SUB g
+# JPOS 19
+JPOS 880
+# READ
+READ
+# PUT Else(Var(Main, "ra"))
+RST b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+STORE b
+# GET Table(Main, "regx", Var(Main, "ra"))
+RST b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+LOAD b
+RST b
+ADD b
+LOAD a
+# PUT Else(Var(Main, "ta"))
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+SHL b
+INC b
+STORE b
+# GET Table(Main, "regy", Var(Main, "ra"))
+RST b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+LOAD b
+RST b
+INC b
+SHL b
+SHL b
+ADD b
+LOAD a
+# PUT Else(Var(Main, "tb"))
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+INC b
+SHL b
+STORE b
+# GET Else(Const(17))
+RST a
+INC a
+SHL a
+SHL a
+SHL a
+SHL a
+INC a
+# PUT Else(Var(Procedure("ec_negate"), "x"))
+RST b
+INC b
+SHL b
+INC b
+SHL b
+SHL b
+INC b
+SHL b
+INC b
+STORE b
+# GET Else(Const(18))
+RST a
+INC a
+SHL a
+SHL a
+SHL a
+INC a
+SHL a
+# PUT Else(Var(Procedure("ec_negate"), "y"))
+RST b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+SHL b
+STORE b
+# GET Else(Const(11))
+RST a
+INC a
+SHL a
+SHL a
+INC a
+SHL a
+INC a
+# PUT Else(Var(Procedure("ec_negate"), "a"))
+RST b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+SHL b
+INC b
+STORE b
+# GET Else(Const(12))
+RST a
+INC a
+SHL a
+INC a
+SHL a
+SHL a
+# PUT Else(Var(Procedure("ec_negate"), "b"))
+RST b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+STORE b
+# GET Else(Const(13))
+RST a
+INC a
+SHL a
+INC a
+SHL a
+SHL a
+INC a
+# PUT Else(Var(Procedure("ec_negate"), "p"))
+RST b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+STORE b
+# STRK
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+SHL b
+SHL b
+STRK a
+STORE b
+# JUMP 4
+JUMP 4043
+# GET Else(Var(Main, "ta"))
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+SHL b
+INC b
+LOAD b
+# PUT Table(Main, "regx", Var(Main, "ra"))
+PUT c
+RST b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+LOAD b
+RST b
+ADD b
+PUT d
+GET c
+STORE d
+# GET Else(Var(Main, "tb"))
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+INC b
+SHL b
+LOAD b
+# PUT Table(Main, "regy", Var(Main, "ra"))
+PUT c
+RST b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+LOAD b
+RST b
+INC b
+SHL b
+SHL b
+ADD b
+PUT d
+GET c
+STORE d
+# JUMP 20
+JUMP 880
+# LABEL 19
+# LABEL 20
+# GET Else(Var(Main, "op"))
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+LOAD b
+# MOVE h
+PUT h
+# GET Else(Const(10))
+RST a
+INC a
+SHL a
+SHL a
+INC a
+SHL a
+# MOVE g
+PUT g
+# SUB
+GET h
+SUB g
+# JPOS 21
+JPOS 1190
+# GET Else(Var(Main, "op"))
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+LOAD b
+# MOVE g
+PUT g
+# GET Else(Const(10))
+RST a
+INC a
+SHL a
+SHL a
+INC a
+SHL a
+# MOVE h
+PUT h
+# SUB
+GET h
+SUB g
+# JPOS 21
+JPOS 1190
+# READ
+READ
+# PUT Else(Var(Main, "ra"))
+RST b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+STORE b
+# READ
+READ
+# PUT Else(Var(Main, "rb"))
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+SHL b
+STORE b
+# GET Table(Main, "regy", Var(Main, "rb"))
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+SHL b
+LOAD b
+RST b
+INC b
+SHL b
+SHL b
+ADD b
+LOAD a
+# PUT Else(Var(Main, "tc"))
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+INC b
+SHL b
+INC b
+STORE b
+# GET Table(Main, "regx", Var(Main, "rb"))
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+SHL b
+LOAD b
+RST b
+ADD b
+LOAD a
+# PUT Else(Var(Main, "tb"))
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+INC b
+SHL b
+STORE b
+# GET Table(Main, "regy", Var(Main, "ra"))
+RST b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+LOAD b
+RST b
+INC b
+SHL b
+SHL b
+ADD b
+LOAD a
+# PUT Else(Var(Main, "ta"))
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+SHL b
+INC b
+STORE b
+# GET Table(Main, "regx", Var(Main, "ra"))
+RST b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+LOAD b
+RST b
+ADD b
+LOAD a
+# PUT Else(Var(Main, "rb"))
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+SHL b
+STORE b
+# GET Else(Const(16))
+RST a
+INC a
+SHL a
+SHL a
+SHL a
+SHL a
+# PUT Else(Var(Procedure("ec_add"), "ax"))
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+SHL b
+SHL b
+INC b
+STORE b
+# GET Else(Const(17))
+RST a
+INC a
+SHL a
+SHL a
+SHL a
+SHL a
+INC a
+# PUT Else(Var(Procedure("ec_add"), "ay"))
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+SHL b
+INC b
+SHL b
+STORE b
+# GET Else(Const(18))
+RST a
+INC a
+SHL a
+SHL a
+SHL a
+INC a
+SHL a
+# PUT Else(Var(Procedure("ec_add"), "bx"))
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+SHL b
+INC b
+SHL b
+INC b
+STORE b
+# GET Else(Const(19))
+RST a
+INC a
+SHL a
+SHL a
+SHL a
+INC a
+SHL a
+INC a
+# PUT Else(Var(Procedure("ec_add"), "by"))
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+INC b
+SHL b
+SHL b
+STORE b
+# GET Else(Const(11))
+RST a
+INC a
+SHL a
+SHL a
+INC a
+SHL a
+INC a
+# PUT Else(Var(Procedure("ec_add"), "a"))
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+INC b
+SHL b
+SHL b
+INC b
+STORE b
+# GET Else(Const(12))
+RST a
+INC a
+SHL a
+INC a
+SHL a
+SHL a
+# PUT Else(Var(Procedure("ec_add"), "b"))
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+STORE b
+# GET Else(Const(13))
+RST a
+INC a
+SHL a
+INC a
+SHL a
+SHL a
+INC a
+# PUT Else(Var(Procedure("ec_add"), "p"))
 RST b
 INC b
 SHL b
@@ -771,36 +1357,413 @@ INC b
 SHL b
 INC b
 STORE b
-# GET Else(Const(1))
-RST a
-INC a
-# PUT Else(Var(Procedure("shuffle"), "w"))
+# STRK
 RST b
 INC b
 SHL b
 SHL b
 INC b
+SHL b
+SHL b
+SHL b
+STRK a
+STORE b
+# JUMP 5
+JUMP 2560
+# GET Else(Var(Main, "rb"))
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+SHL b
+LOAD b
+# PUT Table(Main, "regx", Var(Main, "ra"))
+PUT c
+RST b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+LOAD b
+RST b
+ADD b
+PUT d
+GET c
+STORE d
+# GET Else(Var(Main, "ta"))
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+SHL b
+INC b
+LOAD b
+# PUT Table(Main, "regy", Var(Main, "ra"))
+PUT c
+RST b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+LOAD b
+RST b
+INC b
+SHL b
+SHL b
+ADD b
+PUT d
+GET c
+STORE d
+# JUMP 22
+JUMP 1190
+# LABEL 21
+# LABEL 22
+# GET Else(Var(Main, "op"))
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+LOAD b
+# MOVE h
+PUT h
+# GET Else(Const(12))
+RST a
+INC a
+SHL a
+INC a
+SHL a
+SHL a
+# MOVE g
+PUT g
+# SUB
+GET h
+SUB g
+# JPOS 23
+JPOS 1452
+# GET Else(Var(Main, "op"))
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+LOAD b
+# MOVE g
+PUT g
+# GET Else(Const(12))
+RST a
+INC a
+SHL a
+INC a
+SHL a
+SHL a
+# MOVE h
+PUT h
+# SUB
+GET h
+SUB g
+# JPOS 23
+JPOS 1452
+# READ
+READ
+# PUT Else(Var(Main, "ra"))
+RST b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+STORE b
+# READ
+READ
+# PUT Else(Var(Main, "rb"))
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+SHL b
+STORE b
+# GET Table(Main, "regx", Var(Main, "ra"))
+RST b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+LOAD b
+RST b
+ADD b
+LOAD a
+# PUT Else(Var(Main, "ta"))
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+SHL b
+INC b
+STORE b
+# GET Table(Main, "regy", Var(Main, "ra"))
+RST b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+LOAD b
+RST b
+INC b
+SHL b
+SHL b
+ADD b
+LOAD a
+# PUT Else(Var(Main, "tb"))
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+INC b
+SHL b
+STORE b
+# GET Else(Const(17))
+RST a
+INC a
+SHL a
+SHL a
+SHL a
+SHL a
+INC a
+# PUT Else(Var(Procedure("ec_mul"), "x"))
+RST b
+INC b
+SHL b
+SHL b
+INC b
+SHL b
+SHL b
+SHL b
+INC b
+STORE b
+# GET Else(Const(18))
+RST a
+INC a
+SHL a
+SHL a
+SHL a
+INC a
+SHL a
+# PUT Else(Var(Procedure("ec_mul"), "y"))
+RST b
+INC b
+SHL b
+SHL b
+INC b
+SHL b
+SHL b
+INC b
+SHL b
+STORE b
+# GET Else(Const(16))
+RST a
+INC a
+SHL a
+SHL a
+SHL a
+SHL a
+# PUT Else(Var(Procedure("ec_mul"), "s"))
+RST b
+INC b
+SHL b
+SHL b
+INC b
+SHL b
+SHL b
+INC b
+SHL b
+INC b
+STORE b
+# GET Else(Const(11))
+RST a
+INC a
+SHL a
+SHL a
+INC a
+SHL a
+INC a
+# PUT Else(Var(Procedure("ec_mul"), "a"))
+RST b
+INC b
+SHL b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+SHL b
+STORE b
+# GET Else(Const(12))
+RST a
+INC a
+SHL a
+INC a
+SHL a
+SHL a
+# PUT Else(Var(Procedure("ec_mul"), "b"))
+RST b
+INC b
+SHL b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+SHL b
+INC b
+STORE b
+# GET Else(Const(13))
+RST a
+INC a
+SHL a
+INC a
+SHL a
+SHL a
+INC a
+# PUT Else(Var(Procedure("ec_mul"), "p"))
+RST b
+INC b
+SHL b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+STORE b
+# STRK
+RST b
+INC b
+SHL b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+STRK a
+STORE b
+# JUMP 6
+JUMP 1454
+# GET Else(Var(Main, "ta"))
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+SHL b
+INC b
+LOAD b
+# PUT Table(Main, "regx", Var(Main, "ra"))
+PUT c
+RST b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+LOAD b
+RST b
+ADD b
+PUT d
+GET c
+STORE d
+# GET Else(Var(Main, "tb"))
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+INC b
+SHL b
+LOAD b
+# PUT Table(Main, "regy", Var(Main, "ra"))
+PUT c
+RST b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+LOAD b
+RST b
+INC b
+SHL b
+SHL b
+ADD b
+PUT d
+GET c
+STORE d
+# JUMP 24
+JUMP 1452
+# LABEL 23
+# LABEL 24
+# JUMP 7
+JUMP 52
+# LABEL 26
+# HALT
+HALT
+# LABEL 6
+# GET Else(Const(0))
+RST a
+# PUT Else(Var(Procedure("ec_mul"), "rax"))
+RST b
+INC b
+SHL b
+INC b
+SHL b
 SHL b
 SHL b
 SHL b
 STORE b
 # GET Else(Const(0))
 RST a
-# PUT Else(Var(Procedure("shuffle"), "i"))
+# PUT Else(Var(Procedure("ec_mul"), "ray"))
 RST b
 INC b
 SHL b
+INC b
+SHL b
+SHL b
 SHL b
 SHL b
 INC b
-SHL b
-INC b
-SHL b
 STORE b
-# LABEL 14
-# GET Else(Pointer(Else(Var(Procedure("shuffle"), "n"))))
+# GET Else(Pointer(Else(Var(Procedure("ec_mul"), "x"))))
 RST b
 INC b
+SHL b
 SHL b
 INC b
 SHL b
@@ -809,13 +1772,1224 @@ SHL b
 INC b
 LOAD b
 LOAD a
-# SUB Else(Var(Procedure("shuffle"), "i"))
+# PUT Else(Var(Procedure("ec_mul"), "rbx"))
+RST b
+INC b
+SHL b
+INC b
+SHL b
+SHL b
+SHL b
+INC b
+SHL b
+STORE b
+# GET Else(Pointer(Else(Var(Procedure("ec_mul"), "y"))))
+RST b
+INC b
+SHL b
+SHL b
+INC b
+SHL b
+SHL b
+INC b
+SHL b
+LOAD b
+LOAD a
+# PUT Else(Var(Procedure("ec_mul"), "rby"))
+RST b
+INC b
+SHL b
+INC b
+SHL b
+SHL b
+SHL b
+INC b
+SHL b
+INC b
+STORE b
+# GET Else(Pointer(Else(Var(Procedure("ec_mul"), "s"))))
+RST b
+INC b
+SHL b
+SHL b
+INC b
+SHL b
+SHL b
+INC b
+SHL b
+INC b
+LOAD b
+LOAD a
+# PUT Else(Var(Procedure("ec_mul"), "ts"))
+RST b
+INC b
+SHL b
+INC b
+SHL b
+SHL b
+INC b
+SHL b
+SHL b
+STORE b
+# GET Else(Const(0))
+RST a
+# PUT Else(Var(Procedure("ec_mul"), "st"))
+RST b
+INC b
+SHL b
+INC b
+SHL b
+SHL b
+INC b
+SHL b
+SHL b
+INC b
+STORE b
+# GET Else(Const(0))
+RST a
+# PUT Else(Var(Procedure("ec_mul"), "m"))
+RST b
+INC b
+SHL b
+INC b
+SHL b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+STORE b
+# LABEL 27
+# GET Else(Const(0))
+RST a
+# MOVE g
+PUT g
+# GET Else(Var(Procedure("ec_mul"), "ts"))
+RST b
+INC b
+SHL b
+INC b
+SHL b
+SHL b
+INC b
+SHL b
+SHL b
+LOAD b
+# MOVE h
+PUT h
+# SUB
+GET h
+SUB g
+# JZERO 42
+JZERO 1736
+# GET Else(Var(Procedure("ec_mul"), "ts"))
+RST b
+INC b
+SHL b
+INC b
+SHL b
+SHL b
+INC b
+SHL b
+SHL b
+LOAD b
+# MOVE h
+PUT h
+# GET Else(Const(2))
+RST a
+INC a
+SHL a
+# MOVE g
+PUT g
+# MOD
+RST d
+STRK e
+JUMP 5661
+# PUT Else(Var(Procedure("ec_mul"), "bit"))
+RST b
+INC b
+SHL b
+INC b
+SHL b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+STORE b
+# GET Else(Var(Procedure("ec_mul"), "ts"))
+RST b
+INC b
+SHL b
+INC b
+SHL b
+SHL b
+INC b
+SHL b
+SHL b
+LOAD b
+# MOVE h
+PUT h
+# GET Else(Const(2))
+RST a
+INC a
+SHL a
+# MOVE g
+PUT g
+# DIV
+STRK e
+JUMP 5635
+# PUT Else(Var(Procedure("ec_mul"), "ts"))
+RST b
+INC b
+SHL b
+INC b
+SHL b
+SHL b
+INC b
+SHL b
+SHL b
+STORE b
+# GET Else(Var(Procedure("ec_mul"), "st"))
+RST b
+INC b
+SHL b
+INC b
+SHL b
+SHL b
+INC b
+SHL b
+SHL b
+INC b
+LOAD b
+# MOVE h
+PUT h
+# GET Else(Var(Procedure("ec_mul"), "bit"))
+RST b
+INC b
+SHL b
+INC b
+SHL b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+LOAD b
+# MOVE g
+PUT g
+# ADD
+GET g
+ADD h
+# PUT Else(Var(Procedure("ec_mul"), "st"))
+RST b
+INC b
+SHL b
+INC b
+SHL b
+SHL b
+INC b
+SHL b
+SHL b
+INC b
+STORE b
+# GET Else(Var(Procedure("ec_mul"), "st"))
+RST b
+INC b
+SHL b
+INC b
+SHL b
+SHL b
+INC b
+SHL b
+SHL b
+INC b
+LOAD b
+# MOVE h
+PUT h
+# GET Else(Const(2))
+RST a
+INC a
+SHL a
+# MOVE g
+PUT g
+# MUL
+RST d
+STRK e
+JUMP 5620
+# PUT Else(Var(Procedure("ec_mul"), "st"))
+RST b
+INC b
+SHL b
+INC b
+SHL b
+SHL b
+INC b
+SHL b
+SHL b
+INC b
+STORE b
+# GET Else(Var(Procedure("ec_mul"), "m"))
+RST b
+INC b
+SHL b
+INC b
+SHL b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+LOAD b
+# MOVE h
+PUT h
+# GET Else(Const(1))
+RST a
+INC a
+# MOVE g
+PUT g
+# ADD
+GET g
+ADD h
+# PUT Else(Var(Procedure("ec_mul"), "m"))
+RST b
+INC b
+SHL b
+INC b
+SHL b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+STORE b
+# JUMP 27
+JUMP 1565
+# JUMP 43
+JUMP 1736
+# LABEL 42
+# LABEL 43
+# GET Else(Var(Procedure("ec_mul"), "st"))
+RST b
+INC b
+SHL b
+INC b
+SHL b
+SHL b
+INC b
+SHL b
+SHL b
+INC b
+LOAD b
+# MOVE h
+PUT h
+# GET Else(Const(2))
+RST a
+INC a
+SHL a
+# MOVE g
+PUT g
+# DIV
+STRK e
+JUMP 5635
+# PUT Else(Var(Procedure("ec_mul"), "st"))
+RST b
+INC b
+SHL b
+INC b
+SHL b
+SHL b
+INC b
+SHL b
+SHL b
+INC b
+STORE b
+# LABEL 44
+# GET Else(Const(0))
+RST a
+# MOVE g
+PUT g
+# GET Else(Var(Procedure("ec_mul"), "m"))
+RST b
+INC b
+SHL b
+INC b
+SHL b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+LOAD b
+# MOVE h
+PUT h
+# SUB
+GET h
+SUB g
+# JZERO 47
+JZERO 2497
+# GET Else(Var(Procedure("ec_mul"), "st"))
+RST b
+INC b
+SHL b
+INC b
+SHL b
+SHL b
+INC b
+SHL b
+SHL b
+INC b
+LOAD b
+# MOVE h
+PUT h
+# GET Else(Const(2))
+RST a
+INC a
+SHL a
+# MOVE g
+PUT g
+# MOD
+RST d
+STRK e
+JUMP 5661
+# PUT Else(Var(Procedure("ec_mul"), "bit"))
+RST b
+INC b
+SHL b
+INC b
+SHL b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+STORE b
+# GET Else(Var(Procedure("ec_mul"), "st"))
+RST b
+INC b
+SHL b
+INC b
+SHL b
+SHL b
+INC b
+SHL b
+SHL b
+INC b
+LOAD b
+# MOVE h
+PUT h
+# GET Else(Const(2))
+RST a
+INC a
+SHL a
+# MOVE g
+PUT g
+# DIV
+STRK e
+JUMP 5635
+# PUT Else(Var(Procedure("ec_mul"), "st"))
+RST b
+INC b
+SHL b
+INC b
+SHL b
+SHL b
+INC b
+SHL b
+SHL b
+INC b
+STORE b
+# GET Else(Var(Procedure("ec_mul"), "bit"))
+RST b
+INC b
+SHL b
+INC b
+SHL b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+LOAD b
+# MOVE h
+PUT h
+# GET Else(Const(0))
+RST a
+# MOVE g
+PUT g
+# SUB
+GET h
+SUB g
+# JPOS 45
+JPOS 2169
+# GET Else(Var(Procedure("ec_mul"), "bit"))
+RST b
+INC b
+SHL b
+INC b
+SHL b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+LOAD b
+# MOVE g
+PUT g
+# GET Else(Const(0))
+RST a
+# MOVE h
+PUT h
+# SUB
+GET h
+SUB g
+# JPOS 45
+JPOS 2169
+# GET Else(Const(50))
+RST a
+INC a
+SHL a
+INC a
+SHL a
+SHL a
+SHL a
+INC a
+SHL a
+# PUT Else(Var(Procedure("ec_add"), "ax"))
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+SHL b
+SHL b
+INC b
+STORE b
+# GET Else(Const(51))
+RST a
+INC a
+SHL a
+INC a
+SHL a
+SHL a
+SHL a
+INC a
+SHL a
+INC a
+# PUT Else(Var(Procedure("ec_add"), "ay"))
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+SHL b
+INC b
+SHL b
+STORE b
+# GET Else(Const(48))
+RST a
+INC a
+SHL a
+INC a
+SHL a
+SHL a
+SHL a
+SHL a
+# PUT Else(Var(Procedure("ec_add"), "bx"))
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+SHL b
+INC b
+SHL b
+INC b
+STORE b
+# GET Else(Const(49))
+RST a
+INC a
+SHL a
+INC a
+SHL a
+SHL a
+SHL a
+SHL a
+INC a
+# PUT Else(Var(Procedure("ec_add"), "by"))
 RST b
 INC b
 SHL b
 SHL b
 SHL b
 INC b
+SHL b
+SHL b
+STORE b
+# GET Else(Var(Procedure("ec_mul"), "a"))
+RST b
+INC b
+SHL b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+SHL b
+LOAD b
+# PUT Else(Var(Procedure("ec_add"), "a"))
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+INC b
+SHL b
+SHL b
+INC b
+STORE b
+# GET Else(Var(Procedure("ec_mul"), "b"))
+RST b
+INC b
+SHL b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+SHL b
+INC b
+LOAD b
+# PUT Else(Var(Procedure("ec_add"), "b"))
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+STORE b
+# GET Else(Var(Procedure("ec_mul"), "p"))
+RST b
+INC b
+SHL b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+LOAD b
+# PUT Else(Var(Procedure("ec_add"), "p"))
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+STORE b
+# STRK
+RST b
+INC b
+SHL b
+SHL b
+INC b
+SHL b
+SHL b
+SHL b
+STRK a
+STORE b
+# JUMP 5
+JUMP 2560
+# GET Else(Const(48))
+RST a
+INC a
+SHL a
+INC a
+SHL a
+SHL a
+SHL a
+SHL a
+# PUT Else(Var(Procedure("ec_add"), "ax"))
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+SHL b
+SHL b
+INC b
+STORE b
+# GET Else(Const(49))
+RST a
+INC a
+SHL a
+INC a
+SHL a
+SHL a
+SHL a
+SHL a
+INC a
+# PUT Else(Var(Procedure("ec_add"), "ay"))
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+SHL b
+INC b
+SHL b
+STORE b
+# GET Else(Const(48))
+RST a
+INC a
+SHL a
+INC a
+SHL a
+SHL a
+SHL a
+SHL a
+# PUT Else(Var(Procedure("ec_add"), "bx"))
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+SHL b
+INC b
+SHL b
+INC b
+STORE b
+# GET Else(Const(49))
+RST a
+INC a
+SHL a
+INC a
+SHL a
+SHL a
+SHL a
+SHL a
+INC a
+# PUT Else(Var(Procedure("ec_add"), "by"))
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+INC b
+SHL b
+SHL b
+STORE b
+# GET Else(Var(Procedure("ec_mul"), "a"))
+RST b
+INC b
+SHL b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+SHL b
+LOAD b
+# PUT Else(Var(Procedure("ec_add"), "a"))
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+INC b
+SHL b
+SHL b
+INC b
+STORE b
+# GET Else(Var(Procedure("ec_mul"), "b"))
+RST b
+INC b
+SHL b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+SHL b
+INC b
+LOAD b
+# PUT Else(Var(Procedure("ec_add"), "b"))
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+STORE b
+# GET Else(Var(Procedure("ec_mul"), "p"))
+RST b
+INC b
+SHL b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+LOAD b
+# PUT Else(Var(Procedure("ec_add"), "p"))
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+STORE b
+# STRK
+RST b
+INC b
+SHL b
+SHL b
+INC b
+SHL b
+SHL b
+SHL b
+STRK a
+STORE b
+# JUMP 5
+JUMP 2560
+# JUMP 46
+JUMP 2465
+# LABEL 45
+# GET Else(Const(48))
+RST a
+INC a
+SHL a
+INC a
+SHL a
+SHL a
+SHL a
+SHL a
+# PUT Else(Var(Procedure("ec_add"), "ax"))
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+SHL b
+SHL b
+INC b
+STORE b
+# GET Else(Const(49))
+RST a
+INC a
+SHL a
+INC a
+SHL a
+SHL a
+SHL a
+SHL a
+INC a
+# PUT Else(Var(Procedure("ec_add"), "ay"))
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+SHL b
+INC b
+SHL b
+STORE b
+# GET Else(Const(50))
+RST a
+INC a
+SHL a
+INC a
+SHL a
+SHL a
+SHL a
+INC a
+SHL a
+# PUT Else(Var(Procedure("ec_add"), "bx"))
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+SHL b
+INC b
+SHL b
+INC b
+STORE b
+# GET Else(Const(51))
+RST a
+INC a
+SHL a
+INC a
+SHL a
+SHL a
+SHL a
+INC a
+SHL a
+INC a
+# PUT Else(Var(Procedure("ec_add"), "by"))
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+INC b
+SHL b
+SHL b
+STORE b
+# GET Else(Var(Procedure("ec_mul"), "a"))
+RST b
+INC b
+SHL b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+SHL b
+LOAD b
+# PUT Else(Var(Procedure("ec_add"), "a"))
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+INC b
+SHL b
+SHL b
+INC b
+STORE b
+# GET Else(Var(Procedure("ec_mul"), "b"))
+RST b
+INC b
+SHL b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+SHL b
+INC b
+LOAD b
+# PUT Else(Var(Procedure("ec_add"), "b"))
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+STORE b
+# GET Else(Var(Procedure("ec_mul"), "p"))
+RST b
+INC b
+SHL b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+LOAD b
+# PUT Else(Var(Procedure("ec_add"), "p"))
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+STORE b
+# STRK
+RST b
+INC b
+SHL b
+SHL b
+INC b
+SHL b
+SHL b
+SHL b
+STRK a
+STORE b
+# JUMP 5
+JUMP 2560
+# GET Else(Const(50))
+RST a
+INC a
+SHL a
+INC a
+SHL a
+SHL a
+SHL a
+INC a
+SHL a
+# PUT Else(Var(Procedure("ec_add"), "ax"))
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+SHL b
+SHL b
+INC b
+STORE b
+# GET Else(Const(51))
+RST a
+INC a
+SHL a
+INC a
+SHL a
+SHL a
+SHL a
+INC a
+SHL a
+INC a
+# PUT Else(Var(Procedure("ec_add"), "ay"))
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+SHL b
+INC b
+SHL b
+STORE b
+# GET Else(Const(50))
+RST a
+INC a
+SHL a
+INC a
+SHL a
+SHL a
+SHL a
+INC a
+SHL a
+# PUT Else(Var(Procedure("ec_add"), "bx"))
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+SHL b
+INC b
+SHL b
+INC b
+STORE b
+# GET Else(Const(51))
+RST a
+INC a
+SHL a
+INC a
+SHL a
+SHL a
+SHL a
+INC a
+SHL a
+INC a
+# PUT Else(Var(Procedure("ec_add"), "by"))
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+INC b
+SHL b
+SHL b
+STORE b
+# GET Else(Var(Procedure("ec_mul"), "a"))
+RST b
+INC b
+SHL b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+SHL b
+LOAD b
+# PUT Else(Var(Procedure("ec_add"), "a"))
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+INC b
+SHL b
+SHL b
+INC b
+STORE b
+# GET Else(Var(Procedure("ec_mul"), "b"))
+RST b
+INC b
+SHL b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+SHL b
+INC b
+LOAD b
+# PUT Else(Var(Procedure("ec_add"), "b"))
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+STORE b
+# GET Else(Var(Procedure("ec_mul"), "p"))
+RST b
+INC b
+SHL b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+LOAD b
+# PUT Else(Var(Procedure("ec_add"), "p"))
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+STORE b
+# STRK
+RST b
+INC b
+SHL b
+SHL b
+INC b
+SHL b
+SHL b
+SHL b
+STRK a
+STORE b
+# JUMP 5
+JUMP 2560
+# LABEL 46
+# GET Else(Var(Procedure("ec_mul"), "m"))
+RST b
+INC b
+SHL b
+INC b
+SHL b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+LOAD b
+# MOVE h
+PUT h
+# GET Else(Const(1))
+RST a
+INC a
+# MOVE g
+PUT g
+# SUB
+GET h
+SUB g
+# PUT Else(Var(Procedure("ec_mul"), "m"))
+RST b
+INC b
+SHL b
+INC b
+SHL b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+STORE b
+# JUMP 44
+JUMP 1765
+# JUMP 48
+JUMP 2497
+# LABEL 47
+# LABEL 48
+# GET Else(Var(Procedure("ec_mul"), "rax"))
+RST b
+INC b
+SHL b
+INC b
+SHL b
+SHL b
+SHL b
+SHL b
+LOAD b
+# PUT Else(Pointer(Else(Var(Procedure("ec_mul"), "x"))))
+RST b
+INC b
+SHL b
+SHL b
+INC b
+SHL b
+SHL b
+SHL b
+INC b
+PUT c
+LOAD b
+PUT d
+GET c
+STORE d
+# GET Else(Var(Procedure("ec_mul"), "ray"))
+RST b
+INC b
+SHL b
+INC b
+SHL b
+SHL b
+SHL b
+SHL b
+INC b
+LOAD b
+# PUT Else(Pointer(Else(Var(Procedure("ec_mul"), "y"))))
+RST b
+INC b
+SHL b
+SHL b
+INC b
+SHL b
 SHL b
 INC b
 SHL b
@@ -823,13 +2997,116 @@ PUT c
 LOAD b
 PUT d
 GET c
-SUB d
-# JZERO 24
-JZERO 841
-# GET Else(Var(Procedure("shuffle"), "w"))
+STORE d
+# GET Else(ProcedureReturn(Procedure("ec_mul")))
 RST b
 INC b
 SHL b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+LOAD b
+# INC Else(Accumulator)
+INC a
+# INC Else(Accumulator)
+INC a
+# INC Else(Accumulator)
+INC a
+# JUMPR
+JUMPR a
+# LABEL 5
+# GET Else(Pointer(Else(Var(Procedure("ec_add"), "ax"))))
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+SHL b
+SHL b
+INC b
+LOAD b
+LOAD a
+# MOVE h
+PUT h
+# GET Else(Pointer(Else(Var(Procedure("ec_add"), "ay"))))
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+SHL b
+INC b
+SHL b
+LOAD b
+LOAD a
+# MOVE g
+PUT g
+# ADD
+GET g
+ADD h
+# PUT Else(Var(Procedure("ec_add"), "zca"))
+RST b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+SHL b
+SHL b
+STORE b
+# GET Else(Pointer(Else(Var(Procedure("ec_add"), "bx"))))
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+SHL b
+INC b
+SHL b
+INC b
+LOAD b
+LOAD a
+# MOVE h
+PUT h
+# GET Else(Pointer(Else(Var(Procedure("ec_add"), "by"))))
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+INC b
+SHL b
+SHL b
+LOAD b
+LOAD a
+# MOVE g
+PUT g
+# ADD
+GET g
+ADD h
+# PUT Else(Var(Procedure("ec_add"), "zcb"))
+RST b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+SHL b
+SHL b
+INC b
+STORE b
+# GET Else(Var(Procedure("ec_add"), "zca"))
+RST b
+INC b
+SHL b
+INC b
 SHL b
 INC b
 SHL b
@@ -838,15 +3115,15 @@ SHL b
 LOAD b
 # MOVE h
 PUT h
-# GET Else(Var(Procedure("shuffle"), "q"))
+# GET Else(Var(Procedure("ec_add"), "zcb"))
 RST b
 INC b
 SHL b
-SHL b
-SHL b
 INC b
 SHL b
 INC b
+SHL b
+SHL b
 SHL b
 INC b
 LOAD b
@@ -855,18 +3132,1623 @@ PUT g
 # MUL
 RST d
 STRK e
-JUMP 902
-# PUT Else(Var(Procedure("shuffle"), "w"))
+JUMP 5620
+# PUT Else(Var(Procedure("ec_add"), "zca"))
 RST b
 INC b
 SHL b
+INC b
 SHL b
 INC b
 SHL b
 SHL b
 SHL b
 STORE b
-# GET Else(Var(Procedure("shuffle"), "w"))
+# GET Else(Var(Procedure("ec_add"), "zca"))
+RST b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+SHL b
+SHL b
+LOAD b
+# MOVE h
+PUT h
+# GET Else(Const(0))
+RST a
+# MOVE g
+PUT g
+# SUB
+GET h
+SUB g
+# JPOS 55
+JPOS 2774
+# GET Else(Var(Procedure("ec_add"), "zca"))
+RST b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+SHL b
+SHL b
+LOAD b
+# MOVE g
+PUT g
+# GET Else(Const(0))
+RST a
+# MOVE h
+PUT h
+# SUB
+GET h
+SUB g
+# JPOS 55
+JPOS 2774
+# GET Else(Pointer(Else(Var(Procedure("ec_add"), "ax"))))
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+SHL b
+SHL b
+INC b
+LOAD b
+LOAD a
+# MOVE h
+PUT h
+# GET Else(Pointer(Else(Var(Procedure("ec_add"), "bx"))))
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+SHL b
+INC b
+SHL b
+INC b
+LOAD b
+LOAD a
+# MOVE g
+PUT g
+# ADD
+GET g
+ADD h
+# PUT Else(Pointer(Else(Var(Procedure("ec_add"), "ax"))))
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+SHL b
+SHL b
+INC b
+PUT c
+LOAD b
+PUT d
+GET c
+STORE d
+# GET Else(Pointer(Else(Var(Procedure("ec_add"), "ay"))))
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+SHL b
+INC b
+SHL b
+LOAD b
+LOAD a
+# MOVE h
+PUT h
+# GET Else(Pointer(Else(Var(Procedure("ec_add"), "by"))))
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+INC b
+SHL b
+SHL b
+LOAD b
+LOAD a
+# MOVE g
+PUT g
+# ADD
+GET g
+ADD h
+# PUT Else(Pointer(Else(Var(Procedure("ec_add"), "ay"))))
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+SHL b
+INC b
+SHL b
+PUT c
+LOAD b
+PUT d
+GET c
+STORE d
+# JUMP 56
+JUMP 4030
+# LABEL 55
+# GET Else(Pointer(Else(Var(Procedure("ec_add"), "ax"))))
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+SHL b
+SHL b
+INC b
+LOAD b
+LOAD a
+# MOVE h
+PUT h
+# GET Else(Pointer(Else(Var(Procedure("ec_add"), "bx"))))
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+SHL b
+INC b
+SHL b
+INC b
+LOAD b
+LOAD a
+# MOVE g
+PUT g
+# SUB
+GET h
+SUB g
+# JPOS 51
+JPOS 3228
+# GET Else(Pointer(Else(Var(Procedure("ec_add"), "ax"))))
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+SHL b
+SHL b
+INC b
+LOAD b
+LOAD a
+# MOVE g
+PUT g
+# GET Else(Pointer(Else(Var(Procedure("ec_add"), "bx"))))
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+SHL b
+INC b
+SHL b
+INC b
+LOAD b
+LOAD a
+# MOVE h
+PUT h
+# SUB
+GET h
+SUB g
+# JPOS 51
+JPOS 3228
+# GET Else(Pointer(Else(Var(Procedure("ec_add"), "ay"))))
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+SHL b
+INC b
+SHL b
+LOAD b
+LOAD a
+# MOVE h
+PUT h
+# GET Else(Pointer(Else(Var(Procedure("ec_add"), "by"))))
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+INC b
+SHL b
+SHL b
+LOAD b
+LOAD a
+# MOVE g
+PUT g
+# SUB
+GET h
+SUB g
+# JPOS 49
+JPOS 3186
+# GET Else(Pointer(Else(Var(Procedure("ec_add"), "ay"))))
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+SHL b
+INC b
+SHL b
+LOAD b
+LOAD a
+# MOVE g
+PUT g
+# GET Else(Pointer(Else(Var(Procedure("ec_add"), "by"))))
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+INC b
+SHL b
+SHL b
+LOAD b
+LOAD a
+# MOVE h
+PUT h
+# SUB
+GET h
+SUB g
+# JPOS 49
+JPOS 3186
+# GET Else(Const(1))
+RST a
+INC a
+# PUT Else(Var(Procedure("ec_add"), "compute"))
+RST b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+SHL b
+INC b
+SHL b
+INC b
+STORE b
+# GET Else(Pointer(Else(Var(Procedure("ec_add"), "ax"))))
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+SHL b
+SHL b
+INC b
+LOAD b
+LOAD a
+# MOVE h
+PUT h
+# GET Else(Pointer(Else(Var(Procedure("ec_add"), "ax"))))
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+SHL b
+SHL b
+INC b
+LOAD b
+LOAD a
+# MOVE g
+PUT g
+# MUL
+RST d
+STRK e
+JUMP 5620
+# PUT Else(Var(Procedure("ec_add"), "lambda"))
+RST b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+SHL b
+INC b
+SHL b
+STORE b
+# GET Else(Var(Procedure("ec_add"), "lambda"))
+RST b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+SHL b
+INC b
+SHL b
+LOAD b
+# MOVE h
+PUT h
+# GET Else(Const(3))
+RST a
+INC a
+SHL a
+INC a
+# MOVE g
+PUT g
+# MUL
+RST d
+STRK e
+JUMP 5620
+# PUT Else(Var(Procedure("ec_add"), "lambda"))
+RST b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+SHL b
+INC b
+SHL b
+STORE b
+# GET Else(Var(Procedure("ec_add"), "lambda"))
+RST b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+SHL b
+INC b
+SHL b
+LOAD b
+# MOVE h
+PUT h
+# GET Else(Pointer(Else(Var(Procedure("ec_add"), "a"))))
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+INC b
+SHL b
+SHL b
+INC b
+LOAD b
+LOAD a
+# MOVE g
+PUT g
+# ADD
+GET g
+ADD h
+# PUT Else(Var(Procedure("ec_add"), "lambda"))
+RST b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+SHL b
+INC b
+SHL b
+STORE b
+# GET Else(Pointer(Else(Var(Procedure("ec_add"), "ay"))))
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+SHL b
+INC b
+SHL b
+LOAD b
+LOAD a
+# MOVE h
+PUT h
+# GET Else(Pointer(Else(Var(Procedure("ec_add"), "ay"))))
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+SHL b
+INC b
+SHL b
+LOAD b
+LOAD a
+# MOVE g
+PUT g
+# ADD
+GET g
+ADD h
+# PUT Else(Var(Procedure("ec_add"), "zca"))
+RST b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+SHL b
+SHL b
+STORE b
+# GET Else(Const(57))
+RST a
+INC a
+SHL a
+INC a
+SHL a
+INC a
+SHL a
+SHL a
+SHL a
+INC a
+# PUT Else(Var(Procedure("inverse"), "r"))
+RST b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+SHL b
+STORE b
+# GET Else(Const(56))
+RST a
+INC a
+SHL a
+INC a
+SHL a
+INC a
+SHL a
+SHL a
+SHL a
+# PUT Else(Var(Procedure("inverse"), "x"))
+RST b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+SHL b
+INC b
+STORE b
+# GET Else(Var(Procedure("ec_add"), "p"))
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+LOAD b
+# PUT Else(Var(Procedure("inverse"), "p"))
+RST b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+STORE b
+# STRK
+RST b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+STRK a
+STORE b
+# JUMP 1
+JUMP 4655
+# GET Else(Var(Procedure("ec_add"), "lambda"))
+RST b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+SHL b
+INC b
+SHL b
+LOAD b
+# MOVE h
+PUT h
+# GET Else(Var(Procedure("ec_add"), "zcb"))
+RST b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+SHL b
+SHL b
+INC b
+LOAD b
+# MOVE g
+PUT g
+# MUL
+RST d
+STRK e
+JUMP 5620
+# PUT Else(Var(Procedure("ec_add"), "lambda"))
+RST b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+SHL b
+INC b
+SHL b
+STORE b
+# GET Else(Var(Procedure("ec_add"), "lambda"))
+RST b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+SHL b
+INC b
+SHL b
+LOAD b
+# MOVE h
+PUT h
+# GET Else(Pointer(Else(Var(Procedure("ec_add"), "p"))))
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+LOAD b
+LOAD a
+# MOVE g
+PUT g
+# MOD
+RST d
+STRK e
+JUMP 5661
+# PUT Else(Var(Procedure("ec_add"), "lambda"))
+RST b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+SHL b
+INC b
+SHL b
+STORE b
+# JUMP 50
+JUMP 3227
+# LABEL 49
+# GET Else(Const(0))
+RST a
+# PUT Else(Var(Procedure("ec_add"), "compute"))
+RST b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+SHL b
+INC b
+SHL b
+INC b
+STORE b
+# GET Else(Const(0))
+RST a
+# PUT Else(Pointer(Else(Var(Procedure("ec_add"), "ax"))))
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+SHL b
+SHL b
+INC b
+PUT c
+LOAD b
+PUT d
+GET c
+STORE d
+# GET Else(Const(0))
+RST a
+# PUT Else(Pointer(Else(Var(Procedure("ec_add"), "ay"))))
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+SHL b
+INC b
+SHL b
+PUT c
+LOAD b
+PUT d
+GET c
+STORE d
+# LABEL 50
+# JUMP 52
+JUMP 3543
+# LABEL 51
+# GET Else(Const(1))
+RST a
+INC a
+# PUT Else(Var(Procedure("ec_add"), "compute"))
+RST b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+SHL b
+INC b
+SHL b
+INC b
+STORE b
+# GET Else(Pointer(Else(Var(Procedure("ec_add"), "p"))))
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+LOAD b
+LOAD a
+# MOVE h
+PUT h
+# GET Else(Pointer(Else(Var(Procedure("ec_add"), "ay"))))
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+SHL b
+INC b
+SHL b
+LOAD b
+LOAD a
+# MOVE g
+PUT g
+# ADD
+GET g
+ADD h
+# PUT Else(Var(Procedure("ec_add"), "lambda"))
+RST b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+SHL b
+INC b
+SHL b
+STORE b
+# GET Else(Var(Procedure("ec_add"), "lambda"))
+RST b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+SHL b
+INC b
+SHL b
+LOAD b
+# MOVE h
+PUT h
+# GET Else(Pointer(Else(Var(Procedure("ec_add"), "by"))))
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+INC b
+SHL b
+SHL b
+LOAD b
+LOAD a
+# MOVE g
+PUT g
+# SUB
+GET h
+SUB g
+# PUT Else(Var(Procedure("ec_add"), "lambda"))
+RST b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+SHL b
+INC b
+SHL b
+STORE b
+# GET Else(Pointer(Else(Var(Procedure("ec_add"), "p"))))
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+LOAD b
+LOAD a
+# MOVE h
+PUT h
+# GET Else(Pointer(Else(Var(Procedure("ec_add"), "ax"))))
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+SHL b
+SHL b
+INC b
+LOAD b
+LOAD a
+# MOVE g
+PUT g
+# ADD
+GET g
+ADD h
+# PUT Else(Var(Procedure("ec_add"), "zca"))
+RST b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+SHL b
+SHL b
+STORE b
+# GET Else(Var(Procedure("ec_add"), "zca"))
+RST b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+SHL b
+SHL b
+LOAD b
+# MOVE h
+PUT h
+# GET Else(Pointer(Else(Var(Procedure("ec_add"), "bx"))))
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+SHL b
+INC b
+SHL b
+INC b
+LOAD b
+LOAD a
+# MOVE g
+PUT g
+# SUB
+GET h
+SUB g
+# PUT Else(Var(Procedure("ec_add"), "zca"))
+RST b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+SHL b
+SHL b
+STORE b
+# GET Else(Const(57))
+RST a
+INC a
+SHL a
+INC a
+SHL a
+INC a
+SHL a
+SHL a
+SHL a
+INC a
+# PUT Else(Var(Procedure("inverse"), "r"))
+RST b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+SHL b
+STORE b
+# GET Else(Const(56))
+RST a
+INC a
+SHL a
+INC a
+SHL a
+INC a
+SHL a
+SHL a
+SHL a
+# PUT Else(Var(Procedure("inverse"), "x"))
+RST b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+SHL b
+INC b
+STORE b
+# GET Else(Var(Procedure("ec_add"), "p"))
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+LOAD b
+# PUT Else(Var(Procedure("inverse"), "p"))
+RST b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+STORE b
+# STRK
+RST b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+STRK a
+STORE b
+# JUMP 1
+JUMP 4655
+# GET Else(Var(Procedure("ec_add"), "lambda"))
+RST b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+SHL b
+INC b
+SHL b
+LOAD b
+# MOVE h
+PUT h
+# GET Else(Var(Procedure("ec_add"), "zcb"))
+RST b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+SHL b
+SHL b
+INC b
+LOAD b
+# MOVE g
+PUT g
+# MUL
+RST d
+STRK e
+JUMP 5620
+# PUT Else(Var(Procedure("ec_add"), "lambda"))
+RST b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+SHL b
+INC b
+SHL b
+STORE b
+# GET Else(Var(Procedure("ec_add"), "lambda"))
+RST b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+SHL b
+INC b
+SHL b
+LOAD b
+# MOVE h
+PUT h
+# GET Else(Pointer(Else(Var(Procedure("ec_add"), "p"))))
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+LOAD b
+LOAD a
+# MOVE g
+PUT g
+# MOD
+RST d
+STRK e
+JUMP 5661
+# PUT Else(Var(Procedure("ec_add"), "lambda"))
+RST b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+SHL b
+INC b
+SHL b
+STORE b
+# LABEL 52
+# GET Else(Var(Procedure("ec_add"), "compute"))
+RST b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+SHL b
+INC b
+SHL b
+INC b
+LOAD b
+# MOVE h
+PUT h
+# GET Else(Const(1))
+RST a
+INC a
+# MOVE g
+PUT g
+# SUB
+GET h
+SUB g
+# JPOS 53
+JPOS 4030
+# GET Else(Var(Procedure("ec_add"), "compute"))
+RST b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+SHL b
+INC b
+SHL b
+INC b
+LOAD b
+# MOVE g
+PUT g
+# GET Else(Const(1))
+RST a
+INC a
+# MOVE h
+PUT h
+# SUB
+GET h
+SUB g
+# JPOS 53
+JPOS 4030
+# GET Else(Var(Procedure("ec_add"), "lambda"))
+RST b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+SHL b
+INC b
+SHL b
+LOAD b
+# MOVE h
+PUT h
+# GET Else(Var(Procedure("ec_add"), "lambda"))
+RST b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+SHL b
+INC b
+SHL b
+LOAD b
+# MOVE g
+PUT g
+# MUL
+RST d
+STRK e
+JUMP 5620
+# PUT Else(Var(Procedure("ec_add"), "zca"))
+RST b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+SHL b
+SHL b
+STORE b
+# GET Else(Var(Procedure("ec_add"), "zca"))
+RST b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+SHL b
+SHL b
+LOAD b
+# MOVE h
+PUT h
+# GET Else(Pointer(Else(Var(Procedure("ec_add"), "p"))))
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+LOAD b
+LOAD a
+# MOVE g
+PUT g
+# ADD
+GET g
+ADD h
+# PUT Else(Var(Procedure("ec_add"), "zca"))
+RST b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+SHL b
+SHL b
+STORE b
+# GET Else(Var(Procedure("ec_add"), "zca"))
+RST b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+SHL b
+SHL b
+LOAD b
+# MOVE h
+PUT h
+# GET Else(Pointer(Else(Var(Procedure("ec_add"), "ax"))))
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+SHL b
+SHL b
+INC b
+LOAD b
+LOAD a
+# MOVE g
+PUT g
+# SUB
+GET h
+SUB g
+# PUT Else(Var(Procedure("ec_add"), "zca"))
+RST b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+SHL b
+SHL b
+STORE b
+# GET Else(Var(Procedure("ec_add"), "zca"))
+RST b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+SHL b
+SHL b
+LOAD b
+# MOVE h
+PUT h
+# GET Else(Pointer(Else(Var(Procedure("ec_add"), "p"))))
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+LOAD b
+LOAD a
+# MOVE g
+PUT g
+# ADD
+GET g
+ADD h
+# PUT Else(Var(Procedure("ec_add"), "zca"))
+RST b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+SHL b
+SHL b
+STORE b
+# GET Else(Var(Procedure("ec_add"), "zca"))
+RST b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+SHL b
+SHL b
+LOAD b
+# MOVE h
+PUT h
+# GET Else(Pointer(Else(Var(Procedure("ec_add"), "bx"))))
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+SHL b
+INC b
+SHL b
+INC b
+LOAD b
+LOAD a
+# MOVE g
+PUT g
+# SUB
+GET h
+SUB g
+# PUT Else(Var(Procedure("ec_add"), "zca"))
+RST b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+SHL b
+SHL b
+STORE b
+# GET Else(Var(Procedure("ec_add"), "zca"))
+RST b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+SHL b
+SHL b
+LOAD b
+# MOVE h
+PUT h
+# GET Else(Pointer(Else(Var(Procedure("ec_add"), "p"))))
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+LOAD b
+LOAD a
+# MOVE g
+PUT g
+# MOD
+RST d
+STRK e
+JUMP 5661
+# PUT Else(Var(Procedure("ec_add"), "zca"))
+RST b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+SHL b
+SHL b
+STORE b
+# GET Else(Pointer(Else(Var(Procedure("ec_add"), "ax"))))
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+SHL b
+SHL b
+INC b
+LOAD b
+LOAD a
+# MOVE h
+PUT h
+# GET Else(Pointer(Else(Var(Procedure("ec_add"), "p"))))
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+LOAD b
+LOAD a
+# MOVE g
+PUT g
+# ADD
+GET g
+ADD h
+# PUT Else(Var(Procedure("ec_add"), "zcb"))
+RST b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+SHL b
+SHL b
+INC b
+STORE b
+# GET Else(Var(Procedure("ec_add"), "zcb"))
+RST b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+SHL b
+SHL b
+INC b
+LOAD b
+# MOVE h
+PUT h
+# GET Else(Var(Procedure("ec_add"), "zca"))
+RST b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+SHL b
+SHL b
+LOAD b
+# MOVE g
+PUT g
+# SUB
+GET h
+SUB g
+# PUT Else(Var(Procedure("ec_add"), "zcb"))
+RST b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+SHL b
+SHL b
+INC b
+STORE b
+# GET Else(Var(Procedure("ec_add"), "zcb"))
+RST b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+SHL b
+SHL b
+INC b
+LOAD b
+# MOVE h
+PUT h
+# GET Else(Var(Procedure("ec_add"), "lambda"))
+RST b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+SHL b
+INC b
+SHL b
+LOAD b
+# MOVE g
+PUT g
+# MUL
+RST d
+STRK e
+JUMP 5620
+# PUT Else(Var(Procedure("ec_add"), "zcb"))
+RST b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+SHL b
+SHL b
+INC b
+STORE b
+# GET Else(Var(Procedure("ec_add"), "zcb"))
+RST b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+SHL b
+SHL b
+INC b
+LOAD b
+# MOVE h
+PUT h
+# GET Else(Pointer(Else(Var(Procedure("ec_add"), "ay"))))
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+SHL b
+INC b
+SHL b
+LOAD b
+LOAD a
+# MOVE g
+PUT g
+# SUB
+GET h
+SUB g
+# PUT Else(Var(Procedure("ec_add"), "zcb"))
+RST b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+SHL b
+SHL b
+INC b
+STORE b
+# GET Else(Var(Procedure("ec_add"), "zcb"))
+RST b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+SHL b
+SHL b
+INC b
+LOAD b
+# MOVE h
+PUT h
+# GET Else(Pointer(Else(Var(Procedure("ec_add"), "p"))))
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+LOAD b
+LOAD a
+# MOVE g
+PUT g
+# MOD
+RST d
+STRK e
+JUMP 5661
+# PUT Else(Var(Procedure("ec_add"), "zcb"))
+RST b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+SHL b
+SHL b
+INC b
+STORE b
+# GET Else(Var(Procedure("ec_add"), "zca"))
+RST b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+SHL b
+SHL b
+LOAD b
+# PUT Else(Pointer(Else(Var(Procedure("ec_add"), "ax"))))
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+SHL b
+SHL b
+INC b
+PUT c
+LOAD b
+PUT d
+GET c
+STORE d
+# GET Else(Var(Procedure("ec_add"), "zcb"))
+RST b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+SHL b
+SHL b
+INC b
+LOAD b
+# PUT Else(Pointer(Else(Var(Procedure("ec_add"), "ay"))))
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+SHL b
+INC b
+SHL b
+PUT c
+LOAD b
+PUT d
+GET c
+STORE d
+# JUMP 54
+JUMP 4030
+# LABEL 53
+# LABEL 54
+# LABEL 56
+# GET Else(ProcedureReturn(Procedure("ec_add")))
 RST b
 INC b
 SHL b
@@ -876,9 +4758,279 @@ SHL b
 SHL b
 SHL b
 LOAD b
+# INC Else(Accumulator)
+INC a
+# INC Else(Accumulator)
+INC a
+# INC Else(Accumulator)
+INC a
+# JUMPR
+JUMPR a
+# LABEL 4
+# GET Else(Pointer(Else(Var(Procedure("ec_negate"), "p"))))
+RST b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+LOAD b
+LOAD a
 # MOVE h
 PUT h
-# GET Else(Pointer(Else(Var(Procedure("shuffle"), "n"))))
+# GET Else(Pointer(Else(Var(Procedure("ec_negate"), "y"))))
+RST b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+SHL b
+LOAD b
+LOAD a
+# MOVE g
+PUT g
+# SUB
+GET h
+SUB g
+# PUT Else(Pointer(Else(Var(Procedure("ec_negate"), "y"))))
+RST b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+SHL b
+PUT c
+LOAD b
+PUT d
+GET c
+STORE d
+# GET Else(Pointer(Else(Var(Procedure("ec_negate"), "y"))))
+RST b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+SHL b
+LOAD b
+LOAD a
+# MOVE h
+PUT h
+# GET Else(Pointer(Else(Var(Procedure("ec_negate"), "p"))))
+RST b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+LOAD b
+LOAD a
+# MOVE g
+PUT g
+# MOD
+RST d
+STRK e
+JUMP 5661
+# PUT Else(Pointer(Else(Var(Procedure("ec_negate"), "y"))))
+RST b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+SHL b
+PUT c
+LOAD b
+PUT d
+GET c
+STORE d
+# GET Else(ProcedureReturn(Procedure("ec_negate")))
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+SHL b
+SHL b
+LOAD b
+# INC Else(Accumulator)
+INC a
+# INC Else(Accumulator)
+INC a
+# INC Else(Accumulator)
+INC a
+# JUMPR
+JUMPR a
+# LABEL 3
+# GET Else(Pointer(Else(Var(Procedure("ec_check"), "x"))))
+RST b
+INC b
+SHL b
+SHL b
+INC b
+SHL b
+SHL b
+INC b
+LOAD b
+LOAD a
+# MOVE h
+PUT h
+# GET Else(Pointer(Else(Var(Procedure("ec_check"), "y"))))
+RST b
+INC b
+SHL b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+LOAD b
+LOAD a
+# MOVE g
+PUT g
+# ADD
+GET g
+ADD h
+# PUT Else(Var(Procedure("ec_check"), "zc"))
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+SHL b
+SHL b
+SHL b
+STORE b
+# GET Else(Var(Procedure("ec_check"), "zc"))
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+SHL b
+SHL b
+SHL b
+LOAD b
+# MOVE h
+PUT h
+# GET Else(Const(0))
+RST a
+# MOVE g
+PUT g
+# SUB
+GET h
+SUB g
+# JPOS 59
+JPOS 4212
+# GET Else(Var(Procedure("ec_check"), "zc"))
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+SHL b
+SHL b
+SHL b
+LOAD b
+# MOVE g
+PUT g
+# GET Else(Const(0))
+RST a
+# MOVE h
+PUT h
+# SUB
+GET h
+SUB g
+# JPOS 59
+JPOS 4212
+# GET Else(Const(1))
+RST a
+INC a
+# PUT Else(Pointer(Else(Var(Procedure("ec_check"), "r"))))
+RST b
+INC b
+SHL b
+SHL b
+INC b
+SHL b
+SHL b
+PUT c
+LOAD b
+PUT d
+GET c
+STORE d
+# JUMP 60
+JUMP 4642
+# LABEL 59
+# GET Else(Pointer(Else(Var(Procedure("ec_check"), "y"))))
+RST b
+INC b
+SHL b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+LOAD b
+LOAD a
+# MOVE h
+PUT h
+# GET Else(Pointer(Else(Var(Procedure("ec_check"), "y"))))
+RST b
+INC b
+SHL b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+LOAD b
+LOAD a
+# MOVE g
+PUT g
+# MUL
+RST d
+STRK e
+JUMP 5620
+# PUT Else(Var(Procedure("ec_check"), "lhs"))
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+SHL b
+SHL b
+SHL b
+INC b
+STORE b
+# GET Else(Var(Procedure("ec_check"), "lhs"))
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+SHL b
+SHL b
+SHL b
+INC b
+LOAD b
+# MOVE h
+PUT h
+# GET Else(Pointer(Else(Var(Procedure("ec_check"), "p"))))
 RST b
 INC b
 SHL b
@@ -894,18 +5046,19 @@ PUT g
 # MOD
 RST d
 STRK e
-JUMP 917
-# PUT Else(Var(Procedure("shuffle"), "w"))
+JUMP 5661
+# PUT Else(Var(Procedure("ec_check"), "lhs"))
 RST b
 INC b
 SHL b
 SHL b
+SHL b
+SHL b
+SHL b
+SHL b
 INC b
-SHL b
-SHL b
-SHL b
 STORE b
-# GET Else(Var(Procedure("shuffle"), "w"))
+# GET Else(Pointer(Else(Var(Procedure("ec_check"), "x"))))
 RST b
 INC b
 SHL b
@@ -913,66 +5066,94 @@ SHL b
 INC b
 SHL b
 SHL b
-SHL b
+INC b
 LOAD b
-# PUT Else(Pointer(Table(Procedure("shuffle"), "t", Var(Procedure("shuffle"), "i"))))
-PUT c
+LOAD a
+# MOVE h
+PUT h
+# GET Else(Pointer(Else(Var(Procedure("ec_check"), "x"))))
 RST b
 INC b
 SHL b
 SHL b
-SHL b
 INC b
 SHL b
-INC b
 SHL b
+INC b
 LOAD b
-PUT d
-RST b
-INC b
-SHL b
-INC b
-SHL b
-SHL b
-SHL b
-LOAD b
-ADD d
-PUT d
-GET c
-STORE d
-# GET Else(Var(Procedure("shuffle"), "i"))
+LOAD a
+# MOVE g
+PUT g
+# MUL
+RST d
+STRK e
+JUMP 5620
+# PUT Else(Var(Procedure("ec_check"), "rhs"))
 RST b
 INC b
 SHL b
 SHL b
 SHL b
-INC b
 SHL b
-INC b
-SHL b
-LOAD b
-# ADD Else(Const(1))
-RST b
-INC b
-ADD b
-# PUT Else(Var(Procedure("shuffle"), "i"))
-RST b
-INC b
-SHL b
-SHL b
-SHL b
-INC b
 SHL b
 INC b
 SHL b
 STORE b
-# JUMP 14
-JUMP 691
-# JUMP 25
-JUMP 841
-# LABEL 24
-# LABEL 25
-# GET Else(Pointer(Else(Var(Procedure("shuffle"), "n"))))
+# GET Else(Var(Procedure("ec_check"), "rhs"))
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+SHL b
+SHL b
+INC b
+SHL b
+LOAD b
+# MOVE h
+PUT h
+# GET Else(Pointer(Else(Var(Procedure("ec_check"), "x"))))
+RST b
+INC b
+SHL b
+SHL b
+INC b
+SHL b
+SHL b
+INC b
+LOAD b
+LOAD a
+# MOVE g
+PUT g
+# MUL
+RST d
+STRK e
+JUMP 5620
+# PUT Else(Var(Procedure("ec_check"), "rhs"))
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+SHL b
+SHL b
+INC b
+SHL b
+STORE b
+# GET Else(Var(Procedure("ec_check"), "rhs"))
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+SHL b
+SHL b
+INC b
+SHL b
+LOAD b
+# MOVE h
+PUT h
+# GET Else(Pointer(Else(Var(Procedure("ec_check"), "p"))))
 RST b
 INC b
 SHL b
@@ -983,49 +5164,329 @@ SHL b
 INC b
 LOAD b
 LOAD a
-# SUB Else(Const(1))
+# MOVE g
+PUT g
+# MOD
+RST d
+STRK e
+JUMP 5661
+# PUT Else(Var(Procedure("ec_check"), "rhs"))
 RST b
 INC b
-SUB b
-# PUT Else(Var(Procedure("shuffle"), "i"))
-RST b
-INC b
 SHL b
 SHL b
 SHL b
-INC b
+SHL b
 SHL b
 INC b
 SHL b
 STORE b
-# GET Else(Const(0))
+# GET Else(Pointer(Else(Var(Procedure("ec_check"), "a"))))
+RST b
+INC b
+SHL b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+LOAD b
+LOAD a
+# MOVE h
+PUT h
+# GET Else(Pointer(Else(Var(Procedure("ec_check"), "x"))))
+RST b
+INC b
+SHL b
+SHL b
+INC b
+SHL b
+SHL b
+INC b
+LOAD b
+LOAD a
+# MOVE g
+PUT g
+# MUL
+RST d
+STRK e
+JUMP 5620
+# PUT Else(Var(Procedure("ec_check"), "tmp"))
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+SHL b
+SHL b
+INC b
+SHL b
+INC b
+STORE b
+# GET Else(Var(Procedure("ec_check"), "tmp"))
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+SHL b
+SHL b
+INC b
+SHL b
+INC b
+LOAD b
+# MOVE h
+PUT h
+# GET Else(Pointer(Else(Var(Procedure("ec_check"), "p"))))
+RST b
+INC b
+SHL b
+INC b
+SHL b
+SHL b
+SHL b
+INC b
+LOAD b
+LOAD a
+# MOVE g
+PUT g
+# MOD
+RST d
+STRK e
+JUMP 5661
+# PUT Else(Var(Procedure("ec_check"), "tmp"))
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+SHL b
+SHL b
+INC b
+SHL b
+INC b
+STORE b
+# GET Else(Var(Procedure("ec_check"), "rhs"))
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+SHL b
+SHL b
+INC b
+SHL b
+LOAD b
+# MOVE h
+PUT h
+# GET Else(Var(Procedure("ec_check"), "tmp"))
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+SHL b
+SHL b
+INC b
+SHL b
+INC b
+LOAD b
+# MOVE g
+PUT g
+# ADD
+GET g
+ADD h
+# PUT Else(Var(Procedure("ec_check"), "rhs"))
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+SHL b
+SHL b
+INC b
+SHL b
+STORE b
+# GET Else(Var(Procedure("ec_check"), "rhs"))
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+SHL b
+SHL b
+INC b
+SHL b
+LOAD b
+# MOVE h
+PUT h
+# GET Else(Pointer(Else(Var(Procedure("ec_check"), "b"))))
+RST b
+INC b
+SHL b
+INC b
+SHL b
+SHL b
+SHL b
+LOAD b
+LOAD a
+# MOVE g
+PUT g
+# ADD
+GET g
+ADD h
+# PUT Else(Var(Procedure("ec_check"), "rhs"))
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+SHL b
+SHL b
+INC b
+SHL b
+STORE b
+# GET Else(Var(Procedure("ec_check"), "rhs"))
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+SHL b
+SHL b
+INC b
+SHL b
+LOAD b
+# MOVE h
+PUT h
+# GET Else(Pointer(Else(Var(Procedure("ec_check"), "p"))))
+RST b
+INC b
+SHL b
+INC b
+SHL b
+SHL b
+SHL b
+INC b
+LOAD b
+LOAD a
+# MOVE g
+PUT g
+# MOD
+RST d
+STRK e
+JUMP 5661
+# PUT Else(Var(Procedure("ec_check"), "rhs"))
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+SHL b
+SHL b
+INC b
+SHL b
+STORE b
+# GET Else(Var(Procedure("ec_check"), "rhs"))
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+SHL b
+SHL b
+INC b
+SHL b
+LOAD b
+# MOVE h
+PUT h
+# GET Else(Var(Procedure("ec_check"), "lhs"))
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+SHL b
+SHL b
+SHL b
+INC b
+LOAD b
+# MOVE g
+PUT g
+# SUB
+GET h
+SUB g
+# JPOS 57
+JPOS 4629
+# GET Else(Var(Procedure("ec_check"), "rhs"))
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+SHL b
+SHL b
+INC b
+SHL b
+LOAD b
+# MOVE g
+PUT g
+# GET Else(Var(Procedure("ec_check"), "lhs"))
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+SHL b
+SHL b
+SHL b
+INC b
+LOAD b
+# MOVE h
+PUT h
+# SUB
+GET h
+SUB g
+# JPOS 57
+JPOS 4629
+# GET Else(Const(1))
 RST a
-# PUT Else(Pointer(Table(Procedure("shuffle"), "t", Var(Procedure("shuffle"), "i"))))
+INC a
+# PUT Else(Pointer(Else(Var(Procedure("ec_check"), "r"))))
+RST b
+INC b
+SHL b
+SHL b
+INC b
+SHL b
+SHL b
 PUT c
-RST b
-INC b
-SHL b
-SHL b
-SHL b
-INC b
-SHL b
-INC b
-SHL b
 LOAD b
-PUT d
-RST b
-INC b
-SHL b
-INC b
-SHL b
-SHL b
-SHL b
-LOAD b
-ADD d
 PUT d
 GET c
 STORE d
-# GET Else(ProcedureReturn(Procedure("shuffle")))
+# JUMP 58
+JUMP 4642
+# LABEL 57
+# GET Else(Const(0))
+RST a
+# PUT Else(Pointer(Else(Var(Procedure("ec_check"), "r"))))
+RST b
+INC b
+SHL b
+SHL b
+INC b
+SHL b
+SHL b
+PUT c
+LOAD b
+PUT d
+GET c
+STORE d
+# LABEL 58
+# LABEL 60
+# GET Else(ProcedureReturn(Procedure("ec_check")))
 RST b
 INC b
 SHL b
@@ -1043,50 +5504,1193 @@ INC a
 INC a
 # JUMPR
 JUMPR a
-# LABEL 15
+# LABEL 1
+# GET Else(Var(Procedure("inverse"), "x"))
+RST b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+SHL b
+INC b
+LOAD b
+# PUT Else(Var(Procedure("de"), "m"))
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+STORE b
+# GET Else(Var(Procedure("inverse"), "p"))
+RST b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+LOAD b
+# PUT Else(Var(Procedure("de"), "n"))
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+STORE b
+# GET Else(Var(Procedure("inverse"), "r"))
+RST b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+SHL b
+LOAD b
+# PUT Else(Var(Procedure("de"), "x"))
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+INC b
+SHL b
+SHL b
+SHL b
+STORE b
+# GET Else(Const(68))
+RST a
+INC a
+SHL a
+SHL a
+SHL a
+SHL a
+INC a
+SHL a
+SHL a
+# PUT Else(Var(Procedure("de"), "y"))
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+INC b
+SHL b
+SHL b
+SHL b
+INC b
+STORE b
+# GET Else(Const(69))
+RST a
+INC a
+SHL a
+SHL a
+SHL a
+SHL a
+INC a
+SHL a
+SHL a
+INC a
+# PUT Else(Var(Procedure("de"), "z"))
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+INC b
+SHL b
+SHL b
+INC b
+SHL b
+STORE b
+# STRK
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+INC b
+SHL b
+SHL b
+INC b
+SHL b
+INC b
+STRK a
+STORE b
+# JUMP 0
+JUMP 4795
+# GET Else(ProcedureReturn(Procedure("inverse")))
+RST b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+LOAD b
+# INC Else(Accumulator)
+INC a
+# INC Else(Accumulator)
+INC a
+# INC Else(Accumulator)
+INC a
+# JUMPR
+JUMPR a
+# LABEL 0
+# GET Else(Pointer(Else(Var(Procedure("de"), "m"))))
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+LOAD b
+LOAD a
+# PUT Else(Var(Procedure("de"), "a"))
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+SHL b
+STORE b
+# GET Else(Pointer(Else(Var(Procedure("de"), "n"))))
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+LOAD b
+LOAD a
+# PUT Else(Var(Procedure("de"), "b"))
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+SHL b
+INC b
+STORE b
+# GET Else(Const(1))
+RST a
+INC a
+# PUT Else(Pointer(Else(Var(Procedure("de"), "x"))))
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+INC b
+SHL b
+SHL b
+SHL b
+PUT c
+LOAD b
+PUT d
+GET c
+STORE d
+# GET Else(Const(0))
+RST a
+# PUT Else(Pointer(Else(Var(Procedure("de"), "y"))))
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+INC b
+SHL b
+SHL b
+SHL b
+INC b
+PUT c
+LOAD b
+PUT d
+GET c
+STORE d
+# GET Else(Pointer(Else(Var(Procedure("de"), "n"))))
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+LOAD b
+LOAD a
+# PUT Else(Var(Procedure("de"), "r"))
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+STORE b
+# GET Else(Pointer(Else(Var(Procedure("de"), "m"))))
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+LOAD b
+LOAD a
+# MOVE h
+PUT h
+# GET Else(Const(1))
+RST a
+INC a
+# MOVE g
+PUT g
+# SUB
+GET h
+SUB g
+# PUT Else(Var(Procedure("de"), "s"))
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+STORE b
+# LABEL 61
+# GET Else(Const(0))
+RST a
+# MOVE g
+PUT g
+# GET Else(Var(Procedure("de"), "b"))
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+SHL b
+INC b
+LOAD b
+# MOVE h
+PUT h
+# SUB
+GET h
+SUB g
+# JZERO 66
+JZERO 5578
+# GET Else(Var(Procedure("de"), "a"))
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+SHL b
+LOAD b
+# MOVE h
+PUT h
+# GET Else(Var(Procedure("de"), "b"))
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+SHL b
+INC b
+LOAD b
+# MOVE g
+PUT g
+# MOD
+RST d
+STRK e
+JUMP 5661
+# PUT Else(Var(Procedure("de"), "reszta"))
+RST b
+INC b
+SHL b
+SHL b
+INC b
+SHL b
+SHL b
+SHL b
+SHL b
+STORE b
+# GET Else(Var(Procedure("de"), "a"))
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+SHL b
+LOAD b
+# MOVE h
+PUT h
+# GET Else(Var(Procedure("de"), "b"))
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+SHL b
+INC b
+LOAD b
+# MOVE g
+PUT g
+# DIV
+STRK e
+JUMP 5635
+# PUT Else(Var(Procedure("de"), "iloraz"))
+RST b
+INC b
+SHL b
+SHL b
+INC b
+SHL b
+SHL b
+SHL b
+SHL b
+INC b
+STORE b
+# GET Else(Var(Procedure("de"), "b"))
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+SHL b
+INC b
+LOAD b
+# PUT Else(Var(Procedure("de"), "a"))
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+SHL b
+STORE b
+# GET Else(Var(Procedure("de"), "reszta"))
+RST b
+INC b
+SHL b
+SHL b
+INC b
+SHL b
+SHL b
+SHL b
+SHL b
+LOAD b
+# PUT Else(Var(Procedure("de"), "b"))
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+SHL b
+INC b
+STORE b
+# GET Else(Var(Procedure("de"), "r"))
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+LOAD b
+# PUT Else(Var(Procedure("de"), "rr"))
+RST b
+INC b
+SHL b
+SHL b
+INC b
+SHL b
+SHL b
+SHL b
+INC b
+SHL b
+STORE b
+# GET Else(Var(Procedure("de"), "iloraz"))
+RST b
+INC b
+SHL b
+SHL b
+INC b
+SHL b
+SHL b
+SHL b
+SHL b
+INC b
+LOAD b
+# MOVE h
+PUT h
+# GET Else(Var(Procedure("de"), "r"))
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+LOAD b
+# MOVE g
+PUT g
+# MUL
+RST d
+STRK e
+JUMP 5620
+# PUT Else(Var(Procedure("de"), "tmp"))
+RST b
+INC b
+SHL b
+SHL b
+INC b
+SHL b
+SHL b
+INC b
+SHL b
+SHL b
+STORE b
+# GET Else(Pointer(Else(Var(Procedure("de"), "x"))))
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+INC b
+SHL b
+SHL b
+SHL b
+LOAD b
+LOAD a
+# MOVE g
+PUT g
+# GET Else(Var(Procedure("de"), "tmp"))
+RST b
+INC b
+SHL b
+SHL b
+INC b
+SHL b
+SHL b
+INC b
+SHL b
+SHL b
+LOAD b
+# MOVE h
+PUT h
+# SUB
+GET h
+SUB g
+# JZERO 62
+JZERO 5201
+# GET Else(Pointer(Else(Var(Procedure("de"), "n"))))
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+LOAD b
+LOAD a
+# MOVE h
+PUT h
+# GET Else(Var(Procedure("de"), "iloraz"))
+RST b
+INC b
+SHL b
+SHL b
+INC b
+SHL b
+SHL b
+SHL b
+SHL b
+INC b
+LOAD b
+# MOVE g
+PUT g
+# MUL
+RST d
+STRK e
+JUMP 5620
+# PUT Else(Var(Procedure("de"), "r"))
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+STORE b
+# JUMP 63
+JUMP 5214
+# LABEL 62
+# GET Else(Const(0))
+RST a
+# PUT Else(Var(Procedure("de"), "r"))
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+STORE b
+# LABEL 63
+# GET Else(Var(Procedure("de"), "r"))
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+LOAD b
+# MOVE h
+PUT h
+# GET Else(Pointer(Else(Var(Procedure("de"), "x"))))
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+INC b
+SHL b
+SHL b
+SHL b
+LOAD b
+LOAD a
+# MOVE g
+PUT g
+# ADD
 GET g
-JZERO 913
+ADD h
+# PUT Else(Var(Procedure("de"), "r"))
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+STORE b
+# GET Else(Var(Procedure("de"), "r"))
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+LOAD b
+# MOVE h
+PUT h
+# GET Else(Var(Procedure("de"), "tmp"))
+RST b
+INC b
+SHL b
+SHL b
+INC b
+SHL b
+SHL b
+INC b
+SHL b
+SHL b
+LOAD b
+# MOVE g
+PUT g
+# SUB
+GET h
+SUB g
+# PUT Else(Var(Procedure("de"), "r"))
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+STORE b
+# GET Else(Var(Procedure("de"), "s"))
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+LOAD b
+# PUT Else(Var(Procedure("de"), "ss"))
+RST b
+INC b
+SHL b
+SHL b
+INC b
+SHL b
+SHL b
+SHL b
+INC b
+SHL b
+INC b
+STORE b
+# GET Else(Var(Procedure("de"), "iloraz"))
+RST b
+INC b
+SHL b
+SHL b
+INC b
+SHL b
+SHL b
+SHL b
+SHL b
+INC b
+LOAD b
+# MOVE h
+PUT h
+# GET Else(Var(Procedure("de"), "s"))
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+LOAD b
+# MOVE g
+PUT g
+# MUL
+RST d
+STRK e
+JUMP 5620
+# PUT Else(Var(Procedure("de"), "tmp"))
+RST b
+INC b
+SHL b
+SHL b
+INC b
+SHL b
+SHL b
+INC b
+SHL b
+SHL b
+STORE b
+# GET Else(Pointer(Else(Var(Procedure("de"), "y"))))
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+INC b
+SHL b
+SHL b
+SHL b
+INC b
+LOAD b
+LOAD a
+# MOVE g
+PUT g
+# GET Else(Var(Procedure("de"), "tmp"))
+RST b
+INC b
+SHL b
+SHL b
+INC b
+SHL b
+SHL b
+INC b
+SHL b
+SHL b
+LOAD b
+# MOVE h
+PUT h
+# SUB
+GET h
+SUB g
+# JZERO 64
+JZERO 5427
+# GET Else(Pointer(Else(Var(Procedure("de"), "m"))))
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+LOAD b
+LOAD a
+# MOVE h
+PUT h
+# GET Else(Var(Procedure("de"), "iloraz"))
+RST b
+INC b
+SHL b
+SHL b
+INC b
+SHL b
+SHL b
+SHL b
+SHL b
+INC b
+LOAD b
+# MOVE g
+PUT g
+# MUL
+RST d
+STRK e
+JUMP 5620
+# PUT Else(Var(Procedure("de"), "s"))
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+STORE b
+# JUMP 65
+JUMP 5441
+# LABEL 64
+# GET Else(Const(0))
+RST a
+# PUT Else(Var(Procedure("de"), "s"))
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+STORE b
+# LABEL 65
+# GET Else(Var(Procedure("de"), "s"))
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+LOAD b
+# MOVE h
+PUT h
+# GET Else(Pointer(Else(Var(Procedure("de"), "y"))))
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+INC b
+SHL b
+SHL b
+SHL b
+INC b
+LOAD b
+LOAD a
+# MOVE g
+PUT g
+# ADD
+GET g
+ADD h
+# PUT Else(Var(Procedure("de"), "s"))
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+STORE b
+# GET Else(Var(Procedure("de"), "s"))
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+LOAD b
+# MOVE h
+PUT h
+# GET Else(Var(Procedure("de"), "tmp"))
+RST b
+INC b
+SHL b
+SHL b
+INC b
+SHL b
+SHL b
+INC b
+SHL b
+SHL b
+LOAD b
+# MOVE g
+PUT g
+# SUB
+GET h
+SUB g
+# PUT Else(Var(Procedure("de"), "s"))
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+INC b
+STORE b
+# GET Else(Var(Procedure("de"), "rr"))
+RST b
+INC b
+SHL b
+SHL b
+INC b
+SHL b
+SHL b
+SHL b
+INC b
+SHL b
+LOAD b
+# PUT Else(Pointer(Else(Var(Procedure("de"), "x"))))
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+INC b
+SHL b
+SHL b
+SHL b
+PUT c
+LOAD b
+PUT d
+GET c
+STORE d
+# GET Else(Var(Procedure("de"), "ss"))
+RST b
+INC b
+SHL b
+SHL b
+INC b
+SHL b
+SHL b
+SHL b
+INC b
+SHL b
+INC b
+LOAD b
+# PUT Else(Pointer(Else(Var(Procedure("de"), "y"))))
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+INC b
+SHL b
+SHL b
+SHL b
+INC b
+PUT c
+LOAD b
+PUT d
+GET c
+STORE d
+# JUMP 61
+JUMP 4931
+# JUMP 67
+JUMP 5578
+# LABEL 66
+# LABEL 67
+# GET Else(Var(Procedure("de"), "a"))
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+INC b
+SHL b
+INC b
+SHL b
+SHL b
+LOAD b
+# PUT Else(Pointer(Else(Var(Procedure("de"), "z"))))
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+INC b
+SHL b
+SHL b
+INC b
+SHL b
+PUT c
+LOAD b
+PUT d
+GET c
+STORE d
+# GET Else(ProcedureReturn(Procedure("de")))
+RST b
+INC b
+SHL b
+SHL b
+SHL b
+INC b
+SHL b
+SHL b
+INC b
+SHL b
+INC b
+LOAD b
+# INC Else(Accumulator)
+INC a
+# INC Else(Accumulator)
+INC a
+# INC Else(Accumulator)
+INC a
+# JUMPR
+JUMPR a
+# LABEL 39
+GET g
+JZERO 5631
 SHR g
 SUB g
 SUB g
-JZERO 911
+JZERO 5629
 GET d
 ADD h
 PUT d
-# LABEL 17
+# LABEL 41
 SHL h
-JUMP 902
-# LABEL 16
+JUMP 5620
+# LABEL 40
 GET d
 INC e
 INC e
 JUMPR e
-# LABEL 18
+# LABEL 34
+RST d
 GET g
-JZERO 936
+JZERO 5657
 PUT c
-# LABEL 20
+# LABEL 36
 GET h
 SUB c
-JZERO 925
+JZERO 5644
 SHL c
-JUMP 920
-# LABEL 21
+JUMP 5639
+# LABEL 37
 GET g
 SUB c
-JPOS 937
+JPOS 5657
+SHL d
 GET c
 SUB h
-JPOS 934
+JPOS 5655
+INC d
 GET h
 SUB c
 PUT h
-# LABEL 22
+# LABEL 38
 SHR c
-JUMP 925
-# LABEL 23
+JUMP 5644
+# LABEL 35
+GET d
+INC e
+INC e
+JUMPR e
+# LABEL 28
+GET g
+JZERO 5680
+PUT c
+# LABEL 30
+GET h
+SUB c
+JZERO 5669
+SHL c
+JUMP 5664
+# LABEL 31
+GET g
+SUB c
+JPOS 5681
+GET c
+SUB h
+JPOS 5678
+GET h
+SUB c
+PUT h
+# LABEL 32
+SHR c
+JUMP 5669
+# LABEL 33
 RST h
-# LABEL 19
+# LABEL 29
 GET h
 INC e
 INC e

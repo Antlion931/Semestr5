@@ -14,313 +14,6 @@ pub fn pre_assembler_to_assembler(block: Block, compile_info: CompileInfo) -> St
                 result.push_str("# WRITE\n");
                 result.push_str("WRITE\n");
             }
-            PreAssembler::ADD(ref x) => {
-                result.push_str(format!("# ADD {:?}\n", x).as_str());
-                match x {
-                    AbstractVarible::Table(p, t, i) => {
-                        let x = AbstractVarible::Table(p.clone(), t.clone(), AbstractNumber::Const(0));
-                        let mem = compile_info.memory.get(&x).unwrap();
-
-                        match i {
-                            AbstractNumber::Const(xx) => {
-                                let mem = mem + xx;
-
-                                result.push_str("PUT c\n");
-                                result.push_str(&generate_const_in_reg('b', mem));
-                                result.push_str("LOAD b\n");
-                                result.push_str("ADD c\n");
-                            }
-                            xx @ AbstractNumber::Var(_, _) => {
-                                let xx = AbstractVarible::Else(xx.clone());
-                                let xx_mem = compile_info.memory.get(&xx).unwrap();
-
-                                result.push_str("PUT c\n");
-                                result.push_str(&generate_const_in_reg('b', *xx_mem));
-                                result.push_str("LOAD b\n");
-                                result.push_str(&generate_const_in_reg('b', *mem));
-                                result.push_str("ADD b\n");
-                                result.push_str("LOAD a\n");
-                                result.push_str("ADD c\n");
-                            }
-                            xx @ AbstractNumber::Pointer(_) => {
-                                let xx = AbstractVarible::Else(xx.clone());
-                                let xx_mem = compile_info.memory.get(&xx).unwrap();
-
-                                result.push_str("PUT c\n");
-                                result.push_str(&generate_const_in_reg('b', *xx_mem));
-                                result.push_str("LOAD b\n");
-                                result.push_str("LOAD a\n");
-
-                                result.push_str(&generate_const_in_reg('b', *mem));
-                                result.push_str("ADD b\n");
-                                result.push_str("LOAD a\n");
-                                result.push_str("ADD c\n");
-                            }
-                            _ => {
-                                unimplemented!();
-                            }
-                        }
-                    }
-                    AbstractVarible::Else(xx) => match xx {
-                        AbstractNumber::Accumulator => {
-                            result.push_str("ADD a\n");
-                        }
-                        AbstractNumber::Const(x) => {
-                            result.push_str(&generate_const_in_reg('b', *x));
-
-                            result.push_str("ADD b\n");
-                        }
-                        AbstractNumber::ProcedureReturn(p) => {
-                            unimplemented!();
-                        }
-                        AbstractNumber::Pointer(p) => {
-                            match p.as_ref() {
-                                AbstractVarible::Table(p, t, i) => {
-                                    let x = AbstractVarible::Else(AbstractNumber::Pointer(Box::new(AbstractVarible::Table(p.clone(), t.clone(), AbstractNumber::Const(0)))));
-                                    let mem = compile_info.memory.get(&x).unwrap();
-
-                                    match i {
-                                        AbstractNumber::Const(xx) => {
-                                            result.push_str("PUT c\n");
-                                            result.push_str(&generate_const_in_reg('b', *mem));
-                                            result.push_str("LOAD b\n");
-
-                                            result.push_str(&generate_const_in_reg('b', *xx));
-                                            result.push_str("ADD b\n");
-
-                                            result.push_str("LOAD a\n");
-                                            result.push_str("ADD c\n");
-                                        }
-                                        xx @ AbstractNumber::Var(_, _) => {
-                                            let xx = AbstractVarible::Else(xx.clone());
-                                            let xx_mem = compile_info.memory.get(&xx).unwrap();
-
-                                            result.push_str("PUT d\n");
-                                            result.push_str(&generate_const_in_reg('b', *xx_mem));
-                                            result.push_str("LOAD b\n");
-                                            result.push_str("PUT c\n");
-
-                                            result.push_str(&generate_const_in_reg('b', *mem));
-                                            result.push_str("LOAD b\n");
-
-                                            result.push_str("ADD c\n");
-                                            result.push_str("LOAD a\n");
-                                            result.push_str("ADD d\n");
-                                        }
-                                        xx @ AbstractNumber::Pointer(_) => {
-                                            let xx = AbstractVarible::Else(xx.clone());
-                                            let xx_mem = compile_info.memory.get(&xx).unwrap();
-
-                                            result.push_str("PUT d\n");
-                                            result.push_str(&generate_const_in_reg('b', *xx_mem));
-                                            result.push_str("LOAD b\n");
-                                            result.push_str("LOAD a\n");
-                                            result.push_str("PUT c\n");
-
-                                            result.push_str(&generate_const_in_reg('b', *mem));
-                                            result.push_str("LOAD b\n");
-
-                                            result.push_str("ADD c\n");
-                                            result.push_str("LOAD a\n");
-                                            result.push_str("ADD d\n");
-                                        }
-                                        _ => {
-                                            unimplemented!();
-                                        }
-                                    }
-                                }
-                                AbstractVarible::Else(xx) => {
-                                    let mem = compile_info.memory.get(x).unwrap();
-
-                                    result.push_str(&generate_const_in_reg('b', *mem));
-
-                                    result.push_str("PUT c\n");
-
-                                    result.push_str("LOAD b\n");
-                                    result.push_str("LOAD a\n");
-
-                                    result.push_str("ADD c\n");
-                                }
-                            }
-                        }
-                        AbstractNumber::Var(_, ref xxx) => {
-                            let mem = compile_info.memory.get(x).unwrap();
-
-                            result.push_str(&generate_const_in_reg('b', *mem));
-
-                            result.push_str("PUT c\n");
-
-                            result.push_str("LOAD b\n");
-
-                            result.push_str("ADD c\n");
-                        }
-                    },
-                }
-            }
-            PreAssembler::SUB(ref x) => {
-                result.push_str(format!("# SUB {:?}\n", x).as_str());
-                match x {
-                    AbstractVarible::Table(p, t, i) => {
-                        let x = AbstractVarible::Table(p.clone(), t.clone(), AbstractNumber::Const(0));
-                        let mem = compile_info.memory.get(&x).unwrap();
-
-                        match i {
-                            AbstractNumber::Const(xx) => {
-                                let mem = mem + xx;
-
-                                result.push_str("PUT c\n");
-                                result.push_str(&generate_const_in_reg('b', mem));
-                                result.push_str("LOAD b\n");
-                                result.push_str("PUT d\n");
-                                result.push_str("GET c\n");
-                                result.push_str("SUB d\n");
-                            }
-                            xx @ AbstractNumber::Var(_, _) => {
-                                let xx = AbstractVarible::Else(xx.clone());
-                                let xx_mem = compile_info.memory.get(&xx).unwrap();
-
-                                result.push_str("PUT c\n");
-                                result.push_str(&generate_const_in_reg('b', *xx_mem));
-                                result.push_str("LOAD b\n");
-                                result.push_str(&generate_const_in_reg('b', *mem));
-                                result.push_str("ADD b\n");
-                                result.push_str("LOAD a\n");
-                                result.push_str("PUT d\n");
-                                result.push_str("GET c\n");
-                                result.push_str("SUB d\n");
-                            }
-                            xx @ AbstractNumber::Pointer(_) => {
-                                let xx = AbstractVarible::Else(xx.clone());
-                                let xx_mem = compile_info.memory.get(&xx).unwrap();
-
-                                result.push_str("PUT c\n");
-                                result.push_str(&generate_const_in_reg('b', *xx_mem));
-                                result.push_str("LOAD b\n");
-                                result.push_str("LOAD a\n");
-
-                                result.push_str(&generate_const_in_reg('b', *mem));
-                                result.push_str("ADD b\n");
-                                result.push_str("LOAD a\n");
-
-                                result.push_str("PUT d\n");
-                                result.push_str("GET c\n");
-                                result.push_str("SUB d\n");
-                            }
-                            _ => {
-                                unimplemented!();
-                            }
-                        }
-                    }
-                    AbstractVarible::Else(xx) => match xx {
-                        AbstractNumber::Accumulator => {
-                            result.push_str("SUB a\n");
-                        }
-                        AbstractNumber::Const(x) => {
-                            result.push_str(&generate_const_in_reg('b', *x));
-
-                            result.push_str("SUB b\n");
-                        }
-                        AbstractNumber::ProcedureReturn(p) => {
-                            unimplemented!();
-                        }
-                        AbstractNumber::Pointer(p) => {
-                            match p.as_ref() {
-                                AbstractVarible::Table(p, t, i) => {
-                                    let x = AbstractVarible::Else(AbstractNumber::Pointer(Box::new(AbstractVarible::Table(p.clone(), t.clone(), AbstractNumber::Const(0)))));
-                                    let mem = compile_info.memory.get(&x).unwrap();
-
-                                    match i {
-                                        AbstractNumber::Const(xx) => {
-                                            result.push_str("PUT c\n");
-                                            result.push_str(&generate_const_in_reg('b', *mem));
-                                            result.push_str("LOAD b\n");
-
-                                            result.push_str(&generate_const_in_reg('b', *xx));
-                                            result.push_str("ADD b\n");
-
-                                            result.push_str("LOAD a\n");
-                                            result.push_str("PUT d\n");
-                                            result.push_str("GET c\n");
-                                            result.push_str("SUB d\n");
-                                        }
-                                        xx @ AbstractNumber::Var(_, _) => {
-                                            let xx = AbstractVarible::Else(xx.clone());
-                                            let xx_mem = compile_info.memory.get(&xx).unwrap();
-
-                                            result.push_str("PUT d\n");
-                                            result.push_str(&generate_const_in_reg('b', *xx_mem));
-                                            result.push_str("LOAD b\n");
-                                            result.push_str("PUT c\n");
-
-                                            result.push_str(&generate_const_in_reg('b', *mem));
-                                            result.push_str("LOAD b\n");
-
-                                            result.push_str("ADD c\n");
-                                            result.push_str("LOAD a\n");
-                                            result.push_str("PUT e\n");
-                                            result.push_str("GET d\n");
-                                            result.push_str("SUB e\n");
-                                        }
-                                        xx @ AbstractNumber::Pointer(_) => {
-                                            let xx = AbstractVarible::Else(xx.clone());
-                                            let xx_mem = compile_info.memory.get(&xx).unwrap();
-
-                                            result.push_str("PUT d\n");
-                                            result.push_str(&generate_const_in_reg('b', *xx_mem));
-                                            result.push_str("LOAD b\n");
-                                            result.push_str("LOAD a\n");
-                                            result.push_str("PUT c\n");
-
-                                            result.push_str(&generate_const_in_reg('b', *mem));
-                                            result.push_str("LOAD b\n");
-
-                                            result.push_str("ADD c\n");
-                                            result.push_str("LOAD a\n");
-                                            result.push_str("PUT e\n");
-                                            result.push_str("GET d\n");
-                                            result.push_str("SUB e\n");
-                                        }
-                                        _ => {
-                                            unimplemented!();
-                                        }
-                                    }
-                                }
-                                AbstractVarible::Else(xx) => {
-                                    let mem = compile_info.memory.get(x).unwrap();
-
-                                    result.push_str(&generate_const_in_reg('b', *mem));
-
-                                    result.push_str("PUT c\n");
-
-                                    result.push_str("LOAD b\n");
-                                    result.push_str("LOAD a\n");
-
-                                    result.push_str("PUT d\n");
-
-                                    result.push_str("GET c\n");
-
-                                    result.push_str("SUB d\n");
-                                }
-                            }
-                        }
-                        AbstractNumber::Var(_, ref xxx) => {
-                            let mem = compile_info.memory.get(x).unwrap();
-
-                            result.push_str(&generate_const_in_reg('b', *mem));
-
-                            result.push_str("PUT c\n");
-
-                            result.push_str("LOAD b\n");
-
-                            result.push_str("PUT d\n");
-
-                            result.push_str("GET c\n");
-
-                            result.push_str("SUB d\n");
-                        }
-                    },
-                }
-            }
             PreAssembler::GET(ref x) => {
                 result.push_str(format!("# GET {:?}\n", x).as_str());
                 match x {
@@ -369,7 +62,7 @@ pub fn pre_assembler_to_assembler(block: Block, compile_info: CompileInfo) -> St
                         AbstractNumber::Const(x) => {
                             result.push_str(&generate_const_in_reg('a', *x));
                         }
-                        AbstractNumber::ProcedureReturn(p) => {
+                        AbstractNumber::ProcedureReturn(_) => {
                             let mem = compile_info.memory.get(x).unwrap();
 
                             result.push_str(&generate_const_in_reg('b', *mem));
@@ -427,7 +120,7 @@ pub fn pre_assembler_to_assembler(block: Block, compile_info: CompileInfo) -> St
                                         }
                                     }
                                 }
-                                AbstractVarible::Else(xx) => {
+                                AbstractVarible::Else(_) => {
                                     let mem = compile_info.memory.get(x).unwrap();
 
                                     result.push_str(&generate_const_in_reg('b', *mem));
@@ -437,7 +130,7 @@ pub fn pre_assembler_to_assembler(block: Block, compile_info: CompileInfo) -> St
                                 }
                             }
                         }
-                        AbstractNumber::Var(_, n) => {
+                        AbstractNumber::Var(_, _) => {
                             let mem = compile_info.memory.get(x).unwrap();
 
                             result.push_str(&generate_const_in_reg('b', *mem));
@@ -498,10 +191,10 @@ pub fn pre_assembler_to_assembler(block: Block, compile_info: CompileInfo) -> St
                         AbstractNumber::Accumulator => {
                             panic!("Trying to put accumulator to accumulator");
                         }
-                        AbstractNumber::Const(x) => {
+                        AbstractNumber::Const(_) => {
                             panic!("Trying to put accumulator to const");
                         }
-                        AbstractNumber::ProcedureReturn(p) => {
+                        AbstractNumber::ProcedureReturn(_) => {
                             unimplemented!();
                         }
                         AbstractNumber::Pointer(p) => {
@@ -562,16 +255,16 @@ pub fn pre_assembler_to_assembler(block: Block, compile_info: CompileInfo) -> St
                                     AbstractNumber::Accumulator => {
                                         panic!("Trying to put accumulator to accumulator");
                                     }
-                                    AbstractNumber::Const(x) => {
+                                    AbstractNumber::Const(_) => {
                                         panic!("Trying to put accumulator to const");
                                     }
-                                    AbstractNumber::ProcedureReturn(p) => {
+                                    AbstractNumber::ProcedureReturn(_) => {
                                         unimplemented!();
                                     }
-                                    AbstractNumber::Pointer(p) => {
+                                    AbstractNumber::Pointer(_) => {
                                         unimplemented!();
                                     }
-                                    AbstractNumber::Var(_, n) => {
+                                    AbstractNumber::Var(_, _) => {
                                         let mem = compile_info.memory.get(x).unwrap(); //Error here
 
                                         result.push_str(&generate_const_in_reg('b', *mem));
@@ -587,7 +280,7 @@ pub fn pre_assembler_to_assembler(block: Block, compile_info: CompileInfo) -> St
                             }
                                 
                         }
-                        AbstractNumber::Var(_, n) => {
+                        AbstractNumber::Var(_, _) => {
                             let mem = compile_info.memory.get(x).unwrap();
 
                             result.push_str(&generate_const_in_reg('b', *mem));
@@ -600,23 +293,23 @@ pub fn pre_assembler_to_assembler(block: Block, compile_info: CompileInfo) -> St
             PreAssembler::INC(x) => {
                 result.push_str(format!("# INC {:?}\n", x).as_str());
                 match x {
-                    AbstractVarible::Table(_, t, i) => {
+                    AbstractVarible::Table(_, _, _) => {
                         unimplemented!();
                     }
                     AbstractVarible::Else(xx) => match xx {
                         AbstractNumber::Accumulator => {
                             result.push_str("INC a\n");
                         }
-                        AbstractNumber::Const(x) => {
+                        AbstractNumber::Const(_) => {
                             unimplemented!();
                         }
-                        AbstractNumber::ProcedureReturn(p) => {
+                        AbstractNumber::ProcedureReturn(_) => {
                             unimplemented!();
                         }
-                        AbstractNumber::Pointer(p) => {
+                        AbstractNumber::Pointer(_) => {
                             unimplemented!();
                         }
-                        AbstractNumber::Var(_, n) => {
+                        AbstractNumber::Var(_, _) => {
                             unimplemented!();
                         }
                     },
@@ -682,6 +375,16 @@ pub fn pre_assembler_to_assembler(block: Block, compile_info: CompileInfo) -> St
                 result.push_str("RST d\n");
                 result.push_str("STRK e\n");
                 result.push_str(format!("JUMP {}\n", compile_info.mod_label.unwrap()).as_str());
+            }
+            PreAssembler::ADD => {
+                result.push_str("# ADD\n");
+                result.push_str("GET g\n");
+                result.push_str("ADD h\n");
+            }
+            PreAssembler::SUB => {
+                result.push_str("# SUB\n");
+                result.push_str("GET h\n");
+                result.push_str("SUB g\n");
             }
             PreAssembler::MOVE(x) => {
                 result.push_str(format!("# MOVE {}\n", x).as_str());

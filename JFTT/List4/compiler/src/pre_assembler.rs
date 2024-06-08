@@ -1,4 +1,5 @@
 use std::collections::{HashMap, HashSet};
+use crate::ast::*;
 
 #[derive(Debug, Hash, PartialEq, Eq, Clone)]
 pub enum AbstractVarible {
@@ -34,8 +35,6 @@ pub enum AbstractNumber {
 pub enum PreAssembler {
     READ,
     WRITE,
-    ADD(AbstractVarible),
-    SUB(AbstractVarible),
     GET(AbstractVarible),
     PUT(AbstractVarible),
     INC(AbstractVarible),
@@ -43,6 +42,8 @@ pub enum PreAssembler {
     MUL,
     DIV,
     MOD,
+    ADD,
+    SUB,
     LABEL(Label),
     JUMP(Label),
     JPOS(Label),
@@ -67,7 +68,7 @@ impl Block {
 }
 
 pub struct CompileInfo {
-    pub used_procedures: HashSet<ProcType>,
+    pub used_procedures: HashSet<Procedure>,
     pub memory: HashMap<AbstractVarible, u64>,
     pub mul_label: Option<Label>,
     pub div_label: Option<Label>,

@@ -39,7 +39,7 @@ impl DiagnosticInfo for AST {
     }
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub struct Procedure {
     pub proc_head: ProcHead,
     pub declarations: Vec<Declaration>,
@@ -118,7 +118,7 @@ impl DiagnosticInfo for Main {
     }
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub struct ProcHead {
     pub name: String,
     pub params: Vec<ArgDecl>,
@@ -151,7 +151,7 @@ impl DiagnosticInfo for ProcHead {
     }
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub struct ArgDecl {
     pub name: String,
     pub arg_type: ArgType,
@@ -184,13 +184,13 @@ impl DiagnosticInfo for ArgDecl {
     }
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub enum ArgType {
     Number,
     Table,
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub struct Declaration {
     pub name: String,
     pub decl_type: DeclType,
@@ -223,13 +223,13 @@ impl DiagnosticInfo for Declaration {
     }
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub enum DeclType {
     Number,
     Table(u64),
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub enum Command {
     Assign(Assign),
     If(If),
@@ -240,7 +240,7 @@ pub enum Command {
     Write(Write),
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub struct Assign {
     pub identifier: Identifier,
     pub expression: Expression,
@@ -353,7 +353,7 @@ impl Hash for IdentifierType {
     }
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub enum Expression {
     Number(Value),
     Add(Value, Value),
@@ -363,13 +363,13 @@ pub enum Expression {
     Mod(Value, Value),
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub enum Value {
     Number(u64),
     Identifier(Identifier),
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub enum Condition {
     Equal(Value, Value),
     NotEqual(Value, Value),
@@ -379,7 +379,7 @@ pub enum Condition {
     GreaterEqual(Value, Value),
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub struct If {
     pub condition: Condition,
     pub then_commands: Vec<Command>,
@@ -420,7 +420,7 @@ impl DiagnosticInfo for If {
     }
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub struct While {
     pub condition: Condition,
     pub commands: Vec<Command>,
@@ -453,7 +453,7 @@ impl DiagnosticInfo for While {
     }
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub struct Repeat {
     pub commands: Vec<Command>,
     pub condition: Condition,
@@ -486,7 +486,7 @@ impl DiagnosticInfo for Repeat {
     }
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub struct Call {
     pub name: String,
     pub args: Vec<Arg>,
@@ -519,7 +519,7 @@ impl DiagnosticInfo for Call {
     }
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub struct Arg {
     pub name: String,
     pub start: usize,
@@ -546,7 +546,7 @@ impl DiagnosticInfo for Arg {
     }
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub struct Read {
     pub identifier: Identifier,
     pub start: usize,
@@ -577,7 +577,7 @@ impl DiagnosticInfo for Read {
     }
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub struct Write {
     pub value: Value,
     pub start: usize,
